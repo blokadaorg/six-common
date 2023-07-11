@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../persistence/persistence.dart';
 import '../stage/channel.pg.dart';
 import '../stage/stage.dart';
 import '../util/config.dart';
@@ -25,6 +26,7 @@ class Tracer with TraceFactory, Dependable, Traceable {
       FileTraceCollector(getLogFilename(forCrash: true), immediate: true);
   late final _stage = dep<StageStore>();
   late final _ops = dep<TracerOps>();
+  late final _persistence = dep<PersistenceService>();
 
   @override
   attach(Act act) {
@@ -45,7 +47,12 @@ class Tracer with TraceFactory, Dependable, Traceable {
     if (!await _ops.doFileExists(getLogFilename(forCrash: true))) return;
 
     return await traceWith(parentTrace, "proposeCrashLog", (trace) async {
+      if (await _persistence.load(trace, "tracer:crashProposed") != null) {
+        await deleteCrashLog(trace);
+        await _persistence.delete(trace, "tracer:crashProposed");
+      }
       await _stage.setRoute(trace, StageKnownRoute.homeOverlayCrash.path);
+      await _persistence.saveString(trace, "tracer:crashProposed", "1");
     });
   }
 

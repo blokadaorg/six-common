@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:common/service/I18nService.dart';
 import 'package:common/ui/blur_background.dart';
+import 'package:common/util/async.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -50,8 +51,11 @@ class _CrashScreenState extends State<CrashScreen>
   _close() async {
     traceAs("fromWidget", (trace) async {
       await _stage.setRoute(trace, StageKnownRoute.homeCloseOverlay.path);
-      // TODO: after big delay so user can share it?
-      // await _tracer.deleteCrashLog(trace);
+    });
+  }
+
+  _shareLog() async {
+    traceAs("fromWidget", (trace) async {
       await _tracer.shareLog(trace, forCrash: true);
     });
   }
@@ -70,28 +74,29 @@ class _CrashScreenState extends State<CrashScreen>
           children: [
             const Spacer(),
             const SizedBox(height: 50),
-            Image.asset(
-              "assets/images/blokada_logo.png",
-              fit: BoxFit.cover,
-              width: 128,
-              height: 128,
-              // color: Colors.white.withOpacity(0.8),
+            Icon(
+              Icons.electric_bolt_outlined,
+              size: 128,
+              color: Colors.white.withOpacity(0.8),
             ),
             const SizedBox(height: 30),
             Text(
-              "Cresh",
+              "alert error header".i18n,
               style: const TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.w900,
                   color: Colors.white),
             ),
-            const SizedBox(height: 30),
-            Text(
-              "main rate us description".i18n,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16, color: Colors.white),
+            const SizedBox(height: 70),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: Text(
+                "error unknown".i18n,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16, color: Colors.white),
+              ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             AnimatedOpacity(
               opacity: 1.0,
               duration: _duration,
@@ -100,11 +105,12 @@ class _CrashScreenState extends State<CrashScreen>
                   MiniCard(
                     onTap: () {
                       bgStateKey.currentState?.animateToClose();
+                      _shareLog();
                     },
                     color: theme.plus,
                     child: SizedBox(
                       width: 200,
-                      child: Text("universal action continue".i18n,
+                      child: Text("universal action share log".i18n,
                           textAlign: TextAlign.center,
                           style: const TextStyle(color: Colors.white)),
                     ),
@@ -112,6 +118,7 @@ class _CrashScreenState extends State<CrashScreen>
                 ],
               ),
             ),
+            const Spacer(),
             AnimatedOpacity(
               opacity: 1.0,
               duration: _duration,
