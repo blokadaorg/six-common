@@ -73,15 +73,8 @@ class Tracer with TraceFactory, Dependable, Traceable {
   fatal(String error) async {
     final trace = newTrace(runtimeType.toString(), "fatal");
     await _crashCollector.onStart(trace);
-    await trace.endWithFatal(Exception(error), StackTrace.current);
+    await trace.endWithFatal(StateError(error), StackTrace.current);
     await _crashCollector.onEnd(trace);
-  }
-
-  // For testing crash handling only
-  crashNow() {
-    // Crash the app after 1 second
-    Future.delayed(const Duration(seconds: 1))
-        .then((_) => throw StateError("crashNow"));
   }
 }
 
