@@ -24,7 +24,7 @@ import 'lease/fixtures.dart';
   MockSpec<PlusKeypairStore>(),
   MockSpec<PlusGatewayStore>(),
   MockSpec<PlusStore>(),
-  MockSpec<LocalPersistenceService>(),
+  MockSpec<PersistenceService>(),
   MockSpec<PlusOps>(),
   MockSpec<AppStore>(),
   MockSpec<EnvStore>(),
@@ -40,9 +40,9 @@ void main() {
         final ops = MockPlusOps();
         depend<PlusOps>(ops);
 
-        final persistence = MockLocalPersistenceService();
+        final persistence = MockPersistenceService();
         when(persistence.load(any, any)).thenAnswer((_) => Future.value("1"));
-        depend<LocalPersistenceService>(persistence);
+        depend<PersistenceService>(persistence);
 
         final subject = PlusStore();
         expect(subject.plusEnabled, false);
@@ -80,8 +80,8 @@ void main() {
         final vpn = MockPlusVpnStore();
         depend<PlusVpnStore>(vpn);
 
-        final persistence = MockLocalPersistenceService();
-        depend<LocalPersistenceService>(persistence);
+        final persistence = MockPersistenceService();
+        depend<PersistenceService>(persistence);
 
         final subject = PlusStore();
 
@@ -109,8 +109,8 @@ void main() {
         final vpn = MockPlusVpnStore();
         depend<PlusVpnStore>(vpn);
 
-        final persistence = MockLocalPersistenceService();
-        depend<LocalPersistenceService>(persistence);
+        final persistence = MockPersistenceService();
+        depend<PersistenceService>(persistence);
 
         final subject = PlusStore();
 
@@ -149,8 +149,8 @@ void main() {
         final vpn = MockPlusVpnStore();
         depend<PlusVpnStore>(vpn);
 
-        final persistence = MockLocalPersistenceService();
-        depend<LocalPersistenceService>(persistence);
+        final persistence = MockPersistenceService();
+        depend<PersistenceService>(persistence);
 
         final subject = PlusStore();
 
@@ -217,8 +217,8 @@ void main() {
         final vpn = MockPlusVpnStore();
         depend<PlusVpnStore>(vpn);
 
-        final persistence = MockLocalPersistenceService();
-        depend<LocalPersistenceService>(persistence);
+        final persistence = MockPersistenceService();
+        depend<PersistenceService>(persistence);
 
         final subject = PlusStore();
 

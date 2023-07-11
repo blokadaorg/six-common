@@ -14,7 +14,7 @@ const _keyLock = "lock:pin";
 class LockStore = LockStoreBase with _$LockStore;
 
 abstract class LockStoreBase with Store, Traceable, Dependable {
-  late final _persistence = dep<LocalPersistenceService>();
+  late final _persistence = dep<PersistenceService>();
   late final _stage = dep<StageStore>();
 
   LockStoreBase() {

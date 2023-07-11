@@ -32,7 +32,7 @@ abstract class PlusStoreBase with Store, Traceable, Dependable {
   late final _gateway = dep<PlusGatewayStore>();
   late final _lease = dep<PlusLeaseStore>();
   late final _vpn = dep<PlusVpnStore>();
-  late final _persistence = dep<LocalPersistenceService>();
+  late final _persistence = dep<PersistenceService>();
   late final _app = dep<AppStore>();
   late final _device = dep<DeviceStore>();
   late final _stage = dep<StageStore>();

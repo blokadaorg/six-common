@@ -14,7 +14,7 @@ import 'fixtures.dart';
   MockSpec<PlusGatewayStore>(),
   MockSpec<PlusGatewayOps>(),
   MockSpec<PlusGatewayJson>(),
-  MockSpec<LocalPersistenceService>(),
+  MockSpec<PersistenceService>(),
   MockSpec<StageStore>(),
 ])
 import 'gateway_test.mocks.dart';
@@ -51,10 +51,10 @@ void main() {
         final ops = MockPlusGatewayOps();
         depend<PlusGatewayOps>(ops);
 
-        final persistence = MockLocalPersistenceService();
+        final persistence = MockPersistenceService();
         when(persistence.load(any, any)).thenAnswer((_) =>
             Future.value("sSYTK8M4BOzuFpEPo2QXEzTZ+TDT5XMOzhN2Xk7A5B4="));
-        depend<LocalPersistenceService>(persistence);
+        depend<PersistenceService>(persistence);
 
         final json = MockPlusGatewayJson();
         when(json.get(any))
@@ -79,8 +79,8 @@ void main() {
         final ops = MockPlusGatewayOps();
         depend<PlusGatewayOps>(ops);
 
-        final persistence = MockLocalPersistenceService();
-        depend<LocalPersistenceService>(persistence);
+        final persistence = MockPersistenceService();
+        depend<PersistenceService>(persistence);
 
         final json = MockPlusGatewayJson();
         when(json.get(any))
