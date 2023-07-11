@@ -29,7 +29,9 @@ class CommandDialogState extends State<CommandDialog> with TraceOrigin {
             textStyle: Theme.of(context).textTheme.labelLarge,
           ),
           child: const Text('Execute'),
-          onPressed: () {
+          onPressed: () async {
+            Navigator.of(context).pop();
+            await sleepAsync(const Duration(milliseconds: 500));
             _executeCommand();
           },
         ),

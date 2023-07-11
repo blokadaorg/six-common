@@ -67,6 +67,7 @@ enum CommandName {
   fatal,
   warning,
   shareLog,
+  crash,
 }
 
 @HostApi()

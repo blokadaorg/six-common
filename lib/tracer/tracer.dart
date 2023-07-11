@@ -76,6 +76,13 @@ class Tracer with TraceFactory, Dependable, Traceable {
     await trace.endWithFatal(Exception(error), StackTrace.current);
     await _crashCollector.onEnd(trace);
   }
+
+  // For testing crash handling only
+  crashNow() {
+    // Crash the app after 1 second
+    Future.delayed(const Duration(seconds: 1))
+        .then((_) => throw StateError("crashNow"));
+  }
 }
 
 abstract class TraceCollector {
@@ -119,5 +126,5 @@ String getLogFilename({bool forCrash = false}) {
       : (type == PlatformType.android ? "a" : "mock");
   final mode = forCrash ? "crash" : "log";
 
-  return "blokada-6.$platform.$mode.json";
+  return "blokada-${platform}6.$mode.json";
 }
