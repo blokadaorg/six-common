@@ -46,7 +46,7 @@ abstract class PlusGatewayStoreBase
     with Store, Traceable, Dependable, Cooldown {
   late final _ops = dep<PlusGatewayOps>();
   late final _json = dep<PlusGatewayJson>();
-  late final _persistence = dep<PersistenceService>();
+  late final _persistence = dep<LocalPersistenceService>();
   late final _stage = dep<StageStore>();
 
   PlusGatewayStoreBase() {
