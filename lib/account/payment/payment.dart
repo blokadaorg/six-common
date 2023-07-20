@@ -21,6 +21,8 @@ class AccountInactiveAfterPurchase with Exception {}
 
 class PaymentsUnavailable with Exception {}
 
+class AlreadyPurchased with Exception {}
+
 abstract class AccountPaymentStoreBase with Store, Traceable, Dependable {
   late final _ops = dep<AccountPaymentOps>();
   late final _json = dep<AccountPaymentJson>();
@@ -133,6 +135,9 @@ abstract class AccountPaymentStoreBase with Store, Traceable, Dependable {
         final receipt = await _ops.doChangeProductWithReceipt(id);
         await _processReceipt(trace, receipt);
         status = PaymentStatus.ready;
+      } on AlreadyPurchased catch (_) {
+        status = PaymentStatus.ready;
+        await restore(trace);
       } on Exception catch (e) {
         _ops.doFinishOngoingTransaction();
         status = PaymentStatus.ready;
@@ -175,6 +180,9 @@ abstract class AccountPaymentStoreBase with Store, Traceable, Dependable {
         try {
           _mapPaymentException(e);
         } on AccountInactiveAfterPurchase catch (_) {
+          await _stage.showModal(trace, StageModal.accountRestoreFailed);
+          rethrow;
+        } catch (_) {
           await _stage.showModal(trace, StageModal.accountRestoreFailed);
           rethrow;
         }
@@ -259,6 +267,8 @@ abstract class AccountPaymentStoreBase with Store, Traceable, Dependable {
     final msg = e.toString();
     if (msg.contains("Payment sheet dismissed")) {
       // This is just ordinary StoreKit behavior, ignore
+    } else if (msg.contains("Already purchased")) {
+      throw AlreadyPurchased();
     } else {
       // Throw again to make sure it is traced
       throw e;
