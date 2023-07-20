@@ -38,7 +38,7 @@ mixin Traceable {
     Trace parentTrace,
     String name,
     Future<T> Function(Trace trace) fn, {
-    Future<T> Function(Trace trace)? fallback,
+    Future<void> Function(Trace trace)? fallback,
     Future Function(Trace trace)? deferred,
     bool? important,
   }) async {
@@ -49,19 +49,12 @@ mixin Traceable {
       await trace.end();
       return result;
     } catch (e, s) {
-      if (fallback == null) {
-        await _handleFailure(trace, e, s);
-        rethrow;
+      if (fallback != null) {
+        await fallback(trace);
       }
 
-      try {
-        final result = await fallback(trace);
-        await trace.end();
-        return result;
-      } catch (e, s) {
-        await _handleFailure(trace, e, s);
-        rethrow;
-      }
+      await _handleFailure(trace, e, s);
+      rethrow;
     }
   }
 

@@ -99,6 +99,9 @@ abstract class AccountPaymentStoreBase with Store, Traceable, Dependable {
         final receipt = await _ops.doPurchaseWithReceipt(id);
         await _processReceipt(trace, receipt);
         status = PaymentStatus.ready;
+      } on AlreadyPurchased catch (_) {
+        status = PaymentStatus.ready;
+        await restore(trace);
       } on Exception catch (e) {
         _ops.doFinishOngoingTransaction();
         status = PaymentStatus.ready;
@@ -135,9 +138,6 @@ abstract class AccountPaymentStoreBase with Store, Traceable, Dependable {
         final receipt = await _ops.doChangeProductWithReceipt(id);
         await _processReceipt(trace, receipt);
         status = PaymentStatus.ready;
-      } on AlreadyPurchased catch (_) {
-        status = PaymentStatus.ready;
-        await restore(trace);
       } on Exception catch (e) {
         _ops.doFinishOngoingTransaction();
         status = PaymentStatus.ready;

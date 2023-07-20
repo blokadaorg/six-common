@@ -129,20 +129,23 @@ abstract class AccountRefreshStoreBase
     // or create a new one.
     return await traceWith(parentTrace, "init", (trace) async {
       if (_initSuccessful) throw StateError("already initialized");
-      await _account.load(trace);
-      await _account.fetch(trace);
-      final metadataJson = await _persistence.load(trace, _keyRefresh);
-      if (metadataJson != null) {
-        _metadata = JsonAccRefreshMeta.fromJson(jsonDecode(metadataJson));
+      try {
+        await _account.load(trace);
+        await _account.fetch(trace);
+        final metadataJson = await _persistence.load(trace, _keyRefresh);
+        if (metadataJson != null) {
+          _metadata = JsonAccRefreshMeta.fromJson(jsonDecode(metadataJson));
+        }
+        await syncAccount(trace, _account.account);
+        lastRefresh = DateTime.now();
+        _initSuccessful = true;
+      } catch (e) {
+        trace.addEvent("creating new account");
+        await _account.create(trace);
+        await syncAccount(trace, _account.account);
+        lastRefresh = DateTime.now();
+        _initSuccessful = true;
       }
-      await syncAccount(trace, _account.account);
-      lastRefresh = DateTime.now();
-      _initSuccessful = true;
-    }, fallback: (trace) async {
-      trace.addEvent("creating new account");
-      await _account.create(trace);
-      await syncAccount(trace, _account.account);
-      lastRefresh = DateTime.now();
     });
   }
 
