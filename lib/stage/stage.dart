@@ -247,7 +247,9 @@ abstract class StageStoreBase
 
   @action
   Future<void> setReady(Trace parentTrace, bool isReady) async {
-    return await traceWith(parentTrace, "setStageReady", (trace) async {
+    return await traceWith(
+        parentTrace, isReady ? "setStageReady" : "setStageNotReady",
+        (trace) async {
       if (this.isReady == isReady) return;
       this.isReady = isReady;
       await _processQueue(trace);
@@ -295,10 +297,8 @@ abstract class StageStoreBase
 
         _modalCompleter = Completer();
         _waitingOnModal = modal;
-        await setReady(trace, false);
         await _ops.doShowModal(modal);
         await _modalCompleter?.future;
-        await setReady(trace, true);
         _modalCompleter = null;
         _waitingOnModal = null;
 
@@ -313,7 +313,8 @@ abstract class StageStoreBase
       if (_waitingOnModal == modal) {
         _modalCompleter?.complete();
       } else {
-        trace.addEvent("sheetShown ignored, wrong modal: $modal");
+        trace.addEvent("modalShown with out of order modal: $modal");
+        await _updateModal(trace, modal);
       }
     });
   }
@@ -327,10 +328,8 @@ abstract class StageStoreBase
         }
 
         _dismissModalCompleter = Completer();
-        await setReady(trace, false);
         await _ops.doDismissModal();
         await _dismissModalCompleter?.future;
-        await setReady(trace, true);
         _dismissModalCompleter = null;
 
         await _updateModal(trace, null);
