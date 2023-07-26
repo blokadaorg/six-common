@@ -1,3 +1,4 @@
+import 'package:common/tracer/collectors.dart';
 import 'package:common/util/mobx.dart';
 import 'package:mobx/mobx.dart';
 
@@ -264,7 +265,7 @@ abstract class AccountPaymentStoreBase with Store, Traceable, Dependable {
   }
 
   _mapPaymentException(Exception e) {
-    final msg = e.toString();
+    final msg = mapError(e);
     if (msg.contains("Payment sheet dismissed")) {
       // This is just ordinary StoreKit behavior, ignore
     } else if (msg.contains("Already purchased")) {
