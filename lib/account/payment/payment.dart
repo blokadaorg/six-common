@@ -268,7 +268,7 @@ abstract class AccountPaymentStoreBase with Store, Traceable, Dependable {
     final msg = mapError(e);
     if (msg.contains("Payment sheet dismissed")) {
       // This is just ordinary StoreKit behavior, ignore
-    } else if (msg.contains("Already purchased")) {
+    } else if (msg.contains("AlreadyPurchased")) {
       throw AlreadyPurchased();
     } else {
       // Throw again to make sure it is traced
