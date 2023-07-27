@@ -254,7 +254,7 @@ abstract class AccountRefreshStoreBase
       _timer.unset(_keyTimer);
       trace.addAttribute("timer", null);
 
-      _notification.dismiss(trace, id: NotificationId.accountExpired);
+      // _notification.dismiss(trace, id: NotificationId.accountExpired);
       trace.addAttribute("notificationId", NotificationId.accountExpired);
       trace.addAttribute("notificationDate", null);
     }
