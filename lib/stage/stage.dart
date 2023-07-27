@@ -195,6 +195,7 @@ abstract class StageStoreBase
         } else {
           route = route.newFg();
           await emitValue(routeChanged, trace, route);
+          _modalCompleter?.complete();
         }
       }
     });
@@ -241,6 +242,7 @@ abstract class StageStoreBase
         }
         await _actOnRoute(trace, route.route);
         await emitValue(routeChanged, trace, route);
+        _modalCompleter?.complete();
       }
     });
   }
@@ -285,6 +287,13 @@ abstract class StageStoreBase
         if (_modalCompleter != null) {
           trace.addEvent("waiting for previous modal request to finish");
           await _modalCompleter?.future;
+        }
+
+        if (!route.isForeground()) {
+          trace.addEvent("waiting for the app to go foreground");
+          _modalCompleter = Completer();
+          await _modalCompleter?.future;
+          _modalCompleter = null;
         }
 
         if (route.modal != null) {
