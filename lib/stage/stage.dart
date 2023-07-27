@@ -246,12 +246,10 @@ abstract class StageStoreBase
   }
 
   @action
-  Future<void> setReady(Trace parentTrace, bool isReady) async {
-    if (this.isReady == isReady) return;
-    return await traceWith(
-        parentTrace, isReady ? "setStageReady" : "setStageNotReady",
-        (trace) async {
-      this.isReady = isReady;
+  Future<void> setReady(Trace parentTrace) async {
+    if (isReady) return;
+    return await traceWith(parentTrace, "setStageReady", (trace) async {
+      isReady = true;
       await _processQueue(trace);
     });
   }

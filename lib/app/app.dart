@@ -237,11 +237,11 @@ abstract class AppStoreBase with Store, Traceable, Dependable, Emitter {
 
   _updateStatus(Trace trace) async {
     status = _strategy.getCurrentStatus();
-    await _stage.setReady(
-        trace,
-        !status.isWorking() &&
-            status != AppStatus.initFail &&
-            status != AppStatus.unknown);
+    if (!status.isWorking() &&
+        status != AppStatus.initFail &&
+        status != AppStatus.unknown) {
+      await _stage.setReady(trace);
+    }
     await emit(appStatusChanged, trace, status);
   }
 }

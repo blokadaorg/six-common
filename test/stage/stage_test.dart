@@ -21,7 +21,7 @@ void main() {
         depend<StageOps>(ops);
 
         final subject = StageStore();
-        subject.setReady(trace, true);
+        subject.setReady(trace);
         expect(subject.route.isForeground(), false);
 
         await subject.setRoute(trace, "home");
@@ -38,7 +38,7 @@ void main() {
         depend<StageOps>(ops);
 
         final subject = StageStore();
-        subject.setReady(trace, true);
+        subject.setReady(trace);
 
         await subject.setRoute(trace, "activity");
         expect(subject.route.isBecameTab(StageTab.activity), true);
