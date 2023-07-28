@@ -177,15 +177,18 @@ abstract class AppStartStoreBase with Store, Traceable, Dependable {
         _timer.unset(_keyTimer);
         pausedUntil = null;
       } on AccountTypeException {
+        paused = true;
         await _app.appPaused(trace, true);
         await _stage.showModal(trace, StageModal.payment);
       } on OnboardingException {
+        paused = true;
         await _app.appPaused(trace, true);
         await _stage.showModal(trace, StageModal.onboarding);
       } catch (_) {
         paused = true;
-        pausedUntil = null;
         await _app.appPaused(trace, true);
+        await _stage.showModal(trace, StageModal.fault);
+        await _plus.clearPlus(trace);
         rethrow;
       }
     });
