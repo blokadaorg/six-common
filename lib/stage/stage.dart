@@ -155,8 +155,8 @@ abstract class StageStoreBase
   @observable
   bool isLocked = false;
 
-  @observable
-  List<String> _waitingEvents = [];
+  String? _waitingRoute;
+  StageModal? _waitingModal;
 
   Completer? _modalCompleter;
   Completer? _dismissModalCompleter;
@@ -177,6 +177,46 @@ abstract class StageStoreBase
   }
 
   @action
+  Future<void> setReady(Trace parentTrace) async {
+    if (isReady) return;
+    return await traceWith(parentTrace, "setStageReady", (trace) async {
+      isReady = true;
+      await _processWaitingRoute(trace);
+      await _processWaitingModal(trace);
+    });
+  }
+
+  @action
+  Future<void> setLocked(Trace parentTrace, bool isLocked) async {
+    if (this.isLocked == isLocked) return;
+
+    return await traceWith(parentTrace, "setLocked", (trace) async {
+      this.isLocked = isLocked;
+      trace.addAttribute("isLocked", isLocked);
+      await _processWaitingRoute(trace);
+      await _processWaitingModal(trace);
+    });
+  }
+
+  _processWaitingRoute(Trace trace) async {
+    final route = _waitingRoute;
+    if (isReady && !isLocked && route != null) {
+      trace.addEvent("waitingRouteProcessed");
+      await setRoute(trace, route);
+      _waitingRoute = null;
+    }
+  }
+
+  _processWaitingModal(Trace trace) async {
+    final modal = _waitingModal;
+    if (isReady && !isLocked && modal != null) {
+      trace.addEvent("waitingModalProcessed");
+      await showModal(trace, modal);
+      _waitingModal = null;
+    }
+  }
+
+  @action
   Future<void> setForeground(Trace parentTrace) async {
     return await traceWith(parentTrace, "setForeground", (trace) async {
       if (!route.isForeground()) {
@@ -186,7 +226,7 @@ abstract class StageStoreBase
           route = route.newFg();
           await emitValue(routeChanged, trace, route);
           await _ops.doRouteChanged(route.route.path);
-          _modalCompleter?.complete();
+          await _processWaitingModal(trace);
         }
       }
     });
@@ -209,8 +249,8 @@ abstract class StageStoreBase
       if (path != route.route.path) {
         if (!isReady ||
             isLocked && path != StageKnownRoute.homeOverlayLock.path) {
-          _waitingEvents.add(path);
-          trace.addEvent("event queued: $path");
+          _waitingRoute = path;
+          trace.addEvent("route queued: $path");
           return;
         }
 
@@ -237,43 +277,8 @@ abstract class StageStoreBase
         await _actOnRoute(trace, route.route);
         await emitValue(routeChanged, trace, route);
         await _ops.doRouteChanged(route.route.path);
-        _modalCompleter?.complete();
       }
     });
-  }
-
-  @action
-  Future<void> setReady(Trace parentTrace) async {
-    if (isReady) return;
-    return await traceWith(parentTrace, "setStageReady", (trace) async {
-      isReady = true;
-      await _processQueue(trace);
-    });
-  }
-
-  @action
-  Future<void> setLocked(Trace parentTrace, bool isLocked) async {
-    if (this.isLocked == isLocked) return;
-
-    return await traceWith(parentTrace, "setLocked", (trace) async {
-      this.isLocked = isLocked;
-      trace.addAttribute("isLocked", isLocked);
-      await _processQueue(trace);
-    });
-  }
-
-  _processQueue(Trace trace) async {
-    // Process queued events when the app is ready
-    if (isReady && !isLocked && _waitingEvents.isNotEmpty) {
-      final events = _waitingEvents.toList();
-      _waitingEvents = [];
-
-      trace.addAttribute("queueProcessed", events);
-
-      for (final event in events) {
-        await setRoute(trace, event);
-      }
-    }
   }
 
   @action
@@ -283,15 +288,15 @@ abstract class StageStoreBase
 
       if (this.modal != modal) {
         if (_modalCompleter != null) {
-          trace.addEvent("waiting for previous modal request to finish");
-          await _modalCompleter?.future;
+          trace.addEvent("another modal ongoing, modal queued: $modal");
+          _waitingModal = modal;
+          return;
         }
 
         if (!route.isForeground()) {
-          trace.addEvent("waiting for the app to go foreground");
-          _modalCompleter = Completer();
-          await _modalCompleter?.future;
-          _modalCompleter = null;
+          trace.addEvent("not foreground, modal queued: $modal");
+          _waitingModal = modal;
+          return;
         }
 
         if (this.modal != null) {
@@ -314,6 +319,7 @@ abstract class StageStoreBase
       _modalCompleter?.complete();
       this.modal = modal;
       await emit(modalChanged, trace, this.modal);
+      await _processWaitingModal(trace);
     });
   }
 
