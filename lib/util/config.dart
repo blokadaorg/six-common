@@ -17,7 +17,7 @@ class Config {
   late Duration journalRefreshCooldown = const Duration(seconds: 10);
   late Duration plusLeaseRefreshCooldown = const Duration(seconds: 60);
   late Duration plusGatewayRefreshCooldown = const Duration(seconds: 60);
-  late Duration plusVpnCommandTimeout = const Duration(seconds: 5);
+  late Duration plusVpnCommandTimeout = const Duration(seconds: 10);
   late Duration statsRefreshWhenOnStatsScreen = const Duration(seconds: 30);
   late Duration statsRefreshWhenOnHomeScreen = const Duration(seconds: 120);
   late Duration statsRefreshWhenOnAnotherScreen = const Duration(seconds: 240);
