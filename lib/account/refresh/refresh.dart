@@ -168,6 +168,7 @@ abstract class AccountRefreshStoreBase
         _metadata.seenExpiredDialog = false;
         await _saveMetadata(trace);
         await _stage.showModal(trace, StageModal.onboarding);
+        await _notification.dismiss(trace, id: NotificationId.accountExpired);
       } else if (account.type == AccountType.libre &&
           prev != AccountType.libre &&
           prev != null) {

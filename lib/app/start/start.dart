@@ -96,6 +96,7 @@ abstract class AppStartStoreBase with Store, Traceable, Dependable {
         await _startAppWithRetry(trace);
         await _tracer.checkForCrashLog(trace);
         await _app.initCompleted(trace);
+        await _plus.reactToAppPause(trace, paused);
       } catch (e) {
         await _app.initFail(trace);
         await _stage.showModal(trace, StageModal.accountInitFailed);
