@@ -51,6 +51,7 @@ abstract class PlusGatewayStoreBase
 
   PlusGatewayStoreBase() {
     _stage.addOnValue(routeChanged, onRouteChanged);
+    _stage.addOn(modalChanged, onModalChanged);
 
     reactionOnStore((_) => gatewayChanges, (_) async {
       await _ops.doGatewaysChanged(gateways);
@@ -117,17 +118,19 @@ abstract class PlusGatewayStoreBase
 
   @action
   Future<void> onRouteChanged(Trace parentTrace, StageRouteState route) async {
-    if (route.isModal(StageModal.plusLocationSelect)) {
-      return await traceWith(parentTrace, "fetchGatewaysOnModal",
-          (trace) async {
-        await fetch(trace);
-      });
-    }
-
     if (!route.isBecameForeground()) return;
     if (!isCooledDown(cfg.plusGatewayRefreshCooldown)) return;
 
     return await traceWith(parentTrace, "fetchGateways", (trace) async {
+      await fetch(trace);
+    });
+  }
+
+  @action
+  Future<void> onModalChanged(Trace parentTrace) async {
+    if (_stage.modal != StageModal.plusLocationSelect) return;
+
+    return await traceWith(parentTrace, "fetchGatewaysOnModal", (trace) async {
       await fetch(trace);
     });
   }

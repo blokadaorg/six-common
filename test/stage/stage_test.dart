@@ -21,7 +21,7 @@ void main() {
         depend<StageOps>(ops);
 
         final subject = StageStore();
-        subject.setReady(trace);
+        await subject.setReady(trace);
         expect(subject.route.isForeground(), false);
 
         await subject.setRoute(trace, "home");
@@ -38,7 +38,7 @@ void main() {
         depend<StageOps>(ops);
 
         final subject = StageStore();
-        subject.setReady(trace);
+        await subject.setReady(trace);
 
         await subject.setRoute(trace, "activity");
         expect(subject.route.isBecameTab(StageTab.activity), true);
@@ -58,21 +58,23 @@ void main() {
         depend<StageOps>(ops);
 
         final subject = StageStore();
-        expect(subject.route.modal, null);
+        expect(subject.modal, null);
+        await subject.setReady(trace);
+        await subject.setForeground(trace);
 
         _simulateConfirmation(() async {
           await subject.modalShown(trace, StageModal.plusLocationSelect);
         });
 
         await subject.showModal(trace, StageModal.plusLocationSelect);
-        expect(subject.route.modal, StageModal.plusLocationSelect);
+        expect(subject.modal, StageModal.plusLocationSelect);
 
         _simulateConfirmation(() async {
           await subject.modalDismissed(trace);
         });
 
         await subject.dismissModal(trace);
-        expect(subject.route.modal, null);
+        expect(subject.modal, null);
       });
     });
 
@@ -82,14 +84,16 @@ void main() {
         depend<StageOps>(ops);
 
         final subject = StageStore();
-        expect(subject.route.modal, null);
+        expect(subject.modal, null);
+        await subject.setReady(trace);
+        await subject.setForeground(trace);
 
         _simulateConfirmation(() async {
           await subject.modalShown(trace, StageModal.help);
         });
 
         await subject.showModal(trace, StageModal.help);
-        expect(subject.route.modal, StageModal.help);
+        expect(subject.modal, StageModal.help);
 
         // User having one sheet opened and opening another one
         _simulateConfirmation(() async {
@@ -100,7 +104,7 @@ void main() {
           });
         });
         await subject.showModal(trace, StageModal.plusLocationSelect);
-        expect(subject.route.modal, StageModal.plusLocationSelect);
+        expect(subject.modal, StageModal.plusLocationSelect);
 
         // Same but manual dismiss
         _simulateConfirmation(() async {
@@ -111,7 +115,7 @@ void main() {
           await subject.modalShown(trace, StageModal.help);
         });
         await subject.showModal(trace, StageModal.help);
-        expect(subject.route.modal, StageModal.help);
+        expect(subject.modal, StageModal.help);
       });
     });
   });
@@ -136,25 +140,6 @@ void main() {
         expect(route.isTab(StageTab.home), true);
         expect(route.isBecameTab(StageTab.home), true);
         expect(route.isMainRoute(), true);
-
-        // Opened a sheet, same tab
-        route = route.newModal(StageModal.plusLocationSelect);
-
-        expect(route.isForeground(), true);
-        expect(route.isBecameForeground(), false);
-        expect(route.isBecameTab(StageTab.home), false);
-        expect(route.isTab(StageTab.home), true);
-        expect(route.isMainRoute(), false);
-        expect(route.isModal(StageModal.plusLocationSelect), true);
-
-        // Dismissed the sheet, same tab, should not report this tab again
-        route = route.newModal(null);
-
-        expect(route.isBecameForeground(), false);
-        expect(route.isBecameTab(StageTab.home), false);
-        expect(route.isTab(StageTab.home), true);
-        expect(route.isMainRoute(), true);
-        expect(route.isModal(StageModal.plusLocationSelect), false);
 
         // Another tab
         route = route.newTab(StageTab.settings);
@@ -184,31 +169,6 @@ void main() {
         expect(route.isBecameForeground(), true);
         expect(route.isBecameTab(StageTab.settings), true);
         expect(route.isMainRoute(), false);
-
-        // Navigate home, open a sheet, and then go bg
-        route = route.newTab(StageTab.home);
-        route = route.newModal(StageModal.plusLocationSelect);
-        route = route.newBg();
-
-        expect(route.isForeground(), false);
-        expect(route.isBecameForeground(), false);
-        expect(route.isModal(StageModal.plusLocationSelect), true);
-        expect(route.isBecameModal(StageModal.plusLocationSelect), false);
-        expect(route.isMainRoute(), false);
-
-        // Coming back to foreground
-        route = route.newTab(StageTab.home);
-
-        expect(route.isForeground(), true);
-        expect(route.isBecameForeground(), true);
-        expect(route.isModal(StageModal.plusLocationSelect), true);
-        expect(route.isBecameModal(StageModal.plusLocationSelect), false);
-        expect(route.isMainRoute(), false);
-
-        // Open another sheet
-        route = route.newModal(StageModal.help);
-        expect(route.isModal(StageModal.help), true);
-        expect(route.isBecameModal(StageModal.help), true);
       });
     });
   });

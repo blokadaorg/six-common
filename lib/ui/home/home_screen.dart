@@ -40,11 +40,8 @@ class HomeScreenState extends State<HomeScreen>
 
   var counter = 0;
 
-  Future<void> onRouteChanged(Trace parentTrace, StageRouteState route) async {
-    if (!route.isForeground()) return;
-    if (!route.isTab(StageTab.home)) return;
-
-    if (!route.isBecameModal(StageModal.debug)) return;
+  Future<void> onModalChanged(Trace parentTrace) async {
+    if (_stage.modal != StageModal.debug) return;
 
     return await traceWith(parentTrace, "showDebug", (trace) async {
       // On purpose without await
@@ -59,7 +56,7 @@ class HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
 
-    _stage.addOnValue(routeChanged, onRouteChanged);
+    _stage.addOn(modalChanged, onModalChanged);
 
     controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 4));
@@ -91,7 +88,7 @@ class HomeScreenState extends State<HomeScreen>
 
   @override
   void dispose() {
-    _stage.removeOnValue(routeChanged, onRouteChanged);
+    _stage.removeOn(modalChanged, onModalChanged);
     controller.dispose();
     controllerOrange.dispose();
     super.dispose();

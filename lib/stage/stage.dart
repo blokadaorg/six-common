@@ -13,6 +13,7 @@ import 'channel.pg.dart';
 part 'stage.g.dart';
 
 final routeChanged = EmitterEvent<StageRouteState>();
+final modalChanged = EmitterEvent();
 
 enum StageTab { background, home, activity, advanced, settings }
 
@@ -77,48 +78,40 @@ class StageRoute {
 class StageRouteState {
   final StageRoute route;
   final StageRoute _prevRoute;
-  final StageModal? modal;
-  final StageModal? _prevModal;
   final Map<StageTab, StageRoute> _tabStates;
 
   StageRouteState(
     this.route,
     this._prevRoute,
-    this.modal,
-    this._prevModal,
     this._tabStates,
   );
 
   StageRouteState.init()
-      : this(_background, StageRoute.forTab(StageTab.home), null, null, {});
+      : this(_background, StageRoute.forTab(StageTab.home), {});
 
-  newBg() => StageRouteState(_background, route, modal, modal, _tabStates);
+  newBg() => StageRouteState(_background, route, _tabStates);
 
-  newFg() => StageRouteState(_prevRoute, route, modal, modal, _tabStates);
+  newFg() => StageRouteState(_prevRoute, route, _tabStates);
 
   newRoute(StageRoute route) {
     // Restore the state for this tab if exists
-    if (route.tab != this.route.tab && route.payload == null && modal == null) {
+    if (route.tab != this.route.tab && route.payload == null) {
       if (_tabStates.containsKey(route.tab)) {
         final r = _tabStates[route.tab]!;
         _tabStates.remove(route.tab);
-        return StageRouteState(r, this.route, modal, modal, _tabStates);
+        return StageRouteState(r, this.route, _tabStates);
       }
     }
     _tabStates[route.tab] = route;
-    return StageRouteState(route, this.route, modal, modal, _tabStates);
+    return StageRouteState(route, this.route, _tabStates);
   }
 
-  newModal(StageModal? modal) =>
-      StageRouteState(route, route, modal, this.modal, _tabStates);
-
   newTab(StageTab tab) =>
-      StageRouteState(StageRoute.forTab(tab), route, modal, modal, _tabStates);
+      StageRouteState(StageRoute.forTab(tab), route, _tabStates);
 
   bool isForeground() => route != _background;
   bool isTab(StageTab tab) => route.tab == tab;
-  bool isModal(StageModal modal) => this.modal == modal;
-  bool isMainRoute() => route.payload == null && modal == null;
+  bool isMainRoute() => route.payload == null;
   bool isKnown(StageKnownRoute to) =>
       ("${route.tab.name}/${route.payload ?? ""}") == to.path;
 
@@ -126,12 +119,6 @@ class StageRouteState {
   bool isBecameTab(StageTab tab) {
     if (route.tab != tab) return false;
     if (route.tab != _prevRoute.tab) return true;
-    return false;
-  }
-
-  bool isBecameModal(StageModal modal) {
-    if (this.modal != modal) return false;
-    if (this.modal != _prevModal) return true;
     return false;
   }
 }
@@ -152,11 +139,14 @@ class StageRouteState {
 class StageStore = StageStoreBase with _$StageStore;
 
 abstract class StageStoreBase
-    with Store, Traceable, Dependable, ValueEmitter<StageRouteState> {
+    with Store, Traceable, Dependable, ValueEmitter<StageRouteState>, Emitter {
   late final _ops = dep<StageOps>();
 
   @observable
   StageRouteState route = StageRouteState.init();
+
+  @observable
+  StageModal? modal;
 
   // Queue up events that happened before the app was initialized, for later.
   @observable
@@ -168,12 +158,12 @@ abstract class StageStoreBase
   @observable
   List<String> _waitingEvents = [];
 
-  StageModal? _waitingOnModal;
   Completer? _modalCompleter;
   Completer? _dismissModalCompleter;
 
   StageStoreBase() {
     willAcceptOnValue(routeChanged);
+    willAcceptOn([modalChanged]);
 
     reactionOnStore((_) => route, (route) async {
       await _ops.doRouteChanged(route.route.path);
@@ -195,6 +185,7 @@ abstract class StageStoreBase
         } else {
           route = route.newFg();
           await emitValue(routeChanged, trace, route);
+          await _ops.doRouteChanged(route.route.path);
           _modalCompleter?.complete();
         }
       }
@@ -207,6 +198,7 @@ abstract class StageStoreBase
       if (route.isForeground()) {
         route = route.newBg();
         await emitValue(routeChanged, trace, route);
+        // Backgrounding will not emit event to platform
       }
     });
   }
@@ -223,25 +215,28 @@ abstract class StageStoreBase
         }
 
         route = route.newRoute(StageRoute.fromPath(path));
+
         trace.addEvent("route: ${route.route.path}");
         trace.addEvent("previous: ${route._prevRoute.path}");
         trace.addEvent("isBecameForeground: ${route.isBecameForeground()}");
+        trace.addEvent("modal: $modal");
+
+        if (!route.isMainRoute()) {
+          trace.addEvent("payload: ${route.route.payload}");
+        }
 
         // Navigating between routes (tabs) will close modal, but not coming fg.
         if (!route.isBecameForeground()) {
-          if (route.modal != null) {
+          if (modal != null) {
             trace.addEvent("dismiss modal");
             await dismissModal(trace);
             await sleepAsync(_afterDismissWait);
           }
         }
 
-        if (!route.isMainRoute()) {
-          trace.addEvent("modal: ${route.modal}");
-          trace.addEvent("payload: ${route.route.payload}");
-        }
         await _actOnRoute(trace, route.route);
         await emitValue(routeChanged, trace, route);
+        await _ops.doRouteChanged(route.route.path);
         _modalCompleter?.complete();
       }
     });
@@ -268,11 +263,13 @@ abstract class StageStoreBase
   }
 
   _processQueue(Trace trace) async {
+    // Process queued events when the app is ready
     if (isReady && !isLocked && _waitingEvents.isNotEmpty) {
       final events = _waitingEvents.toList();
       _waitingEvents = [];
-      // Process queued events when the app is ready
+
       trace.addAttribute("queueProcessed", events);
+
       for (final event in events) {
         await setRoute(trace, event);
       }
@@ -283,7 +280,8 @@ abstract class StageStoreBase
   Future<void> showModal(Trace parentTrace, StageModal modal) async {
     return await traceWith(parentTrace, "showModal", (trace) async {
       trace.addEvent("modal: $modal");
-      if (route.modal != modal) {
+
+      if (this.modal != modal) {
         if (_modalCompleter != null) {
           trace.addEvent("waiting for previous modal request to finish");
           await _modalCompleter?.future;
@@ -296,20 +294,16 @@ abstract class StageStoreBase
           _modalCompleter = null;
         }
 
-        if (route.modal != null) {
+        if (this.modal != null) {
           trace.addEvent("dismiss previous modal");
           await dismissModal(trace);
           await sleepAsync(_afterDismissWait);
         }
 
         _modalCompleter = Completer();
-        _waitingOnModal = modal;
         await _ops.doShowModal(modal);
         await _modalCompleter?.future;
         _modalCompleter = null;
-        _waitingOnModal = null;
-
-        await _updateModal(trace, modal);
       }
     });
   }
@@ -317,19 +311,16 @@ abstract class StageStoreBase
   @action
   Future<void> modalShown(Trace parentTrace, StageModal modal) async {
     return await traceWith(parentTrace, "modalShown", (trace) async {
-      if (_waitingOnModal == modal) {
-        _modalCompleter?.complete();
-      } else {
-        trace.addEvent("modalShown with out of order modal: $modal");
-        await _updateModal(trace, modal);
-      }
+      _modalCompleter?.complete();
+      this.modal = modal;
+      await emit(modalChanged, trace, this.modal);
     });
   }
 
   @action
   Future<void> dismissModal(Trace parentTrace) async {
     return await traceWith(parentTrace, "dismissModal", (trace) async {
-      if (route.modal != null) {
+      if (modal != null) {
         if (_dismissModalCompleter != null) {
           return;
         }
@@ -338,8 +329,6 @@ abstract class StageStoreBase
         await _ops.doDismissModal();
         await _dismissModalCompleter?.future;
         _dismissModalCompleter = null;
-
-        await _updateModal(trace, null);
       } else {
         await _ops.doDismissModal();
       }
@@ -349,11 +338,9 @@ abstract class StageStoreBase
   @action
   Future<void> modalDismissed(Trace parentTrace) async {
     return await traceWith(parentTrace, "modalDismissed", (trace) async {
-      if (_dismissModalCompleter == null && route.modal != null) {
-        await _updateModal(trace, null);
-      } else {
-        _dismissModalCompleter?.complete();
-      }
+      _dismissModalCompleter?.complete();
+      modal = null;
+      await emit(modalChanged, trace, modal);
     });
   }
 
@@ -362,11 +349,6 @@ abstract class StageStoreBase
     return await traceWith(parentTrace, "showNavbar", (trace) async {
       await _ops.doShowNavbar(show);
     });
-  }
-
-  _updateModal(Trace trace, StageModal? modal) async {
-    route = route.newModal(modal);
-    await emitValue(routeChanged, trace, route);
   }
 
   _actOnRoute(Trace trace, StageRoute route) async {

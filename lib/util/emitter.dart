@@ -33,26 +33,26 @@ mixin Emitter {
 }
 
 mixin ValueEmitter<T> {
-  final List<Function(Trace, T)> _listeners = [];
+  final List<Function(Trace, T)> _valueListeners = [];
   late EmitterEvent<T> event;
 
   willAcceptOnValue(EmitterEvent<T> event) {
     this.event = event;
-    _listeners.clear();
+    _valueListeners.clear();
   }
 
   addOnValue(EmitterEvent<T> on, Function(Trace, T) listener) {
     if (on != event) throw Exception("Unknown event");
-    _listeners.add(listener);
+    _valueListeners.add(listener);
   }
 
   removeOnValue(EmitterEvent<T> on, dynamic listener) {
-    _listeners.remove(listener);
+    _valueListeners.remove(listener);
   }
 
   emitValue(EmitterEvent<T> on, Trace trace, T value) async {
     if (on != event) throw Exception("Unknown event");
-    for (final listener in _listeners.toList()) {
+    for (final listener in _valueListeners.toList()) {
       // Ignore any listener errors
       try {
         await listener(trace, value);
