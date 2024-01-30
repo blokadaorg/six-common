@@ -21,7 +21,7 @@ void main() {
 
       final result =
           await subject.request(const HttpRequest(url: "https://example.com/"));
-      expect(result, "result");
+      expect(result.result, "result");
     });
   });
 }

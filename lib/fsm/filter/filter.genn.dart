@@ -30,22 +30,6 @@ class FilterActor extends Actor<FilterState, _FilterContext>
     with FilterStateMachine {
   FilterActor() : super(FilterState.init, _FilterContext.empty());
 
-  setDefaultSelection() async {
-    guard(FilterState.ready);
-
-    final act = dep<Get<Act>>(instanceName: "act");
-
-    final c = prepareContextDraft();
-    try {
-      await super.eventSetDefaultSelection(c, act);
-      updateState(FilterState.reconfigure);
-      return await waitForState(FilterState.ready);
-    } catch (e, s) {
-      updateStateFailure(e, s, FilterState.fatal);
-      rethrow;
-    }
-  }
-
   enableFilter(String filterName, {bool enable = true}) async {
     guard(FilterState.ready);
 
@@ -126,9 +110,24 @@ class FilterActor extends Actor<FilterState, _FilterContext>
     final c = prepareContextDraft();
     try {
       await super.stateReconfigure(c, setLists);
+      updateState(FilterState.defaults);
+    } catch (e, s) {
+      updateStateFailure(e, s, FilterState.fatal);
+    }
+  }
+
+  _stateDefaults() async {
+    guard(FilterState.defaults);
+
+    final act = dep<Get<Act>>(instanceName: "act");
+
+    final c = prepareContextDraft();
+    try {
+      await super.stateDefaults(c, act);
       updateState(FilterState.ready);
     } catch (e, s) {
       updateStateFailure(e, s, FilterState.fatal);
+      rethrow;
     }
   }
 
@@ -140,6 +139,8 @@ class FilterActor extends Actor<FilterState, _FilterContext>
       _stateParse();
     } else if (newState == FilterState.reconfigure) {
       _stateReconfigure();
+    } else if (newState == FilterState.defaults) {
+      _stateDefaults();
     }
   }
 }

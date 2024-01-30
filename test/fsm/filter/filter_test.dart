@@ -10,7 +10,7 @@ import '../../deck/fixtures.dart';
 void main() {
   group("api", () {
     test("basic", () async {
-      depend<Query<String, HttpRequest>>((it) async {
+      depend<Query<String, ApiEndpoint>>((it) async {
         return fixtureListEndpoint;
       }, tag: "api");
 
@@ -31,8 +31,9 @@ void main() {
       subject.addOnStateChange("ops", (state, context) {
         print("State now: $state, context: ${context.listSelections}");
       });
+      subject.reload();
       await subject.waitForState(FilterState.ready);
-      await subject.setDefaultSelection();
+      //await subject.setDefaultSelection();
       expect(
           subject
               .prepareContextDraft()

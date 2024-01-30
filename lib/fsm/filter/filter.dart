@@ -14,7 +14,7 @@ part 'filter.genn.dart';
 /// Filter is the latest model for handling user configurations (blocklists and
 /// other blocking settings). It replaces models Pack, Deck, Shield.
 
-enum FilterState { init, load, parse, ready, reconfigure, fatal }
+enum FilterState { init, load, parse, reconfigure, defaults, ready, fatal }
 
 typedef ListHashId = String;
 typedef ListTag = String;
@@ -26,6 +26,7 @@ mixin FilterContext {
   Map<FilterConfigKey, bool> configs = {};
   List<Filter> filters = [];
   List<FilterSelection> filterSelections = [];
+  bool defaultsApplied = false;
 }
 
 // @Machine(initial: FilterState.init)
@@ -89,7 +90,7 @@ mixin FilterStateMachine {
   }
 
   // @OnEnter(state: FilterState.reconfigure)
-  // @OnSuccess(newState: FilterState.ready)
+  // @OnSuccess(newState: FilterState.defaults)
   // @OnFailure(newState: FilterState.fatal)
   // @Dependency(name: "setLists", tag: "Device")
   stateReconfigure(
@@ -147,12 +148,19 @@ mixin FilterStateMachine {
     }
   }
 
-  // @From(state: FilterState.ready)
-  // @OnSuccess(newState: FilterState.reconfigure)
+  // @From(state: FilterState.defaults)
+  // @OnSuccess(newState: FilterState.ready)
   // @OnFailure(newState: FilterState.fatal)
   // @Dependency(name: "act", tag: "act")
-  eventSetDefaultSelection(FilterContext c, Get<Act> act) async {
+  stateDefaults(FilterContext c, Get<Act> act) async {
+    // Do nothing if has selections
+    if (c.filterSelections.any((it) => it.options.isNotEmpty)) return;
+
+    // Or if already applied during this runtime
+    if (c.defaultsApplied) return;
+
     c.filterSelections = getDefaultEnabled(await act());
+    c.defaultsApplied = true;
   }
 
   // @From(state: FilterState.ready)
