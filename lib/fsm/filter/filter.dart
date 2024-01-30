@@ -137,7 +137,7 @@ mixin FilterStateMachine {
     // List can be empty, that's ok
     if (!setEquals(lists, c.listSelections)) {
       needsReload = true;
-      await setLists(lists);
+      setLists(lists);
     }
 
     // TODO: other actions
