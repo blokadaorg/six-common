@@ -1,6 +1,5 @@
 import 'package:common/fsm/api/api.dart';
 import 'package:common/fsm/filter/filter.dart';
-import 'package:common/fsm/filter/filter.genn.dart';
 import 'package:common/fsm/machine.dart';
 import 'package:common/util/act.dart';
 import 'package:common/util/di.dart';
