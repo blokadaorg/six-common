@@ -8,6 +8,7 @@ import '../custom/custom.dart';
 import '../deck/deck.dart';
 import '../device/device.dart';
 import '../family/family.dart';
+import '../fsm/filter/filter.genn.dart';
 import '../journal/channel.pg.dart';
 import '../journal/journal.dart';
 import '../lock/lock.dart';
@@ -35,7 +36,6 @@ class CommandStore
   late final _accountRefresh = dep<AccountRefreshStore>();
   late final _appStart = dep<AppStartStore>();
   late final _custom = dep<CustomStore>();
-  late final _deck = dep<DeckStore>();
   late final _device = dep<DeviceStore>();
   late final _journal = dep<JournalStore>();
   late final _plus = dep<PlusStore>();
@@ -46,6 +46,8 @@ class CommandStore
   late final _lock = dep<LockStore>();
 
   late final _timer = dep<TimerService>();
+
+  late final _filter = dep<FilterActor>();
 
   @override
   void attach(Act act) {
@@ -140,14 +142,14 @@ class CommandStore
         return await _custom.delete(trace, p1!);
       case CommandName.enableDeck:
         _ensureParam(p1);
-        return await _deck.setEnableDeck(trace, p1!, true);
+        return await _filter.enableFilter(p1!, enable: true);
       case CommandName.disableDeck:
         _ensureParam(p1);
-        return await _deck.setEnableDeck(trace, p1!, false);
+        return await _filter.enableFilter(p1!, enable: false);
       case CommandName.toggleListByTag:
         _ensureParam(p1);
         _ensureParam(p2);
-        return await _deck.toggleListByTag(trace, p1!, p2!);
+        return await _filter.toggleFilterOption(p1!, p2!);
       case CommandName.enableCloud:
         return await _device.setCloudEnabled(trace, true);
       case CommandName.disableCloud:

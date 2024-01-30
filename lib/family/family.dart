@@ -50,6 +50,7 @@ abstract class FamilyStoreBase
 
   FamilyStoreBase(Act? act) {
     if (!(act?.isFamily() ?? false)) return;
+    //if (act != null) this.act = act;
 
     _account.addOn(accountChanged, _postActivationOnboarding);
     _lock.addOnValue(lockChanged, _updatePhaseFromLock);
