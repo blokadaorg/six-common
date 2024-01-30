@@ -53,9 +53,11 @@ class FilterActorProvider with Dependable, TraceOrigin {
 
     device.addOn(deviceChanged, (trace) {
       if (actor.isState(FilterState.ready)) {
+        print("reload1");
         actor.reload();
       } else {
         actor.waitForState(FilterState.ready);
+        print("reload2");
         actor.reload();
       }
     });
