@@ -72,7 +72,7 @@ abstract class Actor<T, C extends Context<C>> {
       if (saveContext) {
         _context = _contextDraft;
         initialized = true;
-        //print("[$runtimeType] context changed: $_context");
+        print("[$runtimeType] context changed: $_context");
       }
 
       onStateChanged(newState);
@@ -85,6 +85,16 @@ abstract class Actor<T, C extends Context<C>> {
     print("[$runtimeType] error($_state): $e");
     print(s);
     updateState(newState, saveContext: saveContext);
+
+    // Also fail the waiting completers
+    for (final completers in _waitingForState.values) {
+      for (final c in completers) {
+        queue(() {
+          c.completeError(e, s);
+        });
+      }
+      _waitingForState[newState] = [];
+    }
   }
 
   onStateChanged(T newState);

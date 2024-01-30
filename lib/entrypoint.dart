@@ -79,7 +79,7 @@ class Entrypoint with Dependable, TraceOrigin, Traceable {
     PermStore().attachAndSaveAct(act);
     LockStore().attachAndSaveAct(act);
     CustomStore().attachAndSaveAct(act);
-    DeckStore().attachAndSaveAct(act);
+    //DeckStore().attachAndSaveAct(act);
     JournalStore().attachAndSaveAct(act);
     PlusStore().attachAndSaveAct(act);
     PlusKeypairStore().attachAndSaveAct(act);

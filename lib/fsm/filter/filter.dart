@@ -9,6 +9,8 @@ import 'json.dart';
 import 'known.dart';
 import 'model.dart';
 
+part 'filter.genn.dart';
+
 /// Filter is the latest model for handling user configurations (blocklists and
 /// other blocking settings). It replaces models Pack, Deck, Shield.
 

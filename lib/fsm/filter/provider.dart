@@ -6,7 +6,6 @@ import '../api/api.dart';
 import '../api/api.genn.dart';
 import '../machine.dart';
 import 'filter.dart';
-import 'filter.genn.dart';
 
 class FilterActorProvider with Dependable, TraceOrigin {
   @override

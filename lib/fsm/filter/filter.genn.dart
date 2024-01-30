@@ -1,11 +1,4 @@
-import 'dart:async';
-
-import '../../util/di.dart';
-import '../api/api.dart';
-import '../machine.dart';
-import 'filter.dart';
-import 'json.dart';
-import 'model.dart';
+part of 'filter.dart';
 
 class _FilterContext with FilterContext, Context<_FilterContext> {
   _FilterContext(
