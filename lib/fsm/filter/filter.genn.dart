@@ -23,7 +23,7 @@ class _FilterContext with FilterContext, Context<_FilterContext> {
 
   @override
   String toString() =>
-      "FilterContext{listSelections: $listSelections, configs: $configs, filterSelections: $filterSelections}";
+      "FilterContext{defaultsApplied: $defaultsApplied, listSelections: $listSelections, configs: $configs, filterSelections: $filterSelections}";
 }
 
 class FilterActor extends Actor<FilterState, _FilterContext>
