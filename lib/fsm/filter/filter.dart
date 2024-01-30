@@ -152,7 +152,7 @@ mixin FilterStateMachine {
   // @OnSuccess(newState: FilterState.ready)
   // @OnFailure(newState: FilterState.fatal)
   // @Dependency(name: "act", tag: "act")
-  stateDefaults(FilterContext c, Get<Act> act) async {
+  whenDefaults(FilterContext c, Get<Act> act) async {
     // Do nothing if has selections
     if (c.filterSelections.any((it) => it.options.isNotEmpty)) return;
 
@@ -161,6 +161,7 @@ mixin FilterStateMachine {
 
     c.filterSelections = getDefaultEnabled(await act());
     c.defaultsApplied = true;
+    return FilterState.reconfigure;
   }
 
   // @From(state: FilterState.ready)

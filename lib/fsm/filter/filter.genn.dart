@@ -23,7 +23,7 @@ class _FilterContext with FilterContext, Context<_FilterContext> {
 
   @override
   String toString() =>
-      "FilterContext{lists: $lists, listSelections: $listSelections, configs: $configs, filters: $filters, filterSelections: $filterSelections}";
+      "FilterContext{listSelections: $listSelections, configs: $configs, filterSelections: $filterSelections}";
 }
 
 class FilterActor extends Actor<FilterState, _FilterContext>
@@ -123,8 +123,12 @@ class FilterActor extends Actor<FilterState, _FilterContext>
 
     final c = prepareContextDraft();
     try {
-      await super.stateDefaults(c, act);
-      updateState(FilterState.ready);
+      final result = await super.whenDefaults(c, act);
+      if (result is FilterState) {
+        updateState(result);
+      } else {
+        updateState(FilterState.ready);
+      }
     } catch (e, s) {
       updateStateFailure(e, s, FilterState.fatal);
       rethrow;
