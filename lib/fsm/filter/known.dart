@@ -3,8 +3,13 @@ import 'filter.dart';
 import 'model.dart';
 
 List<Filter> getKnownFilters(Act act) {
-  if (act.isFamily()) return _family;
-  return _v6;
+  if (act.isFamily()) {
+    return _family;
+  } else if (act.getPlatform() == Platform.ios) {
+    return _v6iOS;
+  } else {
+    return _v6Android;
+  }
 }
 
 List<FilterSelection> getDefaultEnabled(Act act) {
@@ -21,7 +26,7 @@ final _familyEnabled = [
   FilterSelection("meta_ads", ["standard"]),
 ];
 
-final _v6 = [
+final _v6iOS = [
   Filter("oisd", [
     Option("small", Action.list, [
       "oisd/light"
@@ -40,6 +45,82 @@ final _v6 = [
     Option("standard", Action.list, ["goodbyeads/standard"]),
     Option("youtube", Action.list, ["goodbyeads/youtube"]),
     Option("spotify", Action.list, ["goodbyeads/spotify"]),
+  ]),
+  Filter("adaway", [
+    Option("standard", Action.list, ["adaway/standard"]),
+  ]),
+  Filter("phishingarmy", [
+    Option("standard", Action.list, ["phishingarmy/standard"]),
+    Option("extended", Action.list, ["phishingarmy/extended"]),
+  ]),
+  Filter("ddgtrackerradar", [
+    Option("standard", Action.list, ["ddgtrackerradar/standard"]),
+  ]),
+  Filter("blacklist", [
+    Option("adservers", Action.list, ["blacklist/adservers"]),
+    Option("facebook", Action.list, ["blacklist/facebook"]),
+  ]),
+  Filter("developerdan", [
+    Option("ads and tracking", Action.list, ["developerdan/ads and tracking"]),
+    Option("facebook", Action.list, ["developerdan/facebook"]),
+    Option("amp", Action.list, ["developerdan/amp"]),
+    Option("hate and junk", Action.list, ["developerdan/hate and junk"]),
+  ]),
+  Filter("blocklist", [
+    Option("ads", Action.list, ["blocklist/ads"]),
+    Option("facebook", Action.list, ["blocklist/facebook"]),
+    Option("malware", Action.list, ["blocklist/malware"]),
+    Option("phishing", Action.list, ["blocklist/phishing"]),
+    Option("tracking", Action.list, ["blocklist/tracking"]),
+    Option("youtube", Action.list, ["blocklist/youtube"]),
+  ]),
+  Filter("spam404", [
+    Option("standard", Action.list, ["spam404/standard"]),
+  ]),
+  Filter("hblock", [
+    Option("standard", Action.list, ["hblock/standard"]),
+  ]),
+  Filter("cpbl", [
+    Option("standard", Action.list, ["cpbl/standard"]),
+    Option("mini", Action.list, ["cpbl/mini"]),
+  ]),
+  Filter("danpollock", [
+    Option("standard", Action.list, ["danpollock/standard"]),
+  ]),
+  Filter("urlhaus", [
+    Option("standard", Action.list, ["urlhaus/standard"]),
+  ]),
+  Filter("1hosts", [
+    Option("lite", Action.list, ["1hosts/lite (wildcards)"]),
+    Option("pro", Action.list, ["1hosts/pro (wildcards)"]),
+    Option("xtra", Action.list, ["1hosts/xtra (wildcards)"]),
+  ]),
+  Filter("d3host", [
+    Option("standard", Action.list, ["d3host/standard"]),
+  ]),
+];
+
+final _v6Android = [
+  Filter("oisd", [
+    Option("small", Action.list, [
+      "oisd/light"
+    ]), // change on oisd/small once backend doesnt force the former as default
+    Option("big", Action.list, ["oisd/big"]),
+    Option("nsfw", Action.list, ["oisd/nsfw"]),
+  ]),
+  Filter("stevenblack", [
+    Option("unified", Action.list, ["stevenblack/unified"]),
+    Option("fake news", Action.list, ["stevenblack/fake news"]),
+    Option("adult", Action.list, ["stevenblack/adult"]),
+    Option("social", Action.list, ["stevenblack/social"]),
+    Option("gambling", Action.list, ["stevenblack/gambling"]),
+  ]),
+  Filter("goodbyeads", [
+    Option("standard", Action.list, ["goodbyeads/standard"]),
+    Option("samsung", Action.list, ["goodbyeads/samsung"]),
+    Option("xiaomi", Action.list, ["goodbyeads/xiaomi"]),
+    Option("spotify", Action.list, ["goodbyeads/spotify"]),
+    Option("youtube", Action.list, ["goodbyeads/youtube"]),
   ]),
   Filter("adaway", [
     Option("standard", Action.list, ["adaway/standard"]),
