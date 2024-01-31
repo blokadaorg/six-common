@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import '../util/di.dart';
+import '../util/trace.dart';
 
-class OnEnter<T> {
+//const when = When<dynamic>(state: null);
+
+class When<T> {
   final T state;
-  const OnEnter({required this.state});
+  const When(this.state);
 }
 
 class OnFailure<T> {
@@ -50,6 +53,8 @@ abstract class Actor<T, C extends Context<C>> {
   C _context;
   late C _contextDraft;
   bool initialized = false;
+
+  late Trace trace;
 
   Actor(this._state, this._context) {
     updateState(_state, saveContext: false);
@@ -175,4 +180,14 @@ abstract class Actor<T, C extends Context<C>> {
       }
     });
   }
+
+  handleLog(String msg) {
+    //print("[$runtimeType] [$_state] $msg");
+    trace.addEvent(msg);
+    trace.addAttribute("state", _state);
+  }
+}
+
+mixin Logging {
+  log(String msg);
 }

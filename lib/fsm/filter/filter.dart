@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../util/di.dart';
+import '../../util/trace.dart';
 import '../api/api.dart';
 import '../machine.dart';
 import 'json.dart';
@@ -16,9 +17,10 @@ part 'filter.genn.dart';
 
 enum FilterState { init, load, parse, reconfigure, defaults, ready, fatal }
 
-typedef ListHashId = String;
 typedef ListTag = String;
 typedef OptionName = String;
+typedef ListHashId = String;
+typedef UserLists = Set<ListHashId>;
 
 mixin FilterContext {
   List<JsonListItem> lists = [];
@@ -30,16 +32,16 @@ mixin FilterContext {
 }
 
 // @Machine(initial: FilterState.init)
-mixin FilterStateMachine {
-  // @OnEnter(state: FilterState.load)
-  // @OnSuccess(newState: FilterState.parse)
-  // @OnFailure(newState: FilterState.init)
-  // @Dependency(name: "api", tag: "Api")
-  // @Dependency(name: "userLists", tag: "getLists")
-  stateLoad(
+mixin FilterStates on Logging {
+  // @When(FilterState.load)
+  // @Next(FilterState.parse)
+  // @Fail(FilterState.init)
+  // @Inject("api")
+  // @Inject("userLists")
+  load(
     FilterContext c,
     Query<String, ApiEndpoint> api,
-    Get<Set<ListHashId>> userLists,
+    Get<UserLists> userLists,
   ) async {
     final jsonLists = await api(ApiEndpoint.getList);
     c.lists = JsonListEndpoint.fromJson(jsonDecode(jsonLists)).lists;
@@ -49,11 +51,11 @@ mixin FilterStateMachine {
     c.configs = {};
   }
 
-  // @OnEnter(state: FilterState.parse)
-  // @OnSuccess(newState: FilterState.reconfigure)
-  // @OnFailure(newState: FilterState.fatal)
-  // @Dependency(name: "act", tag: "act")
-  stateParse(FilterContext c, Get<Act> act) async {
+  // @When(FilterState.parse)
+  // @Next(FilterState.reconfigure)
+  // @Fail(newState: FilterState.fatal)
+  // @Inject("act")
+  parse(FilterContext c, Get<Act> act) async {
     // 1: read filters that we know about (no selections yet)
     c.filters = getKnownFilters(await act());
     c.filterSelections = [];
@@ -64,7 +66,7 @@ mixin FilterStateMachine {
     for (final selectedHashId in c.listSelections) {
       final list = c.lists.firstWhereOrNull((it) => it.id == selectedHashId);
       if (list == null) {
-        // c.log("User has unknown list: $selectedHashId");
+        log("User has unknown list: $selectedHashId");
         continue;
       }
 
@@ -89,11 +91,11 @@ mixin FilterStateMachine {
     }
   }
 
-  // @OnEnter(state: FilterState.reconfigure)
-  // @OnSuccess(newState: FilterState.defaults)
-  // @OnFailure(newState: FilterState.fatal)
-  // @Dependency(name: "setLists", tag: "Device")
-  stateReconfigure(
+  // @When(FilterState.reconfigure)
+  // @Next(FilterState.defaults)
+  // @Fail(FilterState.fatal)
+  // @Inject("setLists")
+  reconfigure(
     FilterContext c,
     Put<Set<ListHashId>> setLists,
   ) async {
@@ -148,27 +150,30 @@ mixin FilterStateMachine {
     }
   }
 
-  // @From(state: FilterState.defaults)
-  // @OnSuccess(newState: FilterState.ready)
-  // @OnFailure(newState: FilterState.fatal)
-  // @Dependency(name: "act", tag: "act")
-  whenDefaults(FilterContext c, Get<Act> act) async {
+  // @When(FilterState.defaults)
+  // @Next(FilterState.ready)
+  // @Fail(FilterState.fatal)
+  // @Inject("act")
+  defaults(FilterContext c, Get<Act> act) async {
     // Do nothing if has selections
     if (c.filterSelections.any((it) => it.options.isNotEmpty)) return;
 
     // Or if already applied during this runtime
     if (c.defaultsApplied) return;
 
+    log("Applying defaults");
     c.filterSelections = getDefaultEnabled(await act());
     c.defaultsApplied = true;
     return FilterState.reconfigure;
   }
+}
 
-  // @From(state: FilterState.ready)
-  // @OnSuccess(newState: FilterState.reconfigure)
-  // @OnFailure(newState: FilterState.ready)
-  eventEnableFilter(FilterContext c, String filterName,
-      {bool enable = true}) async {
+// @Events
+mixin FilterEvents {
+  // @Guard(FilterState.ready)
+  // @Next(FilterState.reconfigure)
+  // @Fail(FilterState.ready)
+  enableFilter(FilterContext c, String filterName, {bool enable = true}) async {
     final filter = c.filters.firstWhere(
       (it) => it.filterName == filterName,
     );
@@ -180,10 +185,10 @@ mixin FilterStateMachine {
     c.filterSelections += [FilterSelection(filterName, option)];
   }
 
-  // @From(state: FilterState.ready)
-  // @OnSuccess(newState: FilterState.reconfigure)
-  // @OnFailure(newState: FilterState.ready)
-  eventToggleFilterOption(
+  // @Guard(FilterState.ready)
+  // @Next(FilterState.reconfigure)
+  // @Fail(FilterState.ready)
+  toggleFilterOption(
       FilterContext c, String filterName, String optionName) async {
     final filter = c.filters.firstWhere(
       (it) => it.filterName == filterName,
@@ -210,10 +215,12 @@ mixin FilterStateMachine {
     c.filterSelections += [selection];
   }
 
-  // @From(state: FilterState.ready) // or init
-  // @OnSuccess(newState: FilterState.load)
-  // @OnFailure(newState: FilterState.fatal)
-  eventReload(FilterContext c) async {
+  // @Guard([FilterState.init, FilterState.ready])
+  // @Next(FilterState.load)
+  // @Fail(FilterState.fatal)
+  reload(FilterContext c) async {
     // just reload
   }
 }
+
+class FilterActor extends _$FilterActor {}

@@ -20,11 +20,11 @@ class FilterActorProvider with Dependable, TraceOrigin {
 
     final device = dep<DeviceStore>();
 
-    depend<Get<Set<ListHashId>>>(() async {
+    depend<Get<UserLists>>(() async {
       return device.lists?.toSet() ?? {};
     }, tag: "getLists");
 
-    depend<Put<Set<ListHashId>>>((it) async {
+    depend<Put<UserLists>>((it) async {
       await traceAs("setLists", (trace) async {
         await device.setLists(trace, it.toList());
       });

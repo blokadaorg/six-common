@@ -7,35 +7,53 @@ class _FilterContext with FilterContext, Context<_FilterContext> {
     Map<FilterConfigKey, bool> configs,
     List<Filter> filters,
     List<FilterSelection> filterSelections,
+    bool defaultsApplied,
   ) {
     this.lists = lists;
     this.listSelections = listSelections;
     this.configs = configs;
     this.filters = filters;
     this.filterSelections = filterSelections;
+    this.defaultsApplied = defaultsApplied;
   }
 
   _FilterContext.empty();
 
   @override
-  Context<_FilterContext> copy() =>
-      _FilterContext(lists, listSelections, configs, filters, filterSelections);
+  Context<_FilterContext> copy() => _FilterContext(lists, listSelections,
+      configs, filters, filterSelections, defaultsApplied);
 
   @override
   String toString() =>
       "FilterContext{defaultsApplied: $defaultsApplied, listSelections: $listSelections, configs: $configs, filterSelections: $filterSelections}";
 }
 
-class FilterActor extends Actor<FilterState, _FilterContext>
-    with FilterStateMachine {
-  FilterActor() : super(FilterState.init, _FilterContext.empty());
+class _$FilterStates with Logging, FilterStates {
+  final Function(String) handleLog;
+  _$FilterStates(this.handleLog);
+
+  @override
+  log(String msg) => handleLog(msg);
+}
+
+class _$FilterEvents with FilterEvents {}
+
+class _$FilterActor extends Actor<FilterState, _FilterContext> {
+  late final _trace = dep<TraceFactory>();
+
+  late final _$FilterStates _states;
+  final _events = _$FilterEvents();
+
+  _$FilterActor() : super(FilterState.init, _FilterContext.empty()) {
+    _states = _$FilterStates(handleLog);
+  }
 
   enableFilter(String filterName, {bool enable = true}) async {
     guard(FilterState.ready);
 
     final c = prepareContextDraft();
     try {
-      await super.eventEnableFilter(c, filterName, enable: enable);
+      await _events.enableFilter(c, filterName, enable: enable);
       updateState(FilterState.reconfigure);
       return await waitForState(FilterState.ready);
     } catch (e, s) {
@@ -49,7 +67,7 @@ class FilterActor extends Actor<FilterState, _FilterContext>
 
     final c = prepareContextDraft();
     try {
-      await super.eventToggleFilterOption(c, filterName, optionName);
+      await _events.toggleFilterOption(c, filterName, optionName);
       updateState(FilterState.reconfigure);
       return await waitForState(FilterState.ready);
     } catch (e, s) {
@@ -59,20 +77,24 @@ class FilterActor extends Actor<FilterState, _FilterContext>
   }
 
   reload() async {
+    trace = _trace.newTrace(runtimeType.toString(), "reload");
     //guard(FilterState.ready);
 
     final c = prepareContextDraft();
     try {
-      await super.eventReload(c);
+      await _events.reload(c);
       updateState(FilterState.load);
-      return await waitForState(FilterState.ready);
+      final ret = await waitForState(FilterState.ready);
+      await trace.end();
+      return ret;
     } catch (e, s) {
       updateStateFailure(e, s, FilterState.fatal);
+      await trace.endWithFailure(e as Exception, s);
       rethrow;
     }
   }
 
-  _stateLoad() async {
+  _whenLoad() async {
     guard(FilterState.load);
 
     final api = dep<Query<String, ApiEndpoint>>(instanceName: "api");
@@ -80,28 +102,28 @@ class FilterActor extends Actor<FilterState, _FilterContext>
 
     final c = prepareContextDraft();
     try {
-      await super.stateLoad(c, api, userLists);
+      await _states.load(c, api, userLists);
       updateState(FilterState.parse);
     } catch (e, s) {
       updateStateFailure(e, s, FilterState.init);
     }
   }
 
-  _stateParse() async {
+  _whenParse() async {
     guard(FilterState.parse);
 
     final act = dep<Get<Act>>(instanceName: "act");
 
     final c = prepareContextDraft();
     try {
-      await super.stateParse(c, act);
+      await _states.parse(c, act);
       updateState(FilterState.reconfigure);
     } catch (e, s) {
       updateStateFailure(e, s, FilterState.fatal);
     }
   }
 
-  _stateReconfigure() async {
+  _whenReconfigure() async {
     guard(FilterState.reconfigure);
 
     final setLists =
@@ -109,21 +131,21 @@ class FilterActor extends Actor<FilterState, _FilterContext>
 
     final c = prepareContextDraft();
     try {
-      await super.stateReconfigure(c, setLists);
+      await _states.reconfigure(c, setLists);
       updateState(FilterState.defaults);
     } catch (e, s) {
       updateStateFailure(e, s, FilterState.fatal);
     }
   }
 
-  _stateDefaults() async {
+  _whenDefaults() async {
     guard(FilterState.defaults);
 
     final act = dep<Get<Act>>(instanceName: "act");
 
     final c = prepareContextDraft();
     try {
-      final result = await super.whenDefaults(c, act);
+      final result = await _states.defaults(c, act);
       if (result is FilterState) {
         updateState(result);
       } else {
@@ -138,13 +160,13 @@ class FilterActor extends Actor<FilterState, _FilterContext>
   @override
   onStateChanged(FilterState newState) {
     if (newState == FilterState.load) {
-      _stateLoad();
+      _whenLoad();
     } else if (newState == FilterState.parse) {
-      _stateParse();
+      _whenParse();
     } else if (newState == FilterState.reconfigure) {
-      _stateReconfigure();
+      _whenReconfigure();
     } else if (newState == FilterState.defaults) {
-      _stateDefaults();
+      _whenDefaults();
     }
   }
 }
