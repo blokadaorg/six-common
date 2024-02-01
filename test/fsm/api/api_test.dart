@@ -1,6 +1,6 @@
 import 'package:common/fsm/api/api.dart';
-import 'package:common/fsm/api/api.genn.dart';
 import 'package:common/fsm/machine.dart';
+import 'package:common/util/act.dart';
 import 'package:common/util/di.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -13,14 +13,18 @@ import '../../tools.dart';
 void main() {
   group("api", () {
     test("basic", () async {
-      depend<Query<String, HttpRequest>>((it) async {
-        return "result";
-      }, tag: "http");
+      final act =
+          ActScreenplay(ActScenario.platformIsMocked, Flavor.og, Platform.ios);
 
-      final subject = ApiActor();
+      final subject = ApiActor(act);
+      subject.injectHttp((it) async {
+        subject.onHttpOk("result");
+        //subject.onHttpFail(Exception("error 303"));
+      });
+      await subject.onQueryParams({"account_id": "123"});
 
-      final result =
-          await subject.request(const HttpRequest(url: "https://example.com/"));
+      final result = await subject
+          .doRequest(const HttpRequest(url: "https://example.com/"));
       expect(result.result, "result");
     });
   });

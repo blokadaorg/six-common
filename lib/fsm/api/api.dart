@@ -1,16 +1,15 @@
+import 'dart:async';
+
+import '../../http/channel.pg.dart';
 import '../../http/http.dart';
+import '../../util/di.dart';
 import '../machine.dart';
 
-enum ApiState {
-  init,
-  fetch,
-  retry,
-  success,
-  failure,
-}
+part 'api.genn.dart';
 
 mixin ApiContext {
-  late HttpRequest request;
+  Map<String, String> queryParams = {};
+  HttpRequest? request;
   String? result;
   Exception? error;
   int retries = 2;
@@ -61,62 +60,94 @@ abstract class BlockaHttpRequest extends HttpRequest {
       : super(url: "http://api.blocka.net/v2/$endpoint");
 }
 
-// @Machine(initial: ApiState.init) // final, fatal
-mixin ApiStateMachine {
-  // @OnEnter(state: fetch)
-  // @OnSuccess(newState: success)
-  // @OnFailure(newState: retry, saveContext: true)
-  // @Dep("http", tag: "Http")
-  stateFetch(ApiContext c, Query<String, HttpRequest> http) async {
-    try {
-      c.result = await http(c.request);
-    } on Exception catch (e) {
-      c.error = e;
-      rethrow;
-    }
+// @Machine
+mixin ApiStates on StateMachineActions<ApiContext> {
+  late Action<HttpRequest> _http;
+
+  init(ApiContext c) async {}
+  ready(ApiContext c) async {}
+
+  fetch(ApiContext c) async {
+    onFail(retry, saveContext: true);
+    _http(c.request!);
+    return waiting;
   }
 
-  // @OnEnter(state: retry)
-  // @OnSuccess(newState: fetch)
-  // @OnFailure(newState: failure, saveState: true)
-  stateRetry(ApiContext c) async {
+  waiting(ApiContext c) async {}
+
+  retry(ApiContext c) async {
+    onFail(failure, saveContext: true);
     final error = c.error;
     if (error is HttpCodeException && !error.shouldRetry()) throw error;
     if (c.retries-- <= 0) throw error ?? Exception("unknown error");
     // await delay(3000)
+    return fetch;
   }
 
-  // @From(state: init)
-  // @OnSuccess(newState: fetch)
-  // @OnFailure(newState: failure)
-  eventRequest(ApiContext c, HttpRequest request) async {
+  // @final
+  Future<String> success(ApiContext c) async {
+    return c.result!;
+  }
+
+  failure(ApiContext c) async {}
+
+  onQueryParams(ApiContext c, Map<String, String> queryParams) async {
+    guard(init);
+    c.queryParams = queryParams;
+    return ready;
+  }
+
+  onHttpOk(ApiContext c, String result) async {
+    guard(waiting);
+    c.result = result;
+    return success;
+  }
+
+  onHttpFail(ApiContext c, Exception error) async {
+    guard(waiting);
+    c.error = error;
+    return retry;
+  }
+
+  doRequest(ApiContext c, HttpRequest request) async {
+    guard(ready);
     if (request.retries < 0) throw Exception("invalid retries param");
     c.request = request;
     c.retries = request.retries;
     c.result = null;
+
+    return fetch;
   }
 
-  // @From(state: init)
-  // @OnSuccess(newState: fetch)
-  // @OnFailure(newState: failure)
-  // @Dep("queryParam")
-  eventApiRequest(
-    ApiContext c,
-    ApiEndpoint e,
-    Query<String, String> queryParam,
-  ) async {
+  doApiRequest(ApiContext c, ApiEndpoint e) async {
+    guard(ready);
     var url = e.template;
     for (final param in e.params) {
-      final value = await queryParam(param);
+      final value = c.queryParams[param]!;
       url = url.replaceAll("($param)", value);
     }
 
-    print(url);
+    log(url);
 
     c.request = HttpRequest(
       url: url,
       type: e.type,
     );
     c.result = null;
+
+    return fetch;
+  }
+}
+
+class ApiActor extends _$ApiActor {
+  ApiActor(Act act) {
+    if (act.isProd()) {
+      HttpOps ops = HttpOps();
+      injectHttp((it) async {
+        // TODO: err
+        final result = await ops.doGet(it.url);
+        onHttpOk(result);
+      });
+    }
   }
 }

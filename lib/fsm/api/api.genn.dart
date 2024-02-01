@@ -1,11 +1,7 @@
-import 'dart:async';
-
-import '../../util/di.dart';
-import '../machine.dart';
-import 'api.dart';
+part of 'api.dart';
 
 class _ApiContext with ApiContext, Context<_ApiContext> {
-  _ApiContext(HttpRequest request, String? result, Exception? error,
+  _ApiContext(HttpRequest? request, String? result, Exception? error,
       {int retries = 3}) {
     this.request = request;
     this.result = result;
@@ -24,82 +20,192 @@ class _ApiContext with ApiContext, Context<_ApiContext> {
       "ApiContext{request: $request, result: $result, error: $error, retries: $retries}";
 }
 
-class ApiActor extends Actor<ApiState, _ApiContext> with ApiStateMachine {
-  Completer<String>? _completer;
+class _$ApiStates extends StateMachine<_ApiContext>
+    with StateMachineActions<ApiContext>, ApiStates {
+  late final Map<Function(ApiContext), String> stateFromMethod;
+  late final Map<String, Function()> enterState;
 
-  ApiActor() : super(ApiState.init, _ApiContext.empty());
+  _$ApiStates() : super("init", _ApiContext.empty(), FailBehavior("failure")) {
+    stateFromMethod = {
+      init: "init",
+      ready: "ready",
+      fetch: "fetch",
+      waiting: "waiting",
+      retry: "retry",
+      failure: "failure",
+      success: "success",
+    };
+    enterState = {
+      "init": enterInit,
+      "ready": enterReady,
+      "fetch": enterFetch,
+      "waiting": enterWaiting,
+      "retry": enterRetry,
+      "failure": enterFailure,
+      "success": enterSuccess,
+    };
 
-  Future<ApiContext> request(HttpRequest request) async {
-    guard(ApiState.init);
+    onFail = (state, {saveContext = false}) => failBehavior =
+        FailBehavior(stateFromMethod[state]!, saveContext: saveContext);
+    guard = (state) => guardState(stateFromMethod[state]!);
+    wait = (state) => waitForState(stateFromMethod[state]!);
+    log = (msg) => handleLog(msg);
 
-    final c = prepareContextDraft();
-    try {
-      await super.eventRequest(c, request);
-      updateState(ApiState.fetch);
-      return await waitForState(ApiState.success);
-    } catch (e, s) {
-      updateStateFailure(e, s, ApiState.failure);
-      rethrow;
-    }
-  }
-
-  Future<ApiContext> apiRequest(ApiEndpoint endpoint) async {
-    guard(ApiState.init);
-
-    final queryParam = dep<Query<String, String>>(instanceName: "queryParam");
-
-    final c = prepareContextDraft();
-    try {
-      await super.eventApiRequest(c, endpoint, queryParam);
-      updateState(ApiState.fetch);
-      return await waitForState(ApiState.success);
-    } catch (e, s) {
-      updateStateFailure(e, s, ApiState.failure);
-      rethrow;
-    }
-  }
-
-  _stateFetch() async {
-    guard(ApiState.fetch);
-
-    final http = dep<Query<String, HttpRequest>>(instanceName: "http");
-
-    final c = prepareContextDraft();
-    try {
-      await super.stateFetch(c, http);
-      updateState(ApiState.success);
-    } catch (e, s) {
-      updateStateFailure(e, s, ApiState.retry, saveContext: true);
-    }
-  }
-
-  _stateRetry() async {
-    guard(ApiState.retry);
-
-    final c = prepareContextDraft();
-    try {
-      await super.stateRetry(c);
-      updateState(ApiState.fetch);
-    } catch (e, s) {
-      updateStateFailure(e, s, ApiState.failure, saveContext: true);
-    }
+    enter("init");
   }
 
   @override
-  onStateChanged(ApiState newState) {
-    if (newState == ApiState.fetch) {
-      _stateFetch();
-    } else if (newState == ApiState.retry) {
-      _stateRetry();
-    } else if (newState == ApiState.success) {
-      _completer?.complete(prepareContextDraft().result);
-    } else if (newState == ApiState.failure) {
-      _completer?.completeError(prepareContextDraft().error!);
+  onStateChanged(String newState) async {
+    final next = await enterState[newState]!();
+    final known = stateFromMethod[next];
+    if (known != null) await enter(known);
+  }
+
+  enterInit() async {
+    final c = startEntering("init");
+    try {
+      final next = await super.init(c);
+      doneEntering("init");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  enterReady() async {
+    final c = startEntering("ready");
+    final next = await super.ready(c);
+    doneEntering("ready");
+    return next;
+  }
+
+  enterFetch() async {
+    final c = startEntering("fetch");
+    final next = await super.fetch(c);
+    doneEntering("fetch");
+    return next;
+  }
+
+  enterWaiting() async {
+    final c = startEntering("waiting");
+    final next = await super.waiting(c);
+    doneEntering("waiting");
+    return next;
+  }
+
+  enterRetry() async {
+    final c = startEntering("retry");
+    final next = await super.retry(c);
+    doneEntering("retry");
+    return next;
+  }
+
+  enterSuccess() async {
+    final c = startEntering("success");
+    final next = await super.success(c);
+    doneEntering("success");
+    return next;
+  }
+
+  enterFailure() async {
+    final c = startEntering("failure");
+    final next = await super.failure(c);
+    doneEntering("failure");
+    return next;
+  }
+
+  eventOnQueryParams(Map<String, String> queryParams) async {
+    try {
+      final c = await startEvent("queryParams");
+      final next = await super.onQueryParams(c, queryParams);
+      doneEvent("queryParams");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+    } catch (e, s) {
+      failEvent(e, s);
+    }
+  }
+
+  eventOnHttpOk(String result) async {
+    try {
+      final c = await startEvent("onHttpOk");
+      final next = await super.onHttpOk(c, result);
+      doneEvent("onHttpOk");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+    } catch (e, s) {
+      failEvent(e, s);
+    }
+  }
+
+  eventOnHttpFail(Exception error) async {
+    try {
+      final c = await startEvent("onHttpFail");
+      final next = await super.onHttpFail(c, error);
+      doneEvent("onHttpFail");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+    } catch (e, s) {
+      failEvent(e, s);
+    }
+  }
+
+  Future<ApiContext> eventRequest(HttpRequest request) async {
+    try {
+      final c = await startEvent("request");
+      final next = await super.doRequest(c, request);
+      doneEvent("request");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+      await waitForState("success");
+      return getContext();
+    } catch (e, s) {
+      failEvent(e, s);
+      return getContext();
+    }
+  }
+
+  Future<ApiContext> eventApiRequest(ApiEndpoint e) async {
+    try {
+      final c = await startEvent("apiRequest");
+      final next = await super.doApiRequest(c, e);
+      doneEvent("apiRequest");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+      await waitForState("success");
+      return getContext();
+    } catch (e, s) {
+      failEvent(e, s);
+      return getContext();
     }
   }
 }
 
-// Future<String> actualHttp(HttpRequest r) async {
-//   final HttpOps client = dep();
-//   return await client.doGet(r.url);
-// }
+class _$ApiActor {
+  late final _$ApiStates _machine;
+
+  _$ApiActor() {
+    _machine = _$ApiStates();
+  }
+
+  injectHttp(Action<HttpRequest> http) {
+    _machine._http = (it) async {
+      Future(() {
+        http(it);
+      });
+    };
+  }
+
+  Future<ApiContext> doRequest(HttpRequest request) =>
+      _machine.eventRequest(request);
+
+  Future<ApiContext> doApiRequest(ApiEndpoint endpoint) =>
+      _machine.eventApiRequest(endpoint);
+
+  onQueryParams(Map<String, String> queryParams) =>
+      _machine.eventOnQueryParams(queryParams);
+
+  onHttpOk(String result) => _machine.eventOnHttpOk(result);
+
+  onHttpFail(Exception error) => _machine.eventOnHttpFail(error);
+}

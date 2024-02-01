@@ -1,129 +1,186 @@
 import 'dart:async';
 
+import '../tracer/collectors.dart';
+import '../tracer/tracer.dart';
 import '../util/di.dart';
 import '../util/trace.dart';
 
-//const when = When<dynamic>(state: null);
+typedef Action<I> = Future<void> Function(I);
 
-class When<T> {
-  final T state;
-  const When(this.state);
-}
+const machine = Machine();
 
-class OnFailure<T> {
-  final T newState;
-  final bool saveContext;
-  const OnFailure({required this.newState, this.saveContext = false});
-}
-
-class Dependency<I> {
-  final String name;
-  final String tag;
-
-  const Dependency({required this.name, required this.tag});
-}
-
-typedef Query<O, I> = Future<O> Function(I);
-typedef Get<O> = Future<O> Function();
-typedef Put<I> = Future<void> Function(I);
-
-class Machine<T> {
-  final T initial;
-  //final T finalState;
-  //final T fatal;
-  const Machine({required this.initial});
+class Machine {
+  const Machine();
 }
 
 mixin Context<C> {
   Context<C> copy();
 }
 
-class ActAware {
-  late Act act;
+typedef State = String;
+
+class FailBehavior {
+  final String state;
+  final bool saveContext;
+
+  FailBehavior(this.state, {this.saveContext = false});
 }
 
-abstract class Actor<T, C extends Context<C>> {
-  final _queue = <Function()>[];
-  final Map<String, Function(T, C)> _anyStateListeners = {};
-  final Map<T, Map<String, Function(T, C)>> _stateListeners = {};
-  final Map<T, List<Completer<C>>> _waitingForState = {};
+mixin StateMachineActions<T> {
+  late final Function(String) log;
+  late final Function(Function(T)) guard;
+  late final Future<T> Function(Function(T)) wait;
+  late final Function(Function(T), {bool saveContext}) onFail;
+}
 
-  T _state;
+abstract class StateMachine<C extends Context<C>> {
+  final _queue = <Function()>[];
+
+  final Map<String, Function(State, C)> _anyStateListeners = {};
+  final Map<State, Map<String, Function(State, C)>> _stateListeners = {};
+  final Map<State, List<Completer<C>>> _waitingForState = {};
+
+  State _state;
+  State? _entering;
+  Completer<void>? _enteringCompleter;
+
+  FailBehavior failBehavior;
+  late FailBehavior _commonFailBehavior;
 
   C _context;
-  late C _contextDraft;
-  bool initialized = false;
+  late C _draft;
 
   late Trace trace;
 
-  Actor(this._state, this._context) {
-    updateState(_state, saveContext: false);
+  StateMachine(this._state, this._context, this.failBehavior) {
+    // trace = DefaultTrace.as(
+    //     generateTraceId(8), "machine", runtimeType.toString(),
+    //     important: false);
+    _commonFailBehavior = failBehavior;
   }
 
-  C prepareContextDraft() {
-    if (!initialized) {
-      _contextDraft = _context;
-    } else {
-      _contextDraft = _context.copy() as C;
+  enter(String state) async {
+    handleLog("enter: $state");
+    _state = state;
+    await notify(state);
+  }
+
+  C startEntering(String state) {
+    if (_state != state) {
+      throw Exception("invalid state: $_state, exp: $state");
     }
-    return _contextDraft;
+    if (_entering != null) {
+      throw Exception("already entering state: $_entering");
+    }
+    handleLog("entering: $state");
+    failBehavior = _commonFailBehavior;
+    _entering = state;
+    _enteringCompleter = Completer<void>();
+    _draft = _context.copy() as C;
+    return _draft;
   }
 
-  updateState(T newState, {bool saveContext = true}) {
+  doneEntering(String state) {
+    if (_entering != state) {
+      throw Exception("doneEntering: $_entering, exp: $state");
+    }
+    handleLog("done entering: $state");
+    _entering = null;
+    _enteringCompleter?.complete();
+    _enteringCompleter = null;
+    //_state = state;
+    _context = _draft;
+    //notify(state);
+  }
+
+  failEntering(Object e, StackTrace s) {
+    print("fail entering [$runtimeType] error($_state): $e");
+    print(s);
+
+    _entering = null;
+    _enteringCompleter?.completeError(e);
+    _enteringCompleter = null;
+    _state = failBehavior.state;
+    if (failBehavior.saveContext) {
+      _context = _draft;
+    }
+
+    // Also fail the waiting completers
     queue(() {
-      _state = newState;
-      print("[$runtimeType] state: $_state");
-
-      if (saveContext) {
-        _context = _contextDraft;
-        initialized = true;
-        print("[$runtimeType] context changed: $_context");
+      for (final completers in _waitingForState.values) {
+        for (final c in completers) {
+          queue(() {
+            c.completeError(e, s);
+          });
+        }
       }
-
-      onStateChanged(newState);
-      onStateChangedExternal(newState);
+      _waitingForState.clear();
     });
   }
 
-  updateStateFailure(Object e, StackTrace s, T newState,
-      {bool saveContext = false}) {
-    print("[$runtimeType] error($_state): $e");
-    print(s);
-    updateState(newState, saveContext: saveContext);
-
-    // Also fail the waiting completers
-    for (final completers in _waitingForState.values) {
-      for (final c in completers) {
-        queue(() {
-          c.completeError(e, s);
-        });
-      }
-      _waitingForState[newState] = [];
+  Future<C> startEvent(String name) async {
+    if (_enteringCompleter != null) {
+      await _enteringCompleter?.future;
     }
+    handleLog("start event: $name");
+    failBehavior = _commonFailBehavior;
+    _draft = _context.copy() as C;
+    return _draft;
   }
 
-  onStateChanged(T newState);
+  doneEvent(String name) {
+    handleLog("done event: $name");
+    _context = _draft;
+  }
 
-  onStateChangedExternal(T newState) {
+  failEvent(Object e, StackTrace s) => failEntering(e, s);
+
+  guardState(State state) {
+    if (_state != state) throw Exception("invalid state: $_state, exp: $state");
+  }
+
+  Future<void> handleLog(String msg) async {
+    print("[$runtimeType] [$_state] $msg");
+    //trace.addEvent(msg);
+    //trace.addAttribute("state", _state);
+  }
+
+  notify(State state) async {
+    await onStateChanged(state);
     queue(() {
-      final completers = _waitingForState[newState];
+      onStateChangedExternal(state);
+    });
+  }
+
+  C getContext() {
+    if (_entering != null) {
+      throw Exception("currently entering state: $_entering");
+    }
+    return _context;
+  }
+
+  onStateChanged(State state);
+
+  onStateChangedExternal(State state) {
+    queue(() {
+      final completers = _waitingForState[state];
       if (completers != null) {
         for (final c in completers) {
           queue(() {
             c.complete(_context);
           });
         }
-        _waitingForState[newState] = [];
+        _waitingForState[state] = [];
       }
 
-      final listeners = _stateListeners[newState]?.entries;
+      final listeners = _stateListeners[state]?.entries;
       if (listeners != null) {
         for (final e in listeners) {
           final tag = e.key;
           final fn = e.value;
 
           queue(() {
-            fn(newState, _context);
+            fn(state, _context);
           });
         }
       }
@@ -134,38 +191,33 @@ abstract class Actor<T, C extends Context<C>> {
         final fn = e.value;
 
         queue(() {
-          fn(newState, _context);
+          fn(state, _context);
         });
       }
     });
   }
 
-  addOnState(T newState, String tag, Function(T, C) fn) {
+  addOnState(State state, String tag, Function(State, C) fn) {
     queue(() {
-      _stateListeners[newState] ??= {};
-      _stateListeners[newState]![tag] = fn;
+      _stateListeners[state] ??= {};
+      _stateListeners[state]![tag] = fn;
     });
   }
 
-  addOnStateChange(String tag, Function(T, C) fn) {
+  addOnStateChange(String tag, Function(State, C) fn) {
     queue(() {
       _anyStateListeners[tag] = fn;
     });
   }
 
-  Future<C> waitForState(T newState) async {
+  Future<C> waitForState(State state) async {
+    if (_state == state) return _context;
     final c = Completer<C>();
     queue(() {
-      _waitingForState[newState] ??= [];
-      _waitingForState[newState]!.add(c);
+      _waitingForState[state] ??= [];
+      _waitingForState[state]!.add(c);
     });
-    return await c.future;
-  }
-
-  isState(T state) => _state == state;
-
-  guard(T state) {
-    if (_state != state) throw Exception("invalid state: $_state, exp: $state");
+    return c.future;
   }
 
   queue(Function() fn) {
@@ -180,14 +232,4 @@ abstract class Actor<T, C extends Context<C>> {
       }
     });
   }
-
-  handleLog(String msg) {
-    //print("[$runtimeType] [$_state] $msg");
-    trace.addEvent(msg);
-    trace.addAttribute("state", _state);
-  }
-}
-
-mixin Logging {
-  log(String msg);
 }
