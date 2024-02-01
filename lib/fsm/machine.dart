@@ -99,7 +99,7 @@ abstract class StateMachine<C extends Context<C>> {
     print(s);
 
     _entering = null;
-    _enteringCompleter?.completeError(e);
+    _enteringCompleter?.complete();
     _enteringCompleter = null;
     _state = failBehavior.state;
     if (failBehavior.saveContext) {

@@ -25,7 +25,8 @@ class _$ApiStates extends StateMachine<_ApiContext>
   late final Map<Function(ApiContext), String> stateFromMethod;
   late final Map<String, Function()> enterState;
 
-  _$ApiStates() : super("init", _ApiContext.empty(), FailBehavior("failure")) {
+  _$ApiStates(Act act)
+      : super("init", _ApiContext.empty(), FailBehavior("failure")) {
     stateFromMethod = {
       init: "init",
       ready: "ready",
@@ -50,6 +51,7 @@ class _$ApiStates extends StateMachine<_ApiContext>
     guard = (state) => guardState(stateFromMethod[state]!);
     wait = (state) => waitForState(stateFromMethod[state]!);
     log = (msg) => handleLog(msg);
+    this.act = () => act;
 
     enter("init");
   }
@@ -208,8 +210,8 @@ class _$ApiStates extends StateMachine<_ApiContext>
 class _$ApiActor {
   late final _$ApiStates _machine;
 
-  _$ApiActor() {
-    _machine = _$ApiStates();
+  _$ApiActor(Act act) {
+    _machine = _$ApiStates(act);
   }
 
   injectHttp(Action<HttpRequest> http) {

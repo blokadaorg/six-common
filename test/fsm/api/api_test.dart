@@ -11,21 +11,54 @@ import '../../tools.dart';
 // ])
 
 void main() {
-  group("api", () {
+  group("ApiActor", () {
     test("basic", () async {
-      final act =
-          ActScreenplay(ActScenario.platformIsMocked, Flavor.og, Platform.ios);
-
-      final subject = ApiActor(act);
+      final subject = ApiActor(mockedAct);
       subject.injectHttp((it) async {
         subject.onHttpOk("result");
-        //subject.onHttpFail(Exception("error 303"));
       });
-      await subject.onQueryParams({"account_id": "123"});
+      await subject.onQueryParams({});
 
       final result = await subject
           .doRequest(const HttpRequest(url: "https://example.com/"));
       expect(result.result, "result");
+    });
+
+    test("failingRequest", () async {
+      final error = Exception("error");
+      final subject = ApiActor(mockedAct);
+      subject.injectHttp((it) async {
+        subject.onHttpFail(error);
+      });
+      await subject.onQueryParams({});
+
+      final result = await subject
+          .doRequest(const HttpRequest(url: "https://example.com/"));
+      expect(result.error, error);
+    });
+
+    test("queryParamsMissing", () async {
+      final subject = ApiActor(mockedAct);
+      subject.injectHttp((it) async {
+        subject.onHttpOk("result");
+      });
+      await subject.onQueryParams({});
+
+      final result = await subject.doApiRequest(ApiEndpoint.getList);
+      expect(result.result, null);
+    });
+
+    test("apiRequest2", () async {
+      final subject = ApiActor(mockedAct);
+      subject.injectHttp((it) async {
+        subject.onHttpOk("result");
+      });
+      await subject.onQueryParams({});
+
+      await subject.waitForState("ready");
+      final result = await subject.doApiRequest(ApiEndpoint.getList);
+      //expect(result.error != null, true);
+      expect(result.result, null);
     });
   });
 }

@@ -82,7 +82,7 @@ mixin ApiStates on StateMachineActions<ApiContext> {
     final error = c.error;
     if (error is HttpCodeException && !error.shouldRetry()) throw error;
     if (c.retries-- <= 0) throw error ?? Exception("unknown error");
-    await sleepAsync(const Duration(seconds: 3));
+    await sleepAsync(Duration(seconds: act().isProd() ? 3 : 0));
     return fetch;
   }
 
@@ -125,7 +125,8 @@ mixin ApiStates on StateMachineActions<ApiContext> {
     guard(ready);
     var url = e.template;
     for (final param in e.params) {
-      final value = c.queryParams[param]!;
+      final value = c.queryParams[param];
+      if (value == null) throw Exception("missing param: $param");
       url = url.replaceAll("($param)", value);
     }
 
@@ -142,7 +143,7 @@ mixin ApiStates on StateMachineActions<ApiContext> {
 }
 
 class ApiActor extends _$ApiActor {
-  ApiActor(Act act) {
+  ApiActor(Act act) : super(act) {
     if (act.isProd()) {
       final ops = HttpOps();
       final account = dep<AccountStore>();
