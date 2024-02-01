@@ -232,4 +232,6 @@ class _$ApiActor {
   onHttpOk(String result) => _machine.eventOnHttpOk(result);
 
   onHttpFail(Exception error) => _machine.eventOnHttpFail(error);
+
+  waitForState(String state) => _machine.waitForState(state);
 }
