@@ -37,6 +37,17 @@ void main() {
       expect(result.error, error);
     });
 
+    test("queryParams", () async {
+      final subject = ApiActor(mockedAct);
+      subject.injectHttp((it) async {
+        subject.onHttpOk("result");
+      });
+      await subject.onQueryParams({"account_id": "test"});
+
+      final result = await subject.doApiRequest(ApiEndpoint.getList);
+      expect(result.result, "result");
+    });
+
     test("queryParamsMissing", () async {
       final subject = ApiActor(mockedAct);
       subject.injectHttp((it) async {

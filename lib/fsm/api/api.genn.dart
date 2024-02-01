@@ -1,8 +1,10 @@
 part of 'api.dart';
 
 class _ApiContext with ApiContext, Context<_ApiContext> {
-  _ApiContext(HttpRequest? request, String? result, Exception? error,
+  _ApiContext(Map<String, String> queryParams, HttpRequest? request,
+      String? result, Exception? error,
       {int retries = 3}) {
+    this.queryParams = queryParams;
     this.request = request;
     this.result = result;
     this.error = error;
@@ -13,7 +15,7 @@ class _ApiContext with ApiContext, Context<_ApiContext> {
 
   @override
   Context<_ApiContext> copy() =>
-      _ApiContext(request, result, error, retries: retries);
+      _ApiContext(queryParams, request, result, error, retries: retries);
 
   @override
   String toString() =>
