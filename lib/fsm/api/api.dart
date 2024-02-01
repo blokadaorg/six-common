@@ -3,6 +3,7 @@ import 'dart:async';
 import '../../account/account.dart';
 import '../../http/channel.pg.dart';
 import '../../http/http.dart';
+import '../../util/async.dart';
 import '../../util/di.dart';
 import '../machine.dart';
 
@@ -81,7 +82,7 @@ mixin ApiStates on StateMachineActions<ApiContext> {
     final error = c.error;
     if (error is HttpCodeException && !error.shouldRetry()) throw error;
     if (c.retries-- <= 0) throw error ?? Exception("unknown error");
-    // await delay(3000)
+    await sleepAsync(const Duration(seconds: 3));
     return fetch;
   }
 
@@ -159,6 +160,7 @@ class ApiActor extends _$ApiActor {
         );
       } catch (e) {
         print("ApiActor deps: $e");
+        onQueryParams({});
       }
     }
   }
