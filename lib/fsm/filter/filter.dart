@@ -243,10 +243,10 @@ class FilterActor extends _$FilterActor with TraceOrigin {
 
     injectApi((it) async {
       final result = await ApiActor(act).doApiRequest(it);
-      if (result.error != null) {
-        onApiFail(result.error!);
-      } else {
+      if (result.result != null) {
         onApiOk(result.result!);
+      } else {
+        onApiFail(result.error ?? Exception("no result"));
       }
     });
 
