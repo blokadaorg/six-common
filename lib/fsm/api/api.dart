@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../account/account.dart';
 import '../../http/channel.pg.dart';
 import '../../http/http.dart';
 import '../../util/di.dart';
@@ -142,12 +143,23 @@ mixin ApiStates on StateMachineActions<ApiContext> {
 class ApiActor extends _$ApiActor {
   ApiActor(Act act) {
     if (act.isProd()) {
-      HttpOps ops = HttpOps();
+      final ops = HttpOps();
+      final account = dep<AccountStore>();
+
       injectHttp((it) async {
         // TODO: err
         final result = await ops.doGet(it.url);
         onHttpOk(result);
       });
+
+      try {
+        // Account ID may be unavailable
+        onQueryParams(
+          {"account_id": account.id},
+        );
+      } catch (e) {
+        print("ApiActor deps: $e");
+      }
     }
   }
 }

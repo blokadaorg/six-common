@@ -62,8 +62,8 @@ class _$ApiStates extends StateMachine<_ApiContext>
   }
 
   enterInit() async {
-    final c = startEntering("init");
     try {
+      final c = startEntering("init");
       final next = await super.init(c);
       doneEntering("init");
       return next;
@@ -73,45 +73,69 @@ class _$ApiStates extends StateMachine<_ApiContext>
   }
 
   enterReady() async {
-    final c = startEntering("ready");
-    final next = await super.ready(c);
-    doneEntering("ready");
-    return next;
+    try {
+      final c = startEntering("ready");
+      final next = await super.ready(c);
+      doneEntering("ready");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
   }
 
   enterFetch() async {
-    final c = startEntering("fetch");
-    final next = await super.fetch(c);
-    doneEntering("fetch");
-    return next;
+    try {
+      final c = startEntering("fetch");
+      final next = await super.fetch(c);
+      doneEntering("fetch");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
   }
 
   enterWaiting() async {
-    final c = startEntering("waiting");
-    final next = await super.waiting(c);
-    doneEntering("waiting");
-    return next;
+    try {
+      final c = startEntering("waiting");
+      final next = await super.waiting(c);
+      doneEntering("waiting");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
   }
 
   enterRetry() async {
-    final c = startEntering("retry");
-    final next = await super.retry(c);
-    doneEntering("retry");
-    return next;
-  }
-
-  enterSuccess() async {
-    final c = startEntering("success");
-    final next = await super.success(c);
-    doneEntering("success");
-    return next;
+    try {
+      final c = startEntering("retry");
+      final next = await super.retry(c);
+      doneEntering("retry");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
   }
 
   enterFailure() async {
-    final c = startEntering("failure");
-    final next = await super.failure(c);
-    doneEntering("failure");
-    return next;
+    try {
+      final c = startEntering("failure");
+      final next = await super.failure(c);
+      doneEntering("failure");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  enterSuccess() async {
+    try {
+      final c = startEntering("success");
+      final next = await super.success(c);
+      doneEntering("success");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
   }
 
   eventOnQueryParams(Map<String, String> queryParams) async {

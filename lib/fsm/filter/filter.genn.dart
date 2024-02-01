@@ -1,181 +1,285 @@
-// part of 'filter.dart';
-//
-// class _FilterContext with FilterContext, Context<_FilterContext> {
-//   _FilterContext(
-//     List<JsonListItem> lists,
-//     Set<ListHashId> listSelections,
-//     Map<FilterConfigKey, bool> configs,
-//     List<Filter> filters,
-//     List<FilterSelection> filterSelections,
-//     bool defaultsApplied,
-//   ) {
-//     this.lists = lists;
-//     this.listSelections = listSelections;
-//     this.configs = configs;
-//     this.filters = filters;
-//     this.filterSelections = filterSelections;
-//     this.defaultsApplied = defaultsApplied;
-//   }
-//
-//   _FilterContext.empty();
-//
-//   @override
-//   Context<_FilterContext> copy() => _FilterContext(lists, listSelections,
-//       configs, filters, filterSelections, defaultsApplied);
-//
-//   @override
-//   String toString() =>
-//       "FilterContext{defaultsApplied: $defaultsApplied, listSelections: $listSelections, configs: $configs, filterSelections: $filterSelections}";
-// }
-//
-// class _$FilterStates with FilterStates {
-//   _$FilterStates(
-//     Put<String> log,
-//     Query<String, ApiEndpoint> api,
-//     Get<UserLists> userLists,
-//     Put<UserLists> putUserLists,
-//     Get<Act> act,
-//   ) {
-//     _log = log;
-//     _api = api;
-//     _userLists = userLists;
-//     _putUserLists = putUserLists;
-//     _act = act;
-//   }
-// }
-//
-// class _$FilterActor extends Actor<String, _FilterContext> {
-//   late final _trace = dep<TraceFactory>();
-//
-//   late final _$FilterStates _states;
-//
-//   _$FilterActor() : super("init", _FilterContext.empty()) {
-//     // _states = _$FilterStates(handleLog, api(handleLog), userLists());
-//   }
-//
-//   // enableFilter(String filterName, {bool enable = true}) async {
-//   //   guard(FilterState.ready);
-//   //
-//   //   final c = prepareContextDraft();
-//   //   try {
-//   //     await _events.enableFilter(c, filterName, enable: enable);
-//   //     updateState(FilterState.reconfigure);
-//   //     return await waitForState(FilterState.ready);
-//   //   } catch (e, s) {
-//   //     updateStateFailure(e, s, FilterState.ready);
-//   //     rethrow;
-//   //   }
-//   // }
-//   //
-//   // toggleFilterOption(String filterName, String optionName) async {
-//   //   guard(FilterState.ready);
-//   //
-//   //   final c = prepareContextDraft();
-//   //   try {
-//   //     await _events.toggleFilterOption(c, filterName, optionName);
-//   //     updateState(FilterState.reconfigure);
-//   //     return await waitForState(FilterState.ready);
-//   //   } catch (e, s) {
-//   //     updateStateFailure(e, s, FilterState.ready);
-//   //     rethrow;
-//   //   }
-//   // }
-//   //
-//   // reload() async {
-//   //   trace = _trace.newTrace(runtimeType.toString(), "reload");
-//   //   //guard(FilterState.ready);
-//   //
-//   //   final c = prepareContextDraft();
-//   //   try {
-//   //     await _events.reload(c);
-//   //     updateState(FilterState.load);
-//   //     final ret = await waitForState(FilterState.ready);
-//   //     await trace.end();
-//   //     return ret;
-//   //   } catch (e, s) {
-//   //     updateStateFailure(e, s, FilterState.fatal);
-//   //     await trace.endWithFailure(e as Exception, s);
-//   //     rethrow;
-//   //   }
-//   // }
-//
-//   Map<Function(FilterContext), Function()> maps = {};
-//   Map<Function(FilterContext), String> names = {};
-//
-//   doMaps() {
-//     maps = {
-//       _states.load: _whenLoad,
-//       _states.parse: _whenParse,
-//       _states.reconfigure: _whenReconfigure,
-//       _states.defaults: _whenDefaults,
-//     };
-//     names = {
-//       _states.init: "init",
-//       _states.load: "load",
-//       _states.parse: "parse",
-//       _states.reconfigure: "reconfigure",
-//       _states.defaults: "defaults",
-//       _states.ready: "ready",
-//       _states.fatal: "fatal",
-//     };
-//   }
-//
-//   _whenLoad() async {
-//     guard(names[_states.load]!);
-//     try {
-//       final c = prepareContextDraft();
-//       final next = await _states.load(c);
-//       updateState(names[next]!);
-//     } catch (e, s) {
-//       // updateStateFailure(e, s, "init");
-//     }
-//   }
-//
-//   _whenParse() async {
-//     guard("parse");
-//     try {
-//       final c = prepareContextDraft();
-//       await _states.parse(c);
-//       updateState("reconfigure");
-//     } catch (e, s) {
-//       // updateStateFailure(e, s, "fatal");
-//     }
-//   }
-//
-//   _whenReconfigure() async {
-//     guard("reconfigure");
-//     try {
-//       final c = prepareContextDraft();
-//       await _states.reconfigure(c);
-//       updateState("defaults");
-//     } catch (e, s) {
-//       // updateStateFailure(e, s, "fatal");
-//     }
-//   }
-//
-//   _whenDefaults() async {
-//     guard("defaults");
-//
-//     try {
-//       final c = prepareContextDraft();
-//       final next = await _states.defaults(c);
-//       updateState(names[next]!);
-//     } catch (e, s) {
-//       // updateStateFailure(e, s, "fatal");
-//       rethrow;
-//     }
-//   }
-//
-//   @override
-//   onStateChanged(String newState) {
-//     if (newState == "load") {
-//       _whenLoad();
-//     } else if (newState == "parse") {
-//       _whenParse();
-//     } else if (newState == "reconfigure") {
-//       _whenReconfigure();
-//     } else if (newState == "defaults") {
-//       _whenDefaults();
-//     }
-//   }
-// }
+part of 'filter.dart';
+
+class _FilterContext with FilterContext, Context<_FilterContext> {
+  _FilterContext(
+    List<JsonListItem> lists,
+    Set<ListHashId> listSelections,
+    Map<FilterConfigKey, bool> configs,
+    List<Filter> filters,
+    List<FilterSelection> filterSelections,
+    bool defaultsApplied,
+  ) {
+    this.lists = lists;
+    this.listSelections = listSelections;
+    this.configs = configs;
+    this.filters = filters;
+    this.filterSelections = filterSelections;
+    this.defaultsApplied = defaultsApplied;
+  }
+
+  _FilterContext.empty();
+
+  @override
+  Context<_FilterContext> copy() => _FilterContext(lists, listSelections,
+      configs, filters, filterSelections, defaultsApplied);
+
+  @override
+  String toString() =>
+      "FilterContext{defaultsApplied: $defaultsApplied, listSelections: $listSelections, configs: $configs, filterSelections: $filterSelections}";
+}
+
+class _$FilterStates extends StateMachine<_FilterContext>
+    with StateMachineActions<FilterContext>, FilterStates {
+  late final Map<Function(FilterContext), String> stateFromMethod;
+  late final Map<String, Function()> enterState;
+
+  _$FilterStates(Act act)
+      : super("init", _FilterContext.empty(), FailBehavior("fatal")) {
+    stateFromMethod = {
+      init: "init",
+      fetchLists: "fetchLists",
+      waiting: "waiting",
+      parse: "parse",
+      reconfigure: "reconfigure",
+      defaults: "defaults",
+      ready: "ready",
+      fatal: "fatal",
+    };
+    enterState = {
+      "init": enterInit,
+      "fetchLists": enterFetchLists,
+      "waiting": enterWaiting,
+      "parse": enterParse,
+      "reconfigure": enterReconfigure,
+      "defaults": enterDefaults,
+      "ready": enterReady,
+      "fatal": enterFatal,
+    };
+
+    onFail = (state, {saveContext = false}) => failBehavior =
+        FailBehavior(stateFromMethod[state]!, saveContext: saveContext);
+    guard = (state) => guardState(stateFromMethod[state]!);
+    wait = (state) => waitForState(stateFromMethod[state]!);
+    log = (msg) => handleLog(msg);
+    this.act = () => act;
+
+    enter("init");
+  }
+
+  @override
+  onStateChanged(String newState) async {
+    final next = await enterState[newState]!();
+    final known = stateFromMethod[next];
+    if (known != null) await enter(known);
+  }
+
+  enterInit() async {
+    try {
+      final c = startEntering("init");
+      final next = await super.init(c);
+      doneEntering("init");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  enterFetchLists() async {
+    try {
+      final c = startEntering("fetchLists");
+      final next = await super.fetchLists(c);
+      doneEntering("fetchLists");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  enterWaiting() async {
+    try {
+      final c = startEntering("waiting");
+      final next = await super.waiting(c);
+      doneEntering("waiting");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  enterParse() async {
+    try {
+      final c = startEntering("parse");
+      final next = await super.parse(c);
+      doneEntering("parse");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  enterReconfigure() async {
+    try {
+      final c = startEntering("reconfigure");
+      final next = await super.reconfigure(c);
+      doneEntering("reconfigure");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  enterDefaults() async {
+    try {
+      final c = startEntering("defaults");
+      final next = await super.defaults(c);
+      doneEntering("defaults");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  enterReady() async {
+    try {
+      final c = startEntering("ready");
+      final next = await super.ready(c);
+      doneEntering("ready");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  enterFatal() async {
+    try {
+      final c = startEntering("fatal");
+      final next = await super.fatal(c);
+      doneEntering("fatal");
+      return next;
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  eventOnApiOk(String result) async {
+    try {
+      final c = await startEvent("onApiOk");
+      final next = await super.onApiOk(c, result);
+      doneEvent("onApiOk");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+      return next;
+    } catch (e, s) {
+      failEvent(e, s);
+    }
+  }
+
+  eventOnApiFail(Exception error) async {
+    try {
+      final c = await startEvent("onApiFail");
+      final next = await super.onApiFail(c);
+      doneEvent("onApiFail");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+    } catch (e, s) {
+      failEvent(e, s);
+    }
+  }
+
+  eventOnUserLists(UserLists lists) async {
+    try {
+      final c = await startEvent("onUserLists");
+      final next = await super.onUserLists(c, lists);
+      doneEvent("onUserLists");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+    } catch (e, s) {
+      failEvent(e, s);
+    }
+  }
+
+  eventEnableFilter(String filterName, bool enable) async {
+    try {
+      final c = await startEvent("enableFilter");
+      final next = await super.doEnableFilter(c, filterName, enable);
+      doneEvent("enableFilter");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+      await waitForState("ready");
+      return getContext();
+    } catch (e, s) {
+      failEvent(e, s);
+      return getContext();
+    }
+  }
+
+  eventToggleFilterOption(String filterName, String optionName) async {
+    try {
+      final c = await startEvent("toggleFilterOption");
+      final next = await super.toggleFilterOption(c, filterName, optionName);
+      doneEvent("toggleFilterOption");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+      await waitForState("ready");
+      return getContext();
+    } catch (e, s) {
+      failEvent(e, s);
+      return getContext();
+    }
+  }
+
+  eventReload() async {
+    try {
+      final c = await startEvent("reload");
+      final next = await super.doReload(c);
+      doneEvent("reload");
+      final known = stateFromMethod[next];
+      if (known != null) await enter(known);
+      await waitForState("ready");
+      return getContext();
+    } catch (e, s) {
+      failEvent(e, s);
+      return getContext();
+    }
+  }
+}
+
+class _$FilterActor {
+  late final _$FilterStates _machine;
+
+  _$FilterActor(Act act) {
+    _machine = _$FilterStates(act);
+  }
+
+  injectApi(Action<ApiEndpoint> api) {
+    _machine._api = (it) async {
+      Future(() {
+        // TODO: try catch
+        api(it);
+      });
+    };
+  }
+
+  injectPutUserLists(Action<UserLists> putUserLists) {
+    _machine._putUserLists = (it) async {
+      Future(() {
+        putUserLists(it);
+      });
+    };
+  }
+
+  Future<FilterContext> doEnableFilter(String filterName, bool enable) =>
+      _machine.eventEnableFilter(filterName, enable);
+  Future<FilterContext> doToggleFilterOption(
+          String filterName, String optionName) =>
+      _machine.eventToggleFilterOption(filterName, optionName);
+  Future<FilterContext> doReload() => _machine.eventReload();
+
+  onApiOk(String result) => _machine.eventOnApiOk(result);
+  onApiFail(Exception error) => _machine.eventOnApiFail(error);
+  onUserLists(UserLists lists) => _machine.eventOnUserLists(lists);
+
+  waitForState(String state) => _machine.waitForState(state);
+  addOnState(String state, String tag, Function(State, FilterContext) fn) =>
+      _machine.addOnState(state, tag, fn);
+}

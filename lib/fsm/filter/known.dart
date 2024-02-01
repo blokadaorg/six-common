@@ -28,168 +28,170 @@ final _familyEnabled = [
 
 final _v6iOS = [
   Filter("oisd", [
-    Option("small", Action.list, [
+    Option("small", FilterAction.list, [
       "oisd/light"
     ]), // change on oisd/small once backend doesnt force the former as default
-    Option("big", Action.list, ["oisd/big"]),
-    Option("nsfw", Action.list, ["oisd/nsfw"]),
+    Option("big", FilterAction.list, ["oisd/big"]),
+    Option("nsfw", FilterAction.list, ["oisd/nsfw"]),
   ]),
   Filter("stevenblack", [
-    Option("unified", Action.list, ["stevenblack/unified"]),
-    Option("fake news", Action.list, ["stevenblack/fake news"]),
-    Option("adult", Action.list, ["stevenblack/adult"]),
-    Option("social", Action.list, ["stevenblack/social"]),
-    Option("gambling", Action.list, ["stevenblack/gambling"]),
+    Option("unified", FilterAction.list, ["stevenblack/unified"]),
+    Option("fake news", FilterAction.list, ["stevenblack/fake news"]),
+    Option("adult", FilterAction.list, ["stevenblack/adult"]),
+    Option("social", FilterAction.list, ["stevenblack/social"]),
+    Option("gambling", FilterAction.list, ["stevenblack/gambling"]),
   ]),
   Filter("goodbyeads", [
-    Option("standard", Action.list, ["goodbyeads/standard"]),
-    Option("youtube", Action.list, ["goodbyeads/youtube"]),
-    Option("spotify", Action.list, ["goodbyeads/spotify"]),
+    Option("standard", FilterAction.list, ["goodbyeads/standard"]),
+    Option("youtube", FilterAction.list, ["goodbyeads/youtube"]),
+    Option("spotify", FilterAction.list, ["goodbyeads/spotify"]),
   ]),
   Filter("adaway", [
-    Option("standard", Action.list, ["adaway/standard"]),
+    Option("standard", FilterAction.list, ["adaway/standard"]),
   ]),
   Filter("phishingarmy", [
-    Option("standard", Action.list, ["phishingarmy/standard"]),
-    Option("extended", Action.list, ["phishingarmy/extended"]),
+    Option("standard", FilterAction.list, ["phishingarmy/standard"]),
+    Option("extended", FilterAction.list, ["phishingarmy/extended"]),
   ]),
   Filter("ddgtrackerradar", [
-    Option("standard", Action.list, ["ddgtrackerradar/standard"]),
+    Option("standard", FilterAction.list, ["ddgtrackerradar/standard"]),
   ]),
   Filter("blacklist", [
-    Option("adservers", Action.list, ["blacklist/adservers"]),
-    Option("facebook", Action.list, ["blacklist/facebook"]),
+    Option("adservers", FilterAction.list, ["blacklist/adservers"]),
+    Option("facebook", FilterAction.list, ["blacklist/facebook"]),
   ]),
   Filter("developerdan", [
-    Option("ads and tracking", Action.list, ["developerdan/ads and tracking"]),
-    Option("facebook", Action.list, ["developerdan/facebook"]),
-    Option("amp", Action.list, ["developerdan/amp"]),
-    Option("hate and junk", Action.list, ["developerdan/hate and junk"]),
+    Option("ads and tracking", FilterAction.list,
+        ["developerdan/ads and tracking"]),
+    Option("facebook", FilterAction.list, ["developerdan/facebook"]),
+    Option("amp", FilterAction.list, ["developerdan/amp"]),
+    Option("hate and junk", FilterAction.list, ["developerdan/hate and junk"]),
   ]),
   Filter("blocklist", [
-    Option("ads", Action.list, ["blocklist/ads"]),
-    Option("facebook", Action.list, ["blocklist/facebook"]),
-    Option("malware", Action.list, ["blocklist/malware"]),
-    Option("phishing", Action.list, ["blocklist/phishing"]),
-    Option("tracking", Action.list, ["blocklist/tracking"]),
-    Option("youtube", Action.list, ["blocklist/youtube"]),
+    Option("ads", FilterAction.list, ["blocklist/ads"]),
+    Option("facebook", FilterAction.list, ["blocklist/facebook"]),
+    Option("malware", FilterAction.list, ["blocklist/malware"]),
+    Option("phishing", FilterAction.list, ["blocklist/phishing"]),
+    Option("tracking", FilterAction.list, ["blocklist/tracking"]),
+    Option("youtube", FilterAction.list, ["blocklist/youtube"]),
   ]),
   Filter("spam404", [
-    Option("standard", Action.list, ["spam404/standard"]),
+    Option("standard", FilterAction.list, ["spam404/standard"]),
   ]),
   Filter("hblock", [
-    Option("standard", Action.list, ["hblock/standard"]),
+    Option("standard", FilterAction.list, ["hblock/standard"]),
   ]),
   Filter("cpbl", [
-    Option("standard", Action.list, ["cpbl/standard"]),
-    Option("mini", Action.list, ["cpbl/mini"]),
+    Option("standard", FilterAction.list, ["cpbl/standard"]),
+    Option("mini", FilterAction.list, ["cpbl/mini"]),
   ]),
   Filter("danpollock", [
-    Option("standard", Action.list, ["danpollock/standard"]),
+    Option("standard", FilterAction.list, ["danpollock/standard"]),
   ]),
   Filter("urlhaus", [
-    Option("standard", Action.list, ["urlhaus/standard"]),
+    Option("standard", FilterAction.list, ["urlhaus/standard"]),
   ]),
   Filter("1hosts", [
-    Option("lite", Action.list, ["1hosts/lite (wildcards)"]),
-    Option("pro", Action.list, ["1hosts/pro (wildcards)"]),
-    Option("xtra", Action.list, ["1hosts/xtra (wildcards)"]),
+    Option("lite", FilterAction.list, ["1hosts/lite (wildcards)"]),
+    Option("pro", FilterAction.list, ["1hosts/pro (wildcards)"]),
+    Option("xtra", FilterAction.list, ["1hosts/xtra (wildcards)"]),
   ]),
   Filter("d3host", [
-    Option("standard", Action.list, ["d3host/standard"]),
+    Option("standard", FilterAction.list, ["d3host/standard"]),
   ]),
 ];
 
 final _v6Android = [
   Filter("oisd", [
-    Option("small", Action.list, [
+    Option("small", FilterAction.list, [
       "oisd/light"
     ]), // change on oisd/small once backend doesnt force the former as default
-    Option("big", Action.list, ["oisd/big"]),
-    Option("nsfw", Action.list, ["oisd/nsfw"]),
+    Option("big", FilterAction.list, ["oisd/big"]),
+    Option("nsfw", FilterAction.list, ["oisd/nsfw"]),
   ]),
   Filter("stevenblack", [
-    Option("unified", Action.list, ["stevenblack/unified"]),
-    Option("fake news", Action.list, ["stevenblack/fake news"]),
-    Option("adult", Action.list, ["stevenblack/adult"]),
-    Option("social", Action.list, ["stevenblack/social"]),
-    Option("gambling", Action.list, ["stevenblack/gambling"]),
+    Option("unified", FilterAction.list, ["stevenblack/unified"]),
+    Option("fake news", FilterAction.list, ["stevenblack/fake news"]),
+    Option("adult", FilterAction.list, ["stevenblack/adult"]),
+    Option("social", FilterAction.list, ["stevenblack/social"]),
+    Option("gambling", FilterAction.list, ["stevenblack/gambling"]),
   ]),
   Filter("goodbyeads", [
-    Option("standard", Action.list, ["goodbyeads/standard"]),
-    Option("samsung", Action.list, ["goodbyeads/samsung"]),
-    Option("xiaomi", Action.list, ["goodbyeads/xiaomi"]),
-    Option("spotify", Action.list, ["goodbyeads/spotify"]),
-    Option("youtube", Action.list, ["goodbyeads/youtube"]),
+    Option("standard", FilterAction.list, ["goodbyeads/standard"]),
+    Option("samsung", FilterAction.list, ["goodbyeads/samsung"]),
+    Option("xiaomi", FilterAction.list, ["goodbyeads/xiaomi"]),
+    Option("spotify", FilterAction.list, ["goodbyeads/spotify"]),
+    Option("youtube", FilterAction.list, ["goodbyeads/youtube"]),
   ]),
   Filter("adaway", [
-    Option("standard", Action.list, ["adaway/standard"]),
+    Option("standard", FilterAction.list, ["adaway/standard"]),
   ]),
   Filter("phishingarmy", [
-    Option("standard", Action.list, ["phishingarmy/standard"]),
-    Option("extended", Action.list, ["phishingarmy/extended"]),
+    Option("standard", FilterAction.list, ["phishingarmy/standard"]),
+    Option("extended", FilterAction.list, ["phishingarmy/extended"]),
   ]),
   Filter("ddgtrackerradar", [
-    Option("standard", Action.list, ["ddgtrackerradar/standard"]),
+    Option("standard", FilterAction.list, ["ddgtrackerradar/standard"]),
   ]),
   Filter("blacklist", [
-    Option("adservers", Action.list, ["blacklist/adservers"]),
-    Option("facebook", Action.list, ["blacklist/facebook"]),
+    Option("adservers", FilterAction.list, ["blacklist/adservers"]),
+    Option("facebook", FilterAction.list, ["blacklist/facebook"]),
   ]),
   Filter("developerdan", [
-    Option("ads and tracking", Action.list, ["developerdan/ads and tracking"]),
-    Option("facebook", Action.list, ["developerdan/facebook"]),
-    Option("amp", Action.list, ["developerdan/amp"]),
-    Option("hate and junk", Action.list, ["developerdan/hate and junk"]),
+    Option("ads and tracking", FilterAction.list,
+        ["developerdan/ads and tracking"]),
+    Option("facebook", FilterAction.list, ["developerdan/facebook"]),
+    Option("amp", FilterAction.list, ["developerdan/amp"]),
+    Option("hate and junk", FilterAction.list, ["developerdan/hate and junk"]),
   ]),
   Filter("blocklist", [
-    Option("ads", Action.list, ["blocklist/ads"]),
-    Option("facebook", Action.list, ["blocklist/facebook"]),
-    Option("malware", Action.list, ["blocklist/malware"]),
-    Option("phishing", Action.list, ["blocklist/phishing"]),
-    Option("tracking", Action.list, ["blocklist/tracking"]),
-    Option("youtube", Action.list, ["blocklist/youtube"]),
+    Option("ads", FilterAction.list, ["blocklist/ads"]),
+    Option("facebook", FilterAction.list, ["blocklist/facebook"]),
+    Option("malware", FilterAction.list, ["blocklist/malware"]),
+    Option("phishing", FilterAction.list, ["blocklist/phishing"]),
+    Option("tracking", FilterAction.list, ["blocklist/tracking"]),
+    Option("youtube", FilterAction.list, ["blocklist/youtube"]),
   ]),
   Filter("spam404", [
-    Option("standard", Action.list, ["spam404/standard"]),
+    Option("standard", FilterAction.list, ["spam404/standard"]),
   ]),
   Filter("hblock", [
-    Option("standard", Action.list, ["hblock/standard"]),
+    Option("standard", FilterAction.list, ["hblock/standard"]),
   ]),
   Filter("cpbl", [
-    Option("standard", Action.list, ["cpbl/standard"]),
-    Option("mini", Action.list, ["cpbl/mini"]),
+    Option("standard", FilterAction.list, ["cpbl/standard"]),
+    Option("mini", FilterAction.list, ["cpbl/mini"]),
   ]),
   Filter("danpollock", [
-    Option("standard", Action.list, ["danpollock/standard"]),
+    Option("standard", FilterAction.list, ["danpollock/standard"]),
   ]),
   Filter("urlhaus", [
-    Option("standard", Action.list, ["urlhaus/standard"]),
+    Option("standard", FilterAction.list, ["urlhaus/standard"]),
   ]),
   Filter("1hosts", [
-    Option("lite", Action.list, ["1hosts/lite (wildcards)"]),
-    Option("pro", Action.list, ["1hosts/pro (wildcards)"]),
-    Option("xtra", Action.list, ["1hosts/xtra (wildcards)"]),
+    Option("lite", FilterAction.list, ["1hosts/lite (wildcards)"]),
+    Option("pro", FilterAction.list, ["1hosts/pro (wildcards)"]),
+    Option("xtra", FilterAction.list, ["1hosts/xtra (wildcards)"]),
   ]),
   Filter("d3host", [
-    Option("standard", Action.list, ["d3host/standard"]),
+    Option("standard", FilterAction.list, ["d3host/standard"]),
   ]),
 ];
 
 final _family = [
   Filter("meta_safe_search", [
-    Option("safe search", Action.config, ["safeSearch"]),
-    Option("block unsupported", Action.list, ["safesearch/nosafesearch"]),
+    Option("safe search", FilterAction.config, ["safeSearch"]),
+    Option("block unsupported", FilterAction.list, ["safesearch/nosafesearch"]),
   ]),
   Filter("meta_ads", [
-    Option("standard", Action.list, [
+    Option("standard", FilterAction.list, [
       "oisd/small",
       "goodbyeads/standard",
       "adaway/standard",
       "1hosts/lite (wildcards)",
       "d3host/standard",
     ]),
-    Option("restrictive", Action.list, [
+    Option("restrictive", FilterAction.list, [
       "oisd/big",
       "ddgtrackerradar/standard",
       "1hosts/xtra (wildcards)",
@@ -204,7 +206,7 @@ final _family = [
     ]),
   ]),
   Filter("meta_malware", [
-    Option("standard", Action.list, [
+    Option("standard", FilterAction.list, [
       "phishingarmy/standard",
       "phishingarmy/extended",
       "blocklist/malware",
@@ -214,7 +216,7 @@ final _family = [
     ]),
   ]),
   Filter("meta_adult", [
-    Option("porn", Action.list, [
+    Option("porn", FilterAction.list, [
       "stevenblack/adult",
       "sinfonietta/porn",
       "tiuxo/porn",
@@ -222,150 +224,150 @@ final _family = [
     ]),
   ]),
   Filter("meta_dating", [
-    Option("standard", Action.list, [
+    Option("standard", FilterAction.list, [
       "ut1/dating",
     ]),
   ]),
   Filter("meta_gambling", [
-    Option("standard", Action.list, [
+    Option("standard", FilterAction.list, [
       "stevenblack/gambling",
       "ut1/gambling",
       "sinfonietta/gambling",
     ]),
   ]),
   Filter("meta_piracy", [
-    Option("file hosting", Action.list, [
+    Option("file hosting", FilterAction.list, [
       "ut1/warez",
       "ndnspiracy/file hosting",
       "ndnspiracy/proxies",
       "ndnspiracy/usenet",
       "ndnspiracy/warez",
     ]),
-    Option("torrent", Action.list, [
+    Option("torrent", FilterAction.list, [
       "ndnspiracy/dht bootstrap nodes",
       "ndnspiracy/torrent clients",
       "ndnspiracy/torrent trackers",
       "ndnspiracy/torrent websites",
     ]),
-    Option("streaming", Action.list, [
+    Option("streaming", FilterAction.list, [
       "ndnspiracy/streaming audio",
       "ndnspiracy/streaming video",
     ]),
   ]),
   Filter("meta_videostreaming", [
-    Option("standard", Action.list, [
+    Option("standard", FilterAction.list, [
       "ndnspiracy/streaming video",
     ]),
   ]),
   Filter("meta_apps_streaming", [
-    Option("disney plus", Action.list, [
+    Option("disney plus", FilterAction.list, [
       "ndnsapps/disneyplus",
     ]),
-    Option("hbo max", Action.list, [
+    Option("hbo max", FilterAction.list, [
       "ndnsapps/hbomax",
     ]),
-    Option("hulu", Action.list, [
+    Option("hulu", FilterAction.list, [
       "ndnsapps/hulu",
     ]),
-    Option("netflix", Action.list, [
+    Option("netflix", FilterAction.list, [
       "ndnsapps/netflix",
     ]),
-    Option("primevideo", Action.list, [
+    Option("primevideo", FilterAction.list, [
       "ndnsapps/primevideo",
     ]),
-    Option("youtube", Action.list, [
+    Option("youtube", FilterAction.list, [
       "ndnsapps/youtube",
     ]),
   ]),
   Filter("meta_social", [
-    Option("social networks", Action.list, [
+    Option("social networks", FilterAction.list, [
       "stevenblack/social",
       "ut1/social",
       "sinfonietta/social",
     ]),
-    Option("facebook", Action.list, [
+    Option("facebook", FilterAction.list, [
       "blacklist/facebook",
       "developerdan/facebook",
       "blocklist/facebook",
       "ndnsapps/facebook",
     ]),
-    Option("instagram", Action.list, [
+    Option("instagram", FilterAction.list, [
       "ndnsapps/instagram",
     ]),
-    Option("reddit", Action.list, [
+    Option("reddit", FilterAction.list, [
       "ndnsapps/reddit",
     ]),
-    Option("snapchat", Action.list, [
+    Option("snapchat", FilterAction.list, [
       "ndnsapps/snapchat",
     ]),
-    Option("tiktok", Action.list, [
+    Option("tiktok", FilterAction.list, [
       "ndnsapps/tiktok",
     ]),
-    Option("twitter", Action.list, [
+    Option("twitter", FilterAction.list, [
       "ndnsapps/twitter",
     ]),
   ]),
   Filter("meta_apps_chat", [
-    Option("discord", Action.list, [
+    Option("discord", FilterAction.list, [
       "ndnsapps/discord",
     ]),
-    Option("messenger", Action.list, [
+    Option("messenger", FilterAction.list, [
       "ndnsapps/messenger",
     ]),
-    Option("signal", Action.list, [
+    Option("signal", FilterAction.list, [
       "ndnsapps/signal",
     ]),
-    Option("telegram", Action.list, [
+    Option("telegram", FilterAction.list, [
       "ndnsapps/telegram",
     ]),
   ]),
   Filter("meta_gaming", [
-    Option("standard", Action.list, [
+    Option("standard", FilterAction.list, [
       "ut1/gaming",
     ]),
   ]),
   Filter("meta_apps_games", [
-    Option("fortnite", Action.list, [
+    Option("fortnite", FilterAction.list, [
       "ndnsapps/fortnite",
     ]),
-    Option("league of legends", Action.list, [
+    Option("league of legends", FilterAction.list, [
       "ndnsapps/leagueoflegends",
     ]),
-    Option("minecraft", Action.list, [
+    Option("minecraft", FilterAction.list, [
       "ndnsapps/minecraft",
     ]),
-    Option("roblox", Action.list, [
+    Option("roblox", FilterAction.list, [
       "ndnsapps/roblox",
     ]),
-    Option("steam", Action.list, [
+    Option("steam", FilterAction.list, [
       "ndnsapps/steam",
     ]),
-    Option("twitch", Action.list, [
+    Option("twitch", FilterAction.list, [
       "ndnsapps/twitch",
     ]),
   ]),
   Filter("meta_apps_commerce", [
-    Option("amazon", Action.list, [
+    Option("amazon", FilterAction.list, [
       "ndnsapps/amazon",
     ]),
-    Option("ebay", Action.list, [
+    Option("ebay", FilterAction.list, [
       "ndnsapps/ebay",
     ]),
   ]),
   Filter("meta_apps_other", [
-    Option("9gag", Action.list, [
+    Option("9gag", FilterAction.list, [
       "ndnsapps/9gag",
     ]),
-    Option("chat gpt", Action.list, [
+    Option("chat gpt", FilterAction.list, [
       "ndnsapps/chatgpt",
     ]),
-    Option("imgur", Action.list, [
+    Option("imgur", FilterAction.list, [
       "ndnsapps/imgur",
     ]),
-    Option("pinterest", Action.list, [
+    Option("pinterest", FilterAction.list, [
       "ndnsapps/pinterest",
     ]),
-    Option("tinder", Action.list, [
+    Option("tinder", FilterAction.list, [
       "ndnsapps/tinder",
     ]),
   ]),

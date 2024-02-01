@@ -18,12 +18,12 @@ class FilterSelection {
 
 class Option {
   final String optionName;
-  final Action action;
+  final FilterAction action;
   final List<String> actionParams;
 
   Option(this.optionName, this.action, this.actionParams);
 }
 
-enum Action { list, config }
+enum FilterAction { list, config }
 
 enum FilterConfigKey { safeSearch }

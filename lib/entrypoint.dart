@@ -9,8 +9,7 @@ import 'deck/deck.dart';
 import 'device/device.dart';
 import 'env/env.dart';
 import 'family/family.dart';
-import 'fsm/api/provider.dart';
-import 'fsm/filter/provider.dart';
+import 'fsm/filter/filter.dart';
 import 'http/http.dart';
 import 'journal/journal.dart';
 import 'link/link.dart';
@@ -71,8 +70,7 @@ class Entrypoint with Dependable, TraceOrigin, Traceable {
     AccountRefreshStore().attachAndSaveAct(act);
     DeviceStore().attachAndSaveAct(act);
 
-    ApiActorProvider().attach(act);
-    FilterActorProvider().attach(act);
+    FilterActor(act);
 
     AppStore().attachAndSaveAct(act);
     AppStartStore().attachAndSaveAct(act);

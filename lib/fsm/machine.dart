@@ -27,6 +27,7 @@ class FailBehavior {
 }
 
 mixin StateMachineActions<T> {
+  late final Act Function() act;
   late final Function(String) log;
   late final Function(Function(T)) guard;
   late final Future<T> Function(Function(T)) wait;
@@ -72,7 +73,7 @@ abstract class StateMachine<C extends Context<C>> {
     if (_entering != null) {
       throw Exception("already entering state: $_entering");
     }
-    handleLog("entering: $state");
+    // handleLog("entering: $state");
     failBehavior = _commonFailBehavior;
     _entering = state;
     _enteringCompleter = Completer<void>();
@@ -84,7 +85,7 @@ abstract class StateMachine<C extends Context<C>> {
     if (_entering != state) {
       throw Exception("doneEntering: $_entering, exp: $state");
     }
-    handleLog("done entering: $state");
+    // handleLog("done entering: $state");
     _entering = null;
     _enteringCompleter?.complete();
     _enteringCompleter = null;
@@ -122,7 +123,7 @@ abstract class StateMachine<C extends Context<C>> {
     if (_enteringCompleter != null) {
       await _enteringCompleter?.future;
     }
-    handleLog("start event: $name");
+    // handleLog("start event: $name");
     failBehavior = _commonFailBehavior;
     _draft = _context.copy() as C;
     return _draft;
