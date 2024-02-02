@@ -198,7 +198,8 @@ class _$FilterStates extends StateMachine<_FilterContext>
     }
   }
 
-  eventEnableFilter(String filterName, bool enable) async {
+  Future<FilterContext> eventEnableFilter(
+      String filterName, bool enable) async {
     try {
       final c = await startEvent("enableFilter");
       final next = await super.doEnableFilter(c, filterName, enable);
@@ -213,7 +214,8 @@ class _$FilterStates extends StateMachine<_FilterContext>
     }
   }
 
-  eventToggleFilterOption(String filterName, String optionName) async {
+  Future<FilterContext> eventToggleFilterOption(
+      String filterName, String optionName) async {
     try {
       final c = await startEvent("toggleFilterOption");
       final next = await super.toggleFilterOption(c, filterName, optionName);
@@ -228,7 +230,7 @@ class _$FilterStates extends StateMachine<_FilterContext>
     }
   }
 
-  eventReload() async {
+  Future<FilterContext> eventReload() async {
     try {
       final c = await startEvent("reload");
       final next = await super.doReload(c);
