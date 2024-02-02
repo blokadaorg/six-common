@@ -259,6 +259,7 @@ class _$FilterActor {
     _machine._api = (it) async {
       Future(() {
         // TODO: try catch
+        _machine.log("api");
         api(it);
       });
     };
@@ -267,6 +268,7 @@ class _$FilterActor {
   injectPutUserLists(Action<UserLists> putUserLists) {
     _machine._putUserLists = (it) async {
       Future(() {
+        _machine.log("putUserLists");
         putUserLists(it);
       });
     };
