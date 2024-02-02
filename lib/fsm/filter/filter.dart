@@ -31,6 +31,7 @@ mixin FilterContext {
   List<Filter> filters = [];
   List<FilterSelection> filterSelections = [];
   bool defaultsApplied = false;
+  bool listSelectionsSet = false;
 }
 
 // @Machine
@@ -56,7 +57,7 @@ mixin FilterStates on StateMachineActions<FilterContext> {
   }
 
   waiting(FilterContext c) async {
-    if (c.lists.isNotEmpty /*&& c.configs.isNotEmpty*/) {
+    if (c.listSelectionsSet && c.lists.isNotEmpty /*&& c.configs.isNotEmpty*/) {
       return parse;
     }
   }
@@ -72,6 +73,7 @@ mixin FilterStates on StateMachineActions<FilterContext> {
 
   onUserLists(FilterContext c, UserLists lists) async {
     c.listSelections = lists;
+    c.listSelectionsSet = true;
     return waiting;
   }
 

@@ -8,6 +8,7 @@ class _FilterContext with FilterContext, Context<_FilterContext> {
     List<Filter> filters,
     List<FilterSelection> filterSelections,
     bool defaultsApplied,
+    bool listSelectionsSet,
   ) {
     this.lists = lists;
     this.listSelections = listSelections;
@@ -15,13 +16,14 @@ class _FilterContext with FilterContext, Context<_FilterContext> {
     this.filters = filters;
     this.filterSelections = filterSelections;
     this.defaultsApplied = defaultsApplied;
+    this.listSelectionsSet = listSelectionsSet;
   }
 
   _FilterContext.empty();
 
   @override
   Context<_FilterContext> copy() => _FilterContext(lists, listSelections,
-      configs, filters, filterSelections, defaultsApplied);
+      configs, filters, filterSelections, defaultsApplied, listSelectionsSet);
 
   @override
   String toString() =>
