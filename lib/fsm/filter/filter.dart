@@ -250,7 +250,7 @@ class FilterActor extends _$FilterActor with TraceOrigin {
         final result = await actor.doApiRequest(it);
         onApiOk(result.result!);
       } catch (e) {
-        actor.onHttpFail(e as Exception);
+        onApiFail(e as Exception);
       }
     });
 
