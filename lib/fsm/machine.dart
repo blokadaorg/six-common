@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
+
 import '../tracer/collectors.dart';
 import '../tracer/tracer.dart';
 import '../util/di.dart';
@@ -35,14 +37,15 @@ mixin StateMachineActions<T> {
 }
 
 abstract class StateMachine<C extends Context<C>> {
-  final _queue = <Function()>[];
+  final _queue = <Future Function()>[];
 
   final Map<String, Function(State, C)> _anyStateListeners = {};
   final Map<State, Map<String, Function(State, C)>> _stateListeners = {};
   final Map<State, List<Completer<C>>> _waitingForState = {};
 
+  late final Map<Function(C), String> states;
+
   State _state;
-  State? _entering;
   Completer<void>? _enteringCompleter;
 
   FailBehavior failBehavior;
@@ -60,33 +63,81 @@ abstract class StateMachine<C extends Context<C>> {
     _commonFailBehavior = failBehavior;
   }
 
-  enter(String state) async {
-    handleLog("enter: $state");
-    _state = state;
-    await notify(state);
+  enter(State state) async {
+    queue(() async {
+      await _enter(state);
+    });
   }
 
-  C startEntering(String state) {
+  _enter(State state) async {
+    handleLog("enter: $state");
+    _state = state;
+
+    // Execute entering action
+    final action =
+        states.entries.firstWhereOrNull((it) => it.value == state)?.key;
+
+    if (action != null) {
+      try {
+        handleLog("action: $state");
+        failBehavior = _commonFailBehavior;
+        //_enteringCompleter = Completer<void>();
+        _draft = _context.copy() as C;
+
+        final next = await action(_draft);
+
+        handleLog("done action: $state");
+        _context = _draft;
+
+        final nextState = states[next];
+        if (nextState != null) _enter(nextState);
+      } catch (e, s) {
+        failEntering(e, s);
+      }
+    }
+    onStateChangedExternal(state);
+  }
+
+  event(String name, Function(C) fn) async {
+    queue(() async {
+      await _event(name, fn);
+    });
+  }
+
+  _event(String name, Function(C) fn) async {
+    try {
+      handleLog("start event: $name");
+      failBehavior = _commonFailBehavior;
+      _draft = _context.copy() as C;
+
+      final next = await fn(_draft);
+
+      handleLog("done event: $name");
+      _context = _draft;
+
+      final nextState = states[next];
+      if (nextState != null) _enter(nextState);
+    } catch (e, s) {
+      failEntering(e, s);
+    }
+  }
+
+  Future<C> startEntering(State state) async {
     if (_state != state) {
       throw Exception("invalid state: $_state, exp: $state");
     }
-    if (_entering != null) {
-      throw Exception("already entering state: $_entering");
+    if (_enteringCompleter != null) {
+      handleLog("start entering: waiting for completer");
+      await _enteringCompleter?.future;
     }
-    // handleLog("entering: $state");
-    failBehavior = _commonFailBehavior;
-    _entering = state;
-    _enteringCompleter = Completer<void>();
-    _draft = _context.copy() as C;
     return _draft;
   }
 
-  doneEntering(String state) {
-    if (_entering != state) {
-      throw Exception("doneEntering: $_entering, exp: $state");
+  doneEntering(State state) {
+    if (_enteringCompleter == null) {
+      throw Exception("doneEntering: no waiting completer");
     }
-    // handleLog("done entering: $state");
-    _entering = null;
+    handleLog("done entering: $state");
     _enteringCompleter?.complete();
     _enteringCompleter = null;
     //_state = state;
@@ -98,39 +149,42 @@ abstract class StateMachine<C extends Context<C>> {
     print("fail entering [$runtimeType] error($_state): $e");
     print(s);
 
-    _entering = null;
-    _enteringCompleter?.complete();
-    _enteringCompleter = null;
     _state = failBehavior.state;
     if (failBehavior.saveContext) {
       _context = _draft;
     }
+    _enter(_state);
 
     // Also fail the waiting completers
-    queue(() {
-      for (final completers in _waitingForState.values) {
-        for (final c in completers) {
-          queue(() {
-            c.completeError(e, s);
-          });
-        }
+    for (final completers in _waitingForState.values) {
+      for (final c in completers) {
+        queue(() async {
+          c.completeError(e, s);
+        });
       }
-      _waitingForState.clear();
-    });
+    }
+    _waitingForState.clear();
   }
 
   Future<C> startEvent(String name) async {
     if (_enteringCompleter != null) {
+      handleLog("start event: waiting for completer");
       await _enteringCompleter?.future;
     }
-    // handleLog("start event: $name");
+    _enteringCompleter = Completer<void>();
+    handleLog("start event: $name");
     failBehavior = _commonFailBehavior;
     _draft = _context.copy() as C;
     return _draft;
   }
 
   doneEvent(String name) {
+    if (_enteringCompleter == null) {
+      throw Exception("failEntering: no waiting completer");
+    }
     handleLog("done event: $name");
+    _enteringCompleter?.complete();
+    _enteringCompleter = null;
     _context = _draft;
   }
 
@@ -146,90 +200,73 @@ abstract class StateMachine<C extends Context<C>> {
     //trace.addAttribute("state", _state);
   }
 
-  notify(State state) async {
-    await onStateChanged(state);
-    queue(() {
-      onStateChangedExternal(state);
-    });
-  }
-
   C getContext() {
-    if (_entering != null) {
-      throw Exception("currently entering state: $_entering");
+    if (_enteringCompleter != null) {
+      throw Exception("currently entering state");
     }
     return _context;
   }
 
-  onStateChanged(State state);
-
   onStateChangedExternal(State state) {
-    queue(() {
-      final completers = _waitingForState[state];
-      if (completers != null) {
-        for (final c in completers) {
-          queue(() {
-            c.complete(_context);
-          });
-        }
-        _waitingForState[state] = [];
+    final completers = _waitingForState[state];
+    if (completers != null) {
+      for (final c in completers) {
+        queue(() async {
+          c.complete(_context);
+        });
       }
+      _waitingForState[state] = [];
+    }
 
-      final listeners = _stateListeners[state]?.entries;
-      if (listeners != null) {
-        for (final e in listeners) {
-          final tag = e.key;
-          final fn = e.value;
-
-          queue(() {
-            fn(state, _context);
-          });
-        }
-      }
-
-      final anyListeners = _anyStateListeners.entries;
-      for (final e in anyListeners) {
+    final listeners = _stateListeners[state]?.entries;
+    if (listeners != null) {
+      for (final e in listeners) {
         final tag = e.key;
         final fn = e.value;
 
-        queue(() {
+        queue(() async {
           fn(state, _context);
         });
       }
-    });
+    }
+
+    final anyListeners = _anyStateListeners.entries;
+    for (final e in anyListeners) {
+      final tag = e.key;
+      final fn = e.value;
+
+      queue(() async {
+        fn(state, _context);
+      });
+    }
   }
 
   addOnState(State state, String tag, Function(State, C) fn) {
-    queue(() {
-      _stateListeners[state] ??= {};
-      _stateListeners[state]![tag] = fn;
-    });
+    _stateListeners[state] ??= {};
+    _stateListeners[state]![tag] = fn;
   }
 
   addOnStateChange(String tag, Function(State, C) fn) {
-    queue(() {
-      _anyStateListeners[tag] = fn;
-    });
+    _anyStateListeners[tag] = fn;
   }
 
   Future<C> waitForState(State state) async {
     if (_state == state) return _context;
     final c = Completer<C>();
-    queue(() {
-      _waitingForState[state] ??= [];
-      _waitingForState[state]!.add(c);
-    });
+    _waitingForState[state] ??= [];
+    _waitingForState[state]!.add(c);
     return c.future;
   }
 
-  queue(Function() fn) {
+  queue(Future Function() fn) {
     _queue.add(fn);
     _process();
   }
 
-  _process() {
-    Future(() {
+  _process() async {
+    await Future(() async {
       while (_queue.isNotEmpty) {
-        _queue.removeAt(0)();
+        await _queue.removeAt(0)();
       }
     });
   }

@@ -48,7 +48,7 @@ const fixtureListEndpoint = '''
       },
       {
          "id":"2034b164ce8e64953de05746a2aa836a",
-         "name":"mirror/v5/oisd/basicw/hosts.txt",
+         "name":"mirror/v5/oisd/light/hosts.txt",
          "managed":true,
          "is_allowlist":false
       },
