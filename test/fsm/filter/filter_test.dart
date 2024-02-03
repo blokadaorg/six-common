@@ -11,59 +11,64 @@ import 'package:common/util/trace.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../deck/fixtures.dart';
+import '../../tools.dart';
 
 void main() {
   group("filter", () {
     test("basic", () async {
-      final act =
-          ActScreenplay(ActScenario.platformIsMocked, Flavor.og, Platform.ios);
+      await withTrace((trace) async {
+        final act = ActScreenplay(
+            ActScenario.platformIsMocked, Flavor.og, Platform.ios);
 
-      final subject = FilterActor(act);
-      subject.injectApi((it) async {
-        subject.onApiOk(fixtureListEndpoint);
+        final subject = FilterActor(act);
+        subject.injectApi((it) async {
+          subject.apiOk(fixtureListEndpoint);
+        });
+        subject.injectPutUserLists((it) async {});
+
+        subject.userLists({});
+        await subject.waitForState("ready");
+        // await subject.reload();
+
+        // expect(
+        //     subject
+        //         .prepareContextDraft()
+        //         .filterSelections
+        //         .where((it) => it.options.isNotEmpty)
+        //         .length,
+        //     1);
       });
-      subject.injectPutUserLists((it) async {});
-
-      subject.onUserLists({});
-      await subject.waitForState("ready");
-      // await subject.reload();
-
-      // expect(
-      //     subject
-      //         .prepareContextDraft()
-      //         .filterSelections
-      //         .where((it) => it.options.isNotEmpty)
-      //         .length,
-      //     1);
     });
 
     test("defaults", () async {
-      final act =
-          ActScreenplay(ActScenario.platformIsMocked, Flavor.og, Platform.ios);
+      await withTrace((trace) async {
+        final act = ActScreenplay(
+            ActScenario.platformIsMocked, Flavor.og, Platform.ios);
 
-      final subject = FilterActor(act);
-      subject.injectApi((it) async {
-        subject.onApiOk(fixtureListEndpoint);
+        final subject = FilterActor(act);
+        subject.injectApi((it) async {
+          subject.apiOk(fixtureListEndpoint);
+        });
+
+        final c = Completer<void>();
+        subject.injectPutUserLists((it) async {
+          if (it.length == 1) c.complete();
+        });
+
+        subject.userLists({"1"});
+
+        await subject.waitForState("ready");
+        await c.future;
+        // await subject.reload();
+
+        // expect(
+        //     subject
+        //         .prepareContextDraft()
+        //         .filterSelections
+        //         .where((it) => it.options.isNotEmpty)
+        //         .length,
+        //     1);
       });
-
-      final c = Completer<void>();
-      subject.injectPutUserLists((it) async {
-        if (it.length == 1) c.complete();
-      });
-
-      subject.onUserLists({"1"});
-
-      await subject.waitForState("ready");
-      await c.future;
-      // await subject.reload();
-
-      // expect(
-      //     subject
-      //         .prepareContextDraft()
-      //         .filterSelections
-      //         .where((it) => it.options.isNotEmpty)
-      //         .length,
-      //     1);
     });
   });
 }

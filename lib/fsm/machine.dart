@@ -20,6 +20,7 @@ mixin Context<C> {
 }
 
 typedef State = String;
+typedef StateFn<C> = Function(C);
 
 class FailBehavior {
   final String state;
@@ -33,20 +34,18 @@ mixin StateMachineActions<T> {
   late final Function(String) log;
   late final Function(Function(T)) guard;
   late final Future<T> Function(Function(T)) wait;
-  late final Function(Function(T), {bool saveContext}) onFail;
+  late final Function(Function(T), {bool saveContext}) whenFail;
 }
 
 abstract class StateMachine<C extends Context<C>> {
   final _queue = <Future Function()>[];
 
-  final Map<String, Function(State, C)> _anyStateListeners = {};
   final Map<State, Map<String, Function(State, C)>> _stateListeners = {};
   final Map<State, List<Completer<C>>> _waitingForState = {};
 
-  late final Map<Function(C), String> states;
+  late final Map<Function(C), State> states;
 
   State _state;
-  Completer<void>? _enteringCompleter;
 
   FailBehavior failBehavior;
   late FailBehavior _commonFailBehavior;
@@ -54,22 +53,24 @@ abstract class StateMachine<C extends Context<C>> {
   C _context;
   late C _draft;
 
-  late Trace trace;
+  late List<Trace> traces;
+  late final _tracer = dep<TraceFactory>();
 
   StateMachine(this._state, this._context, this.failBehavior) {
-    // trace = DefaultTrace.as(
-    //     generateTraceId(8), "machine", runtimeType.toString(),
-    //     important: false);
     _commonFailBehavior = failBehavior;
   }
 
   enter(State state) async {
     queue(() async {
+      traces = [_tracer.newTrace(runtimeType.toString(), "state")];
       await _enter(state);
+      await traces.last.end();
+      traces.removeLast();
     });
   }
 
   _enter(State state) async {
+    final trace = traces.last.start("state", state);
     handleLog("enter: $state");
     _state = state;
 
@@ -81,7 +82,6 @@ abstract class StateMachine<C extends Context<C>> {
       try {
         handleLog("action: $state");
         failBehavior = _commonFailBehavior;
-        //_enteringCompleter = Completer<void>();
         _draft = _context.copy() as C;
 
         final next = await action(_draft);
@@ -90,9 +90,15 @@ abstract class StateMachine<C extends Context<C>> {
         _context = _draft;
 
         final nextState = states[next];
-        if (nextState != null) _enter(nextState);
+        if (nextState != null) {
+          traces.add(trace);
+          await _enter(nextState);
+          traces.removeLast();
+        }
+        await trace.end();
       } catch (e, s) {
         failEntering(e, s);
+        await trace.endWithFailure(e as Exception, s);
       }
     }
     onStateChangedExternal(state);
@@ -100,11 +106,15 @@ abstract class StateMachine<C extends Context<C>> {
 
   event(String name, Function(C) fn) async {
     queue(() async {
+      traces = [_tracer.newTrace(runtimeType.toString(), "event")];
       await _event(name, fn);
+      await traces.last.end();
+      traces.removeLast();
     });
   }
 
   _event(String name, Function(C) fn) async {
+    final trace = traces.last.start("event", name);
     try {
       handleLog("start event: $name");
       failBehavior = _commonFailBehavior;
@@ -116,33 +126,16 @@ abstract class StateMachine<C extends Context<C>> {
       _context = _draft;
 
       final nextState = states[next];
-      if (nextState != null) _enter(nextState);
+      if (nextState != null) {
+        traces.add(trace);
+        await _enter(nextState);
+        traces.removeLast();
+      }
+      await trace.end();
     } catch (e, s) {
       failEntering(e, s);
+      await trace.endWithFailure(e as Exception, s);
     }
-  }
-
-  Future<C> startEntering(State state) async {
-    if (_state != state) {
-      throw Exception("invalid state: $_state, exp: $state");
-    }
-    if (_enteringCompleter != null) {
-      handleLog("start entering: waiting for completer");
-      await _enteringCompleter?.future;
-    }
-    return _draft;
-  }
-
-  doneEntering(State state) {
-    if (_enteringCompleter == null) {
-      throw Exception("doneEntering: no waiting completer");
-    }
-    handleLog("done entering: $state");
-    _enteringCompleter?.complete();
-    _enteringCompleter = null;
-    //_state = state;
-    _context = _draft;
-    //notify(state);
   }
 
   failEntering(Object e, StackTrace s) {
@@ -166,44 +159,20 @@ abstract class StateMachine<C extends Context<C>> {
     _waitingForState.clear();
   }
 
-  Future<C> startEvent(String name) async {
-    if (_enteringCompleter != null) {
-      handleLog("start event: waiting for completer");
-      await _enteringCompleter?.future;
-    }
-    _enteringCompleter = Completer<void>();
-    handleLog("start event: $name");
-    failBehavior = _commonFailBehavior;
-    _draft = _context.copy() as C;
-    return _draft;
-  }
-
-  doneEvent(String name) {
-    if (_enteringCompleter == null) {
-      throw Exception("failEntering: no waiting completer");
-    }
-    handleLog("done event: $name");
-    _enteringCompleter?.complete();
-    _enteringCompleter = null;
-    _context = _draft;
-  }
-
-  failEvent(Object e, StackTrace s) => failEntering(e, s);
-
-  guardState(State state) {
-    if (_state != state) throw Exception("invalid state: $_state, exp: $state");
+  guardState(StateFn<C> state) {
+    final s = states[state]!;
+    if (_state != s) throw Exception("invalid state: $_state, exp: $s");
   }
 
   Future<void> handleLog(String msg) async {
-    print("[$runtimeType] [$_state] $msg");
+    traces.last.addEvent(msg);
+    //print("[$runtimeType] [$_state] $msg");
     //trace.addEvent(msg);
     //trace.addAttribute("state", _state);
   }
 
   C getContext() {
-    if (_enteringCompleter != null) {
-      throw Exception("currently entering state");
-    }
+    // TODO: do we want to expose it
     return _context;
   }
 
@@ -229,25 +198,11 @@ abstract class StateMachine<C extends Context<C>> {
         });
       }
     }
-
-    final anyListeners = _anyStateListeners.entries;
-    for (final e in anyListeners) {
-      final tag = e.key;
-      final fn = e.value;
-
-      queue(() async {
-        fn(state, _context);
-      });
-    }
   }
 
   addOnState(State state, String tag, Function(State, C) fn) {
     _stateListeners[state] ??= {};
     _stateListeners[state]![tag] = fn;
-  }
-
-  addOnStateChange(String tag, Function(State, C) fn) {
-    _anyStateListeners[tag] = fn;
   }
 
   Future<C> waitForState(State state) async {
@@ -256,6 +211,11 @@ abstract class StateMachine<C extends Context<C>> {
     _waitingForState[state] ??= [];
     _waitingForState[state]!.add(c);
     return c.future;
+  }
+
+  whenState(StateFn<C> state, Function(C) fn) {
+    final s = states[state]!;
+    return waitForState(s).then(fn);
   }
 
   queue(Future Function() fn) {

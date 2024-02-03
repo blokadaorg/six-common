@@ -36,9 +36,9 @@ class _$ApiStates extends StateMachine<_ApiContext>
       success: "success",
     };
 
-    onFail = (state, {saveContext = false}) =>
+    whenFail = (state, {saveContext = false}) =>
         failBehavior = FailBehavior(states[state]!, saveContext: saveContext);
-    guard = (state) => guardState(states[state]!);
+    guard = (state) => guardState(state);
     wait = (state) => waitForState(states[state]!);
     log = (msg) => handleLog(msg);
     this.act = () => act;
@@ -58,21 +58,19 @@ class _$ApiStates extends StateMachine<_ApiContext>
     event("httpFail", (c) async => await onHttpFail(c, error));
   }
 
-  Future<ApiContext> eventRequest(HttpRequest request) async {
-    event("request", (c) async => await doRequest(c, request));
-    await waitForState("success");
-    return getContext();
+  eventRequest(HttpRequest request) async {
+    event("request", (c) async => await onRequest(c, request));
   }
 
-  Future<ApiContext> eventApiRequest(ApiEndpoint e) async {
-    event("apiRequest", (c) async => await doApiRequest(c, e));
-    await waitForState("success");
-    return getContext();
+  eventApiRequest(ApiEndpoint e) async {
+    event("apiRequest", (c) async => await onApiRequest(c, e));
   }
 }
 
 class _$ApiActor {
   late final _$ApiStates _machine;
+
+  ready(ApiContext c) => _machine.ready;
 
   _$ApiActor(Act act) {
     _machine = _$ApiStates(act);
@@ -86,18 +84,19 @@ class _$ApiActor {
     };
   }
 
-  Future<ApiContext> doRequest(HttpRequest request) =>
-      _machine.eventRequest(request);
+  request(HttpRequest request) => _machine.eventRequest(request);
 
-  Future<ApiContext> doApiRequest(ApiEndpoint endpoint) =>
-      _machine.eventApiRequest(endpoint);
+  apiRequest(ApiEndpoint endpoint) => _machine.eventApiRequest(endpoint);
 
-  onQueryParams(Map<String, String> queryParams) =>
+  queryParams(Map<String, String> queryParams) =>
       _machine.eventOnQueryParams(queryParams);
 
-  onHttpOk(String result) => _machine.eventOnHttpOk(result);
+  httpOk(String result) => _machine.eventOnHttpOk(result);
 
-  onHttpFail(Exception error) => _machine.eventOnHttpFail(error);
+  httpFail(Exception error) => _machine.eventOnHttpFail(error);
 
   waitForState(String state) => _machine.waitForState(state);
+
+  whenState(StateFn<ApiContext> state, Function(ApiContext) fn) =>
+      _machine.whenState(state, fn);
 }

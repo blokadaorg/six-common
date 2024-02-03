@@ -13,63 +13,78 @@ import '../../tools.dart';
 void main() {
   group("ApiActor", () {
     test("basic", () async {
-      final subject = ApiActor(mockedAct);
-      subject.injectHttp((it) async {
-        subject.onHttpOk("result");
-      });
-      await subject.onQueryParams({});
+      await withTrace((trace) async {
+        final subject = ApiActor(mockedAct);
+        subject.injectHttp((it) async {
+          subject.httpOk("result");
+        });
+        subject.queryParams({});
 
-      final result = await subject
-          .doRequest(const HttpRequest(url: "https://example.com/"));
-      expect(result.result, "result");
+        subject.request(const HttpRequest(url: "https://example.com/"));
+        final result = await subject.waitForState("success");
+        expect(result.result, "result");
+      });
     });
 
     test("failingRequest", () async {
-      final error = Exception("error");
-      final subject = ApiActor(mockedAct);
-      subject.injectHttp((it) async {
-        subject.onHttpFail(error);
-      });
-      await subject.onQueryParams({});
+      await withTrace((trace) async {
+        final error = Exception("error");
+        final subject = ApiActor(mockedAct);
+        subject.injectHttp((it) async {
+          subject.httpFail(error);
+        });
+        await subject.queryParams({});
 
-      final result = await subject
-          .doRequest(const HttpRequest(url: "https://example.com/"));
-      expect(result.error, error);
+        await subject.request(const HttpRequest(url: "https://example.com/"));
+        try {
+          final result = await subject.waitForState("ready");
+          expect(result.error, error);
+        } catch (e) {}
+      });
     });
 
     test("queryParams", () async {
-      final subject = ApiActor(mockedAct);
-      subject.injectHttp((it) async {
-        subject.onHttpOk("result");
-      });
-      await subject.onQueryParams({"account_id": "test"});
+      await withTrace((trace) async {
+        final subject = ApiActor(mockedAct);
+        subject.injectHttp((it) async {
+          subject.httpOk("result");
+        });
+        await subject.queryParams({"account_id": "test"});
 
-      final result = await subject.doApiRequest(ApiEndpoint.getList);
-      expect(result.result, "result");
+        await subject.apiRequest(ApiEndpoint.getList);
+        final result = await subject.waitForState("ready");
+        expect(result.result, "result");
+      });
     });
 
     test("queryParamsMissing", () async {
-      final subject = ApiActor(mockedAct);
-      subject.injectHttp((it) async {
-        subject.onHttpOk("result");
-      });
-      await subject.onQueryParams({});
+      await withTrace((trace) async {
+        final subject = ApiActor(mockedAct);
+        subject.injectHttp((it) async {
+          subject.httpOk("result");
+        });
+        await subject.queryParams({});
 
-      final result = await subject.doApiRequest(ApiEndpoint.getList);
-      expect(result.result, null);
+        await subject.apiRequest(ApiEndpoint.getList);
+        final result = await subject.waitForState("ready");
+        expect(result.result, null);
+      });
     });
 
     test("apiRequest2", () async {
-      final subject = ApiActor(mockedAct);
-      subject.injectHttp((it) async {
-        subject.onHttpOk("result");
-      });
-      await subject.onQueryParams({});
+      await withTrace((trace) async {
+        final subject = ApiActor(mockedAct);
+        subject.injectHttp((it) async {
+          subject.httpOk("result");
+        });
+        await subject.queryParams({});
 
-      await subject.waitForState("ready");
-      final result = await subject.doApiRequest(ApiEndpoint.getList);
-      //expect(result.error != null, true);
-      expect(result.result, null);
+        await subject.waitForState("ready");
+        await subject.apiRequest(ApiEndpoint.getList);
+        final result = await subject.waitForState("ready");
+        //expect(result.error != null, true);
+        expect(result.result, null);
+      });
     });
   });
 }

@@ -45,9 +45,9 @@ class _$FilterStates extends StateMachine<_FilterContext>
       fatal: "fatal",
     };
 
-    onFail = (state, {saveContext = false}) =>
+    whenFail = (state, {saveContext = false}) =>
         failBehavior = FailBehavior(states[state]!, saveContext: saveContext);
-    guard = (state) => guardState(states[state]!);
+    guard = (state) => guardState(state);
     wait = (state) => waitForState(states[state]!);
     log = (msg) => handleLog(msg);
     this.act = () => act;
@@ -67,26 +67,18 @@ class _$FilterStates extends StateMachine<_FilterContext>
     event("userLists", (c) async => await onUserLists(c, lists));
   }
 
-  Future<FilterContext> eventEnableFilter(
-      String filterName, bool enable) async {
+  eventEnableFilter(String filterName, bool enable) async {
     event("enableFilter",
-        (c) async => await doEnableFilter(c, filterName, enable));
-    await waitForState("ready");
-    return getContext();
+        (c) async => await onEnableFilter(c, filterName, enable));
   }
 
-  Future<FilterContext> eventToggleFilterOption(
-      String filterName, String optionName) async {
+  eventToggleFilterOption(String filterName, String optionName) async {
     event("toggleFilterOption",
-        (c) async => await toggleFilterOption(c, filterName, optionName));
-    await waitForState("ready");
-    return getContext();
+        (c) async => await onToggleFilterOption(c, filterName, optionName));
   }
 
-  Future<FilterContext> eventReload() async {
-    event("reload", (c) async => await doReload(c));
-    await waitForState("ready");
-    return getContext();
+  eventReload() async {
+    event("reload", (c) async => await onReload(c));
   }
 }
 
@@ -99,9 +91,9 @@ class _$FilterActor {
 
   injectApi(Action<ApiEndpoint> api) {
     _machine._api = (it) async {
+      _machine.log("api: $it");
       Future(() {
         // TODO: try catch
-        _machine.log("api: $it");
         api(it);
       });
     };
@@ -109,25 +101,27 @@ class _$FilterActor {
 
   injectPutUserLists(Action<UserLists> putUserLists) {
     _machine._putUserLists = (it) async {
+      _machine.log("putUserLists: $it");
       Future(() {
-        _machine.log("putUserLists: $it");
         putUserLists(it);
       });
     };
   }
 
-  Future<FilterContext> doEnableFilter(String filterName, bool enable) =>
+  enableFilter(String filterName, bool enable) =>
       _machine.eventEnableFilter(filterName, enable);
-  Future<FilterContext> doToggleFilterOption(
-          String filterName, String optionName) =>
+  toggleFilterOption(String filterName, String optionName) =>
       _machine.eventToggleFilterOption(filterName, optionName);
-  Future<FilterContext> doReload() => _machine.eventReload();
+  reload() => _machine.eventReload();
 
-  onApiOk(String result) => _machine.eventOnApiOk(result);
-  onApiFail(Exception error) => _machine.eventOnApiFail(error);
-  onUserLists(UserLists lists) => _machine.eventOnUserLists(lists);
+  apiOk(String result) => _machine.eventOnApiOk(result);
+  apiFail(Exception error) => _machine.eventOnApiFail(error);
+  userLists(UserLists lists) => _machine.eventOnUserLists(lists);
 
   waitForState(String state) => _machine.waitForState(state);
   addOnState(String state, String tag, Function(State, FilterContext) fn) =>
       _machine.addOnState(state, tag, fn);
+
+  whenState(StateFn<FilterContext> state, Function(FilterContext) fn) =>
+      _machine.whenState(state, fn);
 }

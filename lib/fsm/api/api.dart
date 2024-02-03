@@ -70,7 +70,7 @@ mixin ApiStates on StateMachineActions<ApiContext> {
   ready(ApiContext c) async {}
 
   fetch(ApiContext c) async {
-    onFail(retry, saveContext: true);
+    whenFail(retry, saveContext: true);
     _http(c.request!);
     return waiting;
   }
@@ -78,7 +78,7 @@ mixin ApiStates on StateMachineActions<ApiContext> {
   waiting(ApiContext c) async {}
 
   retry(ApiContext c) async {
-    onFail(failure, saveContext: true);
+    whenFail(failure, saveContext: true);
     final error = c.error;
     if (error is HttpCodeException && !error.shouldRetry()) throw error;
     if (c.retries-- <= 0) throw error ?? Exception("unknown error");
@@ -87,9 +87,7 @@ mixin ApiStates on StateMachineActions<ApiContext> {
   }
 
   // @final
-  Future<String> success(ApiContext c) async {
-    return c.result!;
-  }
+  success(ApiContext c) async {}
 
   failure(ApiContext c) async {}
 
@@ -111,7 +109,7 @@ mixin ApiStates on StateMachineActions<ApiContext> {
     return retry;
   }
 
-  doRequest(ApiContext c, HttpRequest request) async {
+  onRequest(ApiContext c, HttpRequest request) async {
     guard(ready);
     if (request.retries < 0) throw Exception("invalid retries param");
     c.request = request;
@@ -121,7 +119,7 @@ mixin ApiStates on StateMachineActions<ApiContext> {
     return fetch;
   }
 
-  doApiRequest(ApiContext c, ApiEndpoint e) async {
+  onApiRequest(ApiContext c, ApiEndpoint e) async {
     guard(ready);
     var url = e.template;
     for (final param in e.params) {
@@ -151,17 +149,18 @@ class ApiActor extends _$ApiActor {
       injectHttp((it) async {
         // TODO: err
         final result = await ops.doGet(it.url);
-        onHttpOk(result);
+        httpOk(result);
       });
 
       try {
         // Account ID may be unavailable
-        onQueryParams(
+        queryParams(
           {"account_id": account.id},
         );
       } catch (e) {
-        print("ApiActor deps: $e");
-        onQueryParams({});
+        // This will just create the actor to fail but they are instantiated
+        // for each request.
+        queryParams({});
       }
     }
   }

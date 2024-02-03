@@ -141,14 +141,14 @@ class CommandStore
         return await _custom.delete(trace, p1!);
       case CommandName.enableDeck:
         _ensureParam(p1);
-        return await _filter.doEnableFilter(p1!, true);
+        return await _filter.enableFilter(p1!, true);
       case CommandName.disableDeck:
         _ensureParam(p1);
-        return await _filter.doEnableFilter(p1!, false);
+        return await _filter.enableFilter(p1!, false);
       case CommandName.toggleListByTag:
         _ensureParam(p1);
         _ensureParam(p2);
-        return await _filter.doToggleFilterOption(p1!, p2!);
+        return await _filter.toggleFilterOption(p1!, p2!);
       case CommandName.enableCloud:
         return await _device.setCloudEnabled(trace, true);
       case CommandName.disableCloud:

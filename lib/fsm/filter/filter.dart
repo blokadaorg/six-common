@@ -184,9 +184,9 @@ mixin FilterStates on StateMachineActions<FilterContext> {
 
   ready(FilterContext c) async {}
 
-  doEnableFilter(FilterContext c, String filterName, bool enable) async {
+  onEnableFilter(FilterContext c, String filterName, bool enable) async {
     guard(ready);
-    onFail(ready);
+    whenFail(ready);
 
     final filter = c.filters.firstWhere(
       (it) => it.filterName == filterName,
@@ -201,10 +201,10 @@ mixin FilterStates on StateMachineActions<FilterContext> {
     return reconfigure;
   }
 
-  toggleFilterOption(
+  onToggleFilterOption(
       FilterContext c, String filterName, String optionName) async {
     guard(ready);
-    onFail(ready);
+    whenFail(ready);
 
     final filter = c.filters.firstWhere(
       (it) => it.filterName == filterName,
@@ -233,7 +233,7 @@ mixin FilterStates on StateMachineActions<FilterContext> {
     return reconfigure;
   }
 
-  doReload(FilterContext c) async {
+  onReload(FilterContext c) async {
     guard(ready);
     return fetchLists;
   }
@@ -245,18 +245,19 @@ class FilterActor extends _$FilterActor with TraceOrigin {
 
     injectApi((it) async {
       final actor = ApiActor(act);
-      await actor.waitForState("ready");
-      try {
-        final result = await actor.doApiRequest(it);
-        onApiOk(result.result!);
-      } catch (e) {
-        onApiFail(e as Exception);
-      }
+      actor.whenState(actor.ready, (c) async {
+        try {
+          final result = await actor.apiRequest(it);
+          apiOk(result.result!);
+        } catch (e) {
+          apiFail(e as Exception);
+        }
+      });
     });
 
     final device = dep<DeviceStore>();
     device.addOn(deviceChanged, (trace) {
-      onUserLists(device.lists?.toSet() ?? {});
+      userLists(device.lists?.toSet() ?? {});
     });
 
     injectPutUserLists((it) async {
