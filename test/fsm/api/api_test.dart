@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:common/fsm/api/api.dart';
 import 'package:common/fsm/machine.dart';
 import 'package:common/util/act.dart';
@@ -85,6 +87,24 @@ void main() {
         //expect(result.error != null, true);
         expect(result.result, null);
       });
+    });
+  });
+
+  test("whenState", () async {
+    await withTrace((trace) async {
+      final subject = ApiActor(mockedAct);
+      subject.injectHttp((it) async {
+        subject.httpOk("result");
+      });
+      subject.queryParams({});
+
+      final c = Completer<void>();
+      subject.whenState("success", (_) {
+        c.complete();
+      });
+
+      subject.request(const HttpRequest(url: "https://example.com/"));
+      await c.future;
     });
   });
 }

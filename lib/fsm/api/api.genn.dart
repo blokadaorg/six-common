@@ -70,8 +70,6 @@ class _$ApiStates extends StateMachine<_ApiContext>
 class _$ApiActor {
   late final _$ApiStates _machine;
 
-  ready(ApiContext c) => _machine.ready;
-
   _$ApiActor(Act act) {
     _machine = _$ApiStates(act);
   }
@@ -97,6 +95,6 @@ class _$ApiActor {
 
   waitForState(String state) => _machine.waitForState(state);
 
-  whenState(StateFn<ApiContext> state, Function(ApiContext) fn) =>
+  whenState(State state, Function(ApiContext) fn) =>
       _machine.whenState(state, fn);
 }

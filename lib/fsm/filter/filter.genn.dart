@@ -122,6 +122,6 @@ class _$FilterActor {
   addOnState(String state, String tag, Function(State, FilterContext) fn) =>
       _machine.addOnState(state, tag, fn);
 
-  whenState(StateFn<FilterContext> state, Function(FilterContext) fn) =>
+  whenState(State state, Function(FilterContext) fn) =>
       _machine.whenState(state, fn);
 }

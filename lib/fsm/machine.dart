@@ -213,8 +213,8 @@ abstract class StateMachine<C extends Context<C>> {
     return c.future;
   }
 
-  whenState(StateFn<C> state, Function(C) fn) {
-    final s = states[state]!;
+  whenState(State s, Function(C) fn) {
+    //final s = states[state]!;
     return waitForState(s).then(fn);
   }
 
