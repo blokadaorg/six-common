@@ -247,7 +247,8 @@ class FilterActor extends _$FilterActor with TraceOrigin {
       final actor = ApiActor(act);
       actor.whenState(actor.ready, (c) async {
         try {
-          final result = await actor.apiRequest(it);
+          await actor.apiRequest(it);
+          final result = await actor.waitForState("success");
           apiOk(result.result!);
         } catch (e) {
           apiFail(e as Exception);
