@@ -1,0 +1,10 @@
+// **************************************************************************
+// ModuleGenerator
+// **************************************************************************
+
+class _$ViasModule {
+  _$ViasModule() {
+    injector
+        .register<DirectVia<UserFilterConfig>>(_$DirectVia<UserFilterConfig>());
+  }
+}

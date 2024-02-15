@@ -69,4 +69,8 @@ class DeckJson {
         await _http.get(trace, "$jsonUrl/v2/list?account_id=${_account.id}");
     return JsonListEndpoint.fromJson(jsonDecode(result)).lists;
   }
+
+  List<JsonListItem> lists(String json) {
+    return JsonListEndpoint.fromJson(jsonDecode(json)).lists;
+  }
 }

@@ -1,0 +1,9 @@
+// **************************************************************************
+// ModuleGenerator
+// **************************************************************************
+
+class _$FilterModule {
+  _$FilterModule() {
+    injector.register<FilterMachine>(_$FilterMachine());
+  }
+}

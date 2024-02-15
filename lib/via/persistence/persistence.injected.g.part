@@ -1,0 +1,20 @@
+// **************************************************************************
+// InjectGenerator
+// **************************************************************************
+
+class _$ViaPersistence<T> extends ViaPersistence<T> with Injectable {
+  @override
+  inject() {}
+
+  @override
+  Future<T> get() {
+    print("ViaPersistence:get");
+    return super.get();
+  }
+
+  @override
+  Future<void> set(T value) {
+    print("ViaPersistence:set");
+    return super.set(value);
+  }
+}

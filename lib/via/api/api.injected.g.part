@@ -1,0 +1,111 @@
+// **************************************************************************
+// InjectGenerator
+// **************************************************************************
+
+class _$ApiVia<T> extends ApiVia<T> with Injectable {
+  @override
+  inject() {
+    _api = injector.get();
+  }
+
+  @override
+  Future<T> get() {
+    print("ApiVia:get");
+    return super.get();
+  }
+
+  @override
+  Future<void> set(T value) {
+    print("ApiVia:set");
+    return super.set(value);
+  }
+}
+
+class _$ApiViaList<T> extends ApiViaList<T> with Injectable {
+  @override
+  inject() {
+    _api = injector.get();
+  }
+
+  @override
+  Future<List<T>> get() {
+    print("ApiViaList:get");
+    return super.get();
+  }
+
+  @override
+  Future<void> set(List<T> value) {
+    print("ApiViaList:set");
+    return super.set(value);
+  }
+
+  @override
+  Future<T> add(T value) {
+    print("ApiViaList:add");
+    return super.add(value);
+  }
+
+  @override
+  T? find(bool Function(T) predicate) {
+    print("ApiViaList:find");
+    return super.find(predicate);
+  }
+}
+
+class _$Api<T> extends Api<T> with Injectable {
+  @override
+  inject() {
+    _http = injector.get();
+  }
+
+  @override
+  Future<T> get(ApiEndpoint endpoint) {
+    print("Api:get");
+    return super.get(endpoint);
+  }
+
+  @override
+  Future<void> request(ApiEndpoint endpoint, T payload) {
+    print("Api:request");
+    return super.request(endpoint, payload);
+  }
+}
+
+class _$Http extends Http with Injectable {
+  @override
+  inject() {
+    _act = injector.get();
+    _client = injector.get();
+    _accountId = injector.get();
+  }
+
+  @override
+  Future<String> call(HttpRequest payload) {
+    print("Http:call");
+    return super.call(payload);
+  }
+}
+
+class _$HttpClient extends HttpClient with Injectable {
+  @override
+  inject() {
+    _ops = injector.get();
+  }
+
+  @override
+  Future<String> call(HttpRequest payload) {
+    print("HttpClient:call");
+    return super.call(payload);
+  }
+}
+
+class _$AccountId extends AccountId with Injectable {
+  @override
+  inject() {}
+
+  @override
+  String get() {
+    print("AccountId:get");
+    return super.get();
+  }
+}

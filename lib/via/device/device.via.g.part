@@ -1,0 +1,26 @@
+// **************************************************************************
+// ViaInjectGenerator
+// **************************************************************************
+
+class _$DeviceMachine extends DeviceMachine with Injectable {
+  @override
+  inject() {
+    _devices.inject(injector, 'devices');
+    _profiles.inject(injector, 'profiles');
+    _thisDevice.inject(injector, 'thisDevice');
+    _nextAlias.inject(injector, 'nextAlias');
+    _userConfig.inject(injector, 'userConfig');
+  }
+
+  @override
+  dynamic reload() {
+    print("DeviceMachine:reload");
+    return super.reload();
+  }
+
+  @override
+  dynamic selectDevice(String tag) {
+    print("DeviceMachine:selectDevice");
+    return super.selectDevice(tag);
+  }
+}

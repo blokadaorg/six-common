@@ -180,7 +180,8 @@ final _v6Android = [
 
 final _family = [
   Filter("meta_safe_search", [
-    Option("safe search", FilterAction.config, ["safeSearch"]),
+    Option(
+        "safe search", FilterAction.config, [FilterConfigKey.safeSearch.name]),
     Option("block unsupported", FilterAction.list, ["safesearch/nosafesearch"]),
   ]),
   Filter("meta_ads", [

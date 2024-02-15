@@ -1,0 +1,10 @@
+// **************************************************************************
+// ViaModuleGenerator
+// **************************************************************************
+
+class _$DeviceFilterLink {
+  _$DeviceFilterLink() {
+    injector.registerVia<ViaBase<UserFilterConfig>>(
+        'direct', _$DirectVia<UserFilterConfig>());
+  }
+}

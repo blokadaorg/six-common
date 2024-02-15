@@ -1,0 +1,20 @@
+// **************************************************************************
+// InjectGenerator
+// **************************************************************************
+
+class _$GeneratorVia extends GeneratorVia with Injectable {
+  @override
+  inject() {}
+
+  @override
+  Future<String> get() {
+    print("GeneratorVia:get");
+    return super.get();
+  }
+
+  @override
+  Future<void> set(String value) {
+    print("GeneratorVia:set");
+    return super.set(value);
+  }
+}

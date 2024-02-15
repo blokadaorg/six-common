@@ -1,0 +1,14 @@
+// **************************************************************************
+// ModuleGenerator
+// **************************************************************************
+
+class _$ApiModule {
+  _$ApiModule() {
+    injector.register<Api<List<JsonProfile>>>(_$Api<List<JsonProfile>>());
+    injector.register<Api<List<JsonDevice>>>(_$Api<List<JsonDevice>>());
+    injector.register<Api<JsonDevice>>(_$Api<JsonDevice>());
+    injector.register<Api<JsonProfile>>(_$Api<JsonProfile>());
+    injector.register<Http>(_$Http());
+    injector.register<HttpClient>(_$HttpClient());
+  }
+}

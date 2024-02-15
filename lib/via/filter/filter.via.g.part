@@ -1,0 +1,20 @@
+// **************************************************************************
+// ViaInjectGenerator
+// **************************************************************************
+
+class _$FilterMachine extends FilterMachine with Injectable {
+  @override
+  inject() {
+    _lists.inject(injector, 'lists');
+    _filters.inject(injector, 'filters');
+    _selectedFilters.inject(injector, 'selectedFilters');
+    _userConfig.inject(injector, 'userConfig');
+    _defaultFilters.inject(injector, 'defaultFilters');
+  }
+
+  @override
+  dynamic reload() {
+    print("FilterMachine:reload");
+    return super.reload();
+  }
+}

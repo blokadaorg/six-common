@@ -1,0 +1,134 @@
+// **************************************************************************
+// ContextGenerator
+// **************************************************************************
+
+class _$ApiContext with Context<ApiContext>, ApiContext {
+  _$ApiContext(
+    String? baseUrl,
+    HttpRequest? request,
+    Map<ApiParam, String>? params,
+    String? result,
+    Object? error,
+    int retries,
+  ) {
+    this._baseUrl = baseUrl;
+    this._request = request;
+    this._params = params;
+    this.result = result;
+    this.error = error;
+    this.retries = retries;
+  }
+
+  _$ApiContext.empty(
+    Future<String> Function(HttpRequest) actionHttp,
+    Future<void> Function(void) actionSleep,
+  ) {
+    _actionHttp = actionHttp;
+    _actionSleep = actionSleep;
+  }
+
+  @override
+  Context<ApiContext> copy() {
+    final c = _$ApiContext(
+      _baseUrl,
+      _request,
+      _params,
+      result,
+      error,
+      retries,
+    );
+    c._actionHttp = _actionHttp;
+    c._actionSleep = _actionSleep;
+    return c;
+  }
+}
+
+class TestApiContext with Context<ApiContext>, ApiContext {
+  set injectBaseUrl(String? v) => _baseUrl = v;
+  set injectRequest(HttpRequest? v) => _request = v;
+  set injectParams(Map<ApiParam, String>? v) => _params = v;
+  set injectActionHttp(Future<String> Function(HttpRequest) v) =>
+      _actionHttp = v;
+  set injectActionSleep(Future<void> Function(void) v) => _actionSleep = v;
+
+  String? get injectBaseUrl => _baseUrl;
+  HttpRequest? get injectRequest => _request;
+  Map<ApiParam, String>? get injectParams => _params;
+  Future<String> Function(HttpRequest) get injectActionHttp => _actionHttp;
+  Future<void> Function(void) get injectActionSleep => _actionSleep;
+
+  @override
+  Context<ApiContext> copy() {
+    throw Exception("Test context cannot be copied");
+  }
+}
+
+// **************************************************************************
+// StatesGenerator
+// **************************************************************************
+
+class ApiActor {
+  late final StateMachine<ApiContext> _machine;
+
+  ApiActor({
+    required Future<String> Function(HttpRequest) actionHttp,
+    required Future<void> Function(void) actionSleep,
+  }) {
+    _machine = StateMachine(
+      "init",
+      _$ApiContext.empty(
+        actionHttp,
+        actionSleep,
+      ),
+      FailBehavior("failure"),
+    );
+
+    _machine.states = {
+      ApiStates.init: "init",
+      ApiStates.prepare: "prepare",
+      ApiStates.fetch: "fetch",
+      ApiStates.retry: "retry",
+      ApiStates.success: "success",
+      ApiStates.failure: "failure",
+      _onConfig: "onConfig",
+      _onRequest: "onRequest",
+    };
+
+    _machine.enter(ApiStates.init);
+  }
+
+  // Action: onConfig
+  late String _baseUrlConfig;
+  late Map<ApiParam, String> _paramsConfig;
+
+  config(String baseUrl, Map<ApiParam, String> params) {
+    _baseUrlConfig = baseUrl;
+    _paramsConfig = params;
+    _machine.enter(_onConfig);
+  }
+
+  _onConfig(ApiContext c) =>
+      ApiStates.onConfig(c, _baseUrlConfig, _paramsConfig);
+
+  // Action: onRequest
+  late HttpRequest _requestRequest;
+
+  request(HttpRequest request) {
+    _requestRequest = request;
+    _machine.enter(_onRequest);
+  }
+
+  _onRequest(ApiContext c) => ApiStates.onRequest(c, _requestRequest);
+
+  Future<ApiContext> waitForState(StateFn<ApiContext> state) =>
+      _machine.waitForState(state);
+
+  whenState(StateFn<ApiContext> state, Function(ApiContext) fn) =>
+      _machine.whenState(state, fn);
+
+  addOnState(StateFn<ApiContext> state, String name,
+          Function(String, ApiContext) fn) =>
+      _machine.addOnState(state, name, fn);
+
+  enter(StateFn<ApiContext> state) => _machine.enter(state);
+}

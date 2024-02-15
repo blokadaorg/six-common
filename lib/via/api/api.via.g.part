@@ -1,0 +1,14 @@
+// **************************************************************************
+// ViaModuleGenerator
+// **************************************************************************
+
+class _$ApiViaModule {
+  _$ApiViaModule() {
+    injector.registerVia<ViaBase<JsonDevice>>('api', _$ApiVia<JsonDevice>());
+    injector.registerVia<ViaBase<JsonProfile>>('api', _$ApiVia<JsonProfile>());
+    injector.registerVia<ViaList<JsonDevice>>(
+        'api', _$ApiViaList<JsonDevice>());
+    injector.registerVia<ViaList<JsonProfile>>(
+        'api', _$ApiViaList<JsonProfile>());
+  }
+}

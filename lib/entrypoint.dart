@@ -70,8 +70,8 @@ class Entrypoint with Dependable, TraceOrigin, Traceable {
     AccountRefreshStore().attachAndSaveAct(act);
     DeviceStore().attachAndSaveAct(act);
 
-    final filter = FilterActor(act);
-    depend(filter);
+    // final filter = FilterActor(act);
+    // depend(filter);
 
     AppStore().attachAndSaveAct(act);
     AppStartStore().attachAndSaveAct(act);
