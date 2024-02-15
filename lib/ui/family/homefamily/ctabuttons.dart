@@ -3,14 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../../common/model.dart';
+import '../../../common/widget.dart';
 import '../../../family/family.dart';
-import '../../../family/model.dart';
 import '../../../lock/lock.dart';
 import '../../../stage/channel.pg.dart';
 import '../../../stage/stage.dart';
 import '../../../util/di.dart';
 import '../../../util/trace.dart';
-import '../../minicard/minicard.dart';
 import '../../theme.dart';
 import '../family_totalcounter.dart';
 

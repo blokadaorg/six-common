@@ -2,9 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vistraced/annotations.dart';
 
+import '../../common/model.dart';
+import '../../common/model/filter/filter_json.dart';
 import '../machine.dart';
-import 'json.dart';
-import 'model.dart';
 
 part 'filter.g.dart';
 

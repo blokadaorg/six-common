@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../touch.dart';
+import '../../widget.dart';
 import 'keypad.dart';
 
 class LockScreenKey extends StatefulWidget {

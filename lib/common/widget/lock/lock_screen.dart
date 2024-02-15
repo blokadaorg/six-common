@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:slide_to_act_reborn/slide_to_act_reborn.dart';
 
-import '../../lock/lock.dart';
-import '../../stage/stage.dart';
-import '../../util/async.dart';
-import '../../util/di.dart';
-import '../../util/trace.dart';
+import '../../../lock/lock.dart';
+import '../../../stage/stage.dart';
+import '../../../util/async.dart';
+import '../../../util/di.dart';
+import '../../../util/trace.dart';
 import 'circles.dart';
 import 'keypad.dart';
 

@@ -8,6 +8,7 @@ import 'package:mobx/mobx.dart';
 import '../account/account.dart';
 import '../app/app.dart';
 import '../app/start/start.dart';
+import '../common/model.dart';
 import '../device/device.dart';
 import '../journal/journal.dart';
 import '../lock/lock.dart';
@@ -24,7 +25,6 @@ import 'channel.act.dart';
 import 'channel.pg.dart';
 import 'devices.dart';
 import 'json.dart';
-import 'model.dart';
 
 part 'family.g.dart';
 

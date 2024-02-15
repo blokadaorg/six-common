@@ -12,7 +12,7 @@ import '../../stage/stage.dart';
 import '../../util/di.dart';
 import '../../util/trace.dart';
 import '../crash/crash_screen.dart';
-import '../lock/lock_screen.dart';
+import '../../common/widget/lock/lock_screen.dart';
 import 'onboard/family_onboard_screen.dart';
 import '../overlay/overlay_container.dart';
 import '../rate/rate_screen.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+part of '../../model.dart';
 
 typedef ListTag = String;
 typedef FilterName = String;
@@ -49,8 +49,8 @@ class UserFilterConfig {
     if (identical(this, other)) return true;
 
     return other is UserFilterConfig &&
-      setEquals(other.lists, lists) &&
-      mapEquals(other.configs, configs);
+        setEquals(other.lists, lists) &&
+        mapEquals(other.configs, configs);
   }
 
   @override

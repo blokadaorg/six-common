@@ -1,12 +1,14 @@
 import 'dart:io' as io;
 import 'package:common/json/json.dart';
+import 'package:common/ui/family/family_scaffolding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'entrypoint.dart';
 import 'service/I18nService.dart';
-import 'ui/root.dart';
+import 'common/widget/root.dart';
+import 'ui/notfamily/scaffolding.dart';
 import 'util/act.dart';
 import 'util/di.dart';
 
@@ -39,5 +41,9 @@ void main() async {
 
   entrypoint.onStartApp();
 
-  runApp(const Root());
+  runApp(Root(
+    content: (flavor == Flavor.family)
+        ? const FamilyScaffolding(title: 'Blokada')
+        : const Scaffolding(title: 'Blokada'),
+  ));
 }

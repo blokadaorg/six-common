@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../theme.dart';
-import 'header.dart';
+part of '../../widget.dart';
 
 class MiniCardSummary extends StatefulWidget {
   final MiniCardHeader header;
@@ -26,7 +23,6 @@ class MiniCardSummaryState extends State<MiniCardSummary> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).extension<BlokadaTheme>()!;
     return Column(
       children: [
         widget.header,
@@ -41,7 +37,7 @@ class MiniCardSummaryState extends State<MiniCardSummary> {
               widget.small,
               style: TextStyle(
                 fontSize: 18,
-                color: theme.textSecondary,
+                color: context.theme.textSecondary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -55,7 +51,7 @@ class MiniCardSummaryState extends State<MiniCardSummary> {
               widget.footer!,
               style: TextStyle(
                 fontSize: 14,
-                color: theme.textSecondary,
+                color: context.theme.textSecondary,
                 fontWeight: FontWeight.w600,
               ),
             ),

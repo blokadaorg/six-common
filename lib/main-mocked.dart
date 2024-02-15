@@ -6,7 +6,9 @@ import 'command/channel.pg.dart';
 import 'command/command.dart';
 import 'entrypoint.dart';
 import 'service/I18nService.dart';
-import 'ui/root.dart';
+import 'common/widget/root.dart';
+import 'ui/family/family_scaffolding.dart';
+import 'ui/notfamily/scaffolding.dart';
 import 'util/act.dart';
 import 'util/di.dart';
 
@@ -16,15 +18,20 @@ void main() async {
 
   await I18nService.loadTranslations();
 
+  const flavor = Flavor.og;
   final entrypoint = Entrypoint();
   entrypoint.attach(
-      ActScreenplay(ActScenario.platformIsMocked, Flavor.og, Platform.ios));
+      ActScreenplay(ActScenario.platformIsMocked, flavor, Platform.ios));
   entrypoint.onStartApp();
 
   final CommandStore command = dep<CommandStore>();
   command.onCommandWithParam(CommandName.route.name, "home");
 
-  runApp(const Root());
+  runApp(const Root(
+    content: (flavor == Flavor.family)
+        ? FamilyScaffolding(title: 'Blokada')
+        : Scaffolding(title: 'Blokada'),
+  ));
 
   MockedStart().start();
 }

@@ -2,9 +2,9 @@ import 'package:common/via/util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vistraced/via.dart';
 
-import '../../fsm/filter/json.dart';
+import '../../common/model.dart';
+import '../../common/model/filter/filter_json.dart';
 import '../actions.dart';
-import 'model.dart';
 
 part 'filter.g.dart';
 

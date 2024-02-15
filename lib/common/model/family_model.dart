@@ -1,4 +1,4 @@
-import '../stats/stats.dart';
+part of '../model.dart';
 
 class FamilyDevice {
   final String deviceName;

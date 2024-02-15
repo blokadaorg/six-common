@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../theme.dart';
+part of '../../widget.dart';
 
 class MiniCardHeader extends StatelessWidget {
   final String text;
@@ -18,7 +16,6 @@ class MiniCardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).extension<BlokadaTheme>()!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -42,7 +39,8 @@ class MiniCardHeader extends StatelessWidget {
             ],
           ),
         ),
-        if (chevronIcon != null) Icon(chevronIcon, color: theme.textSecondary)
+        if (chevronIcon != null)
+          Icon(chevronIcon, color: context.theme.textSecondary)
       ],
     );
   }

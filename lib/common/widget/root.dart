@@ -1,17 +1,18 @@
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
-import '../util/config.dart';
-import 'family/family_scaffolding.dart';
-import 'notfamily/scaffolding.dart';
-import 'theme.dart';
+import '../../util/config.dart';
+import '../../ui/theme.dart';
 
 class Root extends StatelessWidget {
-  const Root({Key? key}) : super(key: key);
+  final Widget content;
+
+  const Root({Key? key, required this.content}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +56,7 @@ class Root extends StatelessWidget {
       title: 'Blokada',
       themeMode: ThemeMode.system,
       theme: FlexThemeData.light(
+          useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
             seedColor: accentColor,
             brightness: Brightness.light,
@@ -91,6 +93,7 @@ class Root extends StatelessWidget {
             )
           }),
       darkTheme: FlexThemeData.dark(
+          useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
             seedColor: accentColor,
             brightness: Brightness.dark,
@@ -122,11 +125,7 @@ class Root extends StatelessWidget {
         final scale = mediaQueryData.textScaleFactor.clamp(0.8, 1.1);
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
-          child: I18n(
-              child: DefaultBottomBarController(
-                  child: (cfg.act.isFamily())
-                      ? const FamilyScaffolding(title: 'Blokada')
-                      : const Scaffolding(title: 'Blokada'))),
+          child: I18n(child: DefaultBottomBarController(child: content)),
         );
       }),
     );

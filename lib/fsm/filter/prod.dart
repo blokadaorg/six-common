@@ -1,12 +1,12 @@
-import 'package:common/fsm/filter/known.dart';
-
+import '../../common/defaults/filter_defaults.dart';
+import '../../common/model.dart';
+import '../../common/model/filter/filter_json.dart';
 import '../../device/device.dart';
 import '../../util/di.dart';
 import '../../util/trace.dart';
 import '../api/api.dart';
 import '../api/prod.dart';
 import 'filter.dart';
-import 'json.dart';
 import '../../filter/channel.pg.dart' as fops;
 
 final _device = dep<DeviceStore>();

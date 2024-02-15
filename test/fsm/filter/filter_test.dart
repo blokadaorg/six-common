@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:common/common/defaults/filter_defaults.dart';
+import 'package:common/common/model.dart';
+import 'package:common/common/model/filter/filter_json.dart';
 import 'package:common/fsm/api/api.dart';
 import 'package:common/fsm/filter/filter.dart';
-import 'package:common/fsm/filter/json.dart';
-import 'package:common/fsm/filter/known.dart';
 import 'package:common/fsm/machine.dart';
 import 'package:common/tracer/collectors.dart';
 import 'package:common/tracer/tracer.dart';

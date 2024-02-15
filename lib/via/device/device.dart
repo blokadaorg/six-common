@@ -1,11 +1,11 @@
 import 'package:common/via/util.dart';
 import 'package:vistraced/via.dart';
 
+import '../../common/model.dart';
 import '../../fsm/device/device.dart';
 import '../../fsm/device/json.dart';
 import '../../fsm/profile/json.dart';
 import '../actions.dart';
-import '../filter/model.dart';
 
 part 'device.g.dart';
 

@@ -1,9 +1,4 @@
-import 'dart:math';
-
-import 'package:flutter/material.dart';
-
-import '../theme.dart';
-import '../touch.dart';
+part of '../../widget.dart';
 
 class MiniCard extends StatelessWidget {
   final Color? color;

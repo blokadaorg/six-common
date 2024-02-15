@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import 'lock/keypad.dart';
+part of '../widget.dart';
 
 class Touch extends StatefulWidget {
   final Widget child;

@@ -65,6 +65,7 @@ dependencies:
   status_alert: ^1.0.1
   vistraced:
     path: ../../kar/vistraced/vistraced/
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:

@@ -5,15 +5,12 @@ import 'package:flutter/services.dart';
 
 import 'package:mobx/mobx.dart' as mobx;
 
+import '../../common/widget.dart';
 import '../../stage/stage.dart';
 import '../../stats/stats.dart';
 import '../../util/di.dart';
 import '../../util/mobx.dart';
 import '../../util/trace.dart';
-import '../minicard/counter.dart';
-import '../minicard/header.dart';
-import '../minicard/minicard.dart';
-import '../minicard/summary.dart';
 
 class FamilyTotalCounter extends StatefulWidget {
   FamilyTotalCounter({Key? key, required bool this.autoRefresh})

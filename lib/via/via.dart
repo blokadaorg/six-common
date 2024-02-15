@@ -1,6 +1,6 @@
-import 'package:common/via/filter/model.dart';
 import 'package:vistraced/via.dart';
 
+import '../common/model.dart';
 import 'actions.dart';
 
 part 'via.g.dart';

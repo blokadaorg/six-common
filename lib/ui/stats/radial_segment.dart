@@ -2,8 +2,7 @@ import 'package:common/service/I18nService.dart';
 import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 
-import 'package:mobx/mobx.dart' as mobx;
-
+import '../../common/model.dart';
 import '../../stats/stats.dart';
 import '../../util/di.dart';
 import '../../util/mobx.dart';

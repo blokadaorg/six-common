@@ -1,10 +1,9 @@
 import 'package:common/service/I18nService.dart';
 import 'package:dartx/dartx.dart';
 
-import '../stats/stats.dart';
-import 'model.dart';
-
 import 'package:collection/collection.dart';
+
+import '../common/model.dart';
 
 class FamilyDevices {
   final List<FamilyDevice> entries;

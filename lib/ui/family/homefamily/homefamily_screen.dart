@@ -6,9 +6,9 @@ import 'package:relative_scale/relative_scale.dart';
 
 import '../../../app/app.dart';
 import '../../../app/channel.pg.dart';
+import '../../../common/model.dart';
 import '../../../family/devices.dart';
 import '../../../family/family.dart';
-import '../../../family/model.dart';
 import '../../../stage/channel.pg.dart';
 import '../../../stage/stage.dart';
 import '../../../util/di.dart';

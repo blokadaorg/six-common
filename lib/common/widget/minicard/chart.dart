@@ -1,12 +1,4 @@
-import 'dart:math' as math;
-import 'package:common/service/I18nService.dart';
-import 'package:common/util/color_extensions.dart';
-import 'package:flutter/material.dart';
-import 'package:relative_scale/relative_scale.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-
-import '../../family/model.dart';
-import '../../stats/stats.dart';
+part of '../../widget.dart';
 
 class MiniCardChart extends StatelessWidget {
   final FamilyDevice device;
@@ -23,7 +15,7 @@ class MiniCardChart extends StatelessWidget {
     return GestureDetector(
       //decoration: BoxDecoration(color: Colors.greenAccent),
       child: (device.deviceName.isNotEmpty && device.stats.totalAllowed > 0)
-          ? ColumnChart(stats: device.stats, color: color)
+          ? _ColumnChart(stats: device.stats, color: color)
           : Container(
               constraints: const BoxConstraints(maxHeight: 90),
               child:
@@ -33,11 +25,11 @@ class MiniCardChart extends StatelessWidget {
   }
 }
 
-class ColumnChart extends StatelessWidget {
+class _ColumnChart extends StatelessWidget {
   final Color color;
   final UiStats stats;
 
-  ColumnChart({
+  _ColumnChart({
     Key? key,
     required this.stats,
     required this.color,
@@ -71,7 +63,7 @@ class ColumnChart extends StatelessWidget {
       final green = stats.allowedHistogram[i];
       final red = stats.blockedHistogram[i];
       if (green * 1.05 > maxGreen) maxGreen = green * 1.05;
-      if (green * 0.8 < minGreen) minGreen = math.max(0, green * 0.8);
+      if (green * 0.8 < minGreen) minGreen = max(0, green * 0.8);
       // Skip consecutive zero bars at the beginning and shrink scale
       if (maxGreen == 0 && oldestEntry.abs() == (24 - i) && oldestEntry < -6)
         oldestEntry += 1;

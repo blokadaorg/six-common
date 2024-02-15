@@ -1,6 +1,9 @@
-import '../../util/di.dart';
-import 'filter.dart';
-import 'model.dart';
+part of '../../model.dart';
+
+/// Defines a mapping between Filters used by the app, and the blocklists used
+/// by the api. This layer of abstraction is needed for the app to be able to
+/// put together different Filters using various sets of lists, depending on app
+/// flavor.
 
 List<Filter> getKnownFilters(Act act) {
   if (act.isFamily()) {
@@ -11,20 +14,6 @@ List<Filter> getKnownFilters(Act act) {
     return _v6Android;
   }
 }
-
-List<FilterSelection> getDefaultEnabled(Act act) {
-  if (act.isFamily()) return _familyEnabled;
-  return _v6Enabled;
-}
-
-final _v6Enabled = [
-  FilterSelection("oisd", ["small"]),
-];
-
-final _familyEnabled = [
-  FilterSelection("meta_safe_search", ["safe search"]),
-  FilterSelection("meta_ads", ["standard"]),
-];
 
 final _v6iOS = [
   Filter("oisd", [
