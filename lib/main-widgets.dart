@@ -1,9 +1,5 @@
-import 'dart:io' as io;
-import 'package:common/json/json.dart';
-import 'package:common/mock/widget/mock_scaffolding_widget.dart';
+import 'package:common/mock/widget/mock_scaffolding.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 
 import 'entrypoint.dart';
 import 'service/I18nService.dart';

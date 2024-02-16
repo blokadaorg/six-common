@@ -2,12 +2,14 @@ part of '../../widget.dart';
 
 class MiniCardSummary extends StatefulWidget {
   final MiniCardHeader header;
+  final Widget overBig;
   final Widget big;
   final String small;
   final String? footer;
 
   const MiniCardSummary({
     super.key,
+    this.overBig = const SizedBox(),
     required this.header,
     required this.big,
     required this.small,
@@ -27,6 +29,7 @@ class MiniCardSummaryState extends State<MiniCardSummary> {
       children: [
         widget.header,
         const SizedBox(height: 20),
+        widget.overBig,
         Row(
           textBaseline: TextBaseline.alphabetic,
           crossAxisAlignment: CrossAxisAlignment.baseline,

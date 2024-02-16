@@ -27,15 +27,15 @@ class FilterWidgetState extends State<FilterWidget> {
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 6,
+                spreadRadius: 1,
+                blurRadius: 14,
                 offset: const Offset(6, 6),
               ),
             ],
             gradient: LinearGradient(
               colors: [
-                widget.bgColor ?? context.theme.bgColor,
-                widget.bgColor?.lighten(12) ?? context.theme.bgColor,
+                widget.bgColor ?? context.theme.bgColorCard,
+                widget.bgColor?.lighten(12) ?? context.theme.bgColorCard,
               ],
               begin: Alignment.centerLeft,
               end: Alignment.bottomRight,

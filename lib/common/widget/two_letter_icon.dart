@@ -8,31 +8,28 @@ class TwoLetterIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: ColorFiltered(
-          colorFilter: ColorFilter.mode(genColor(name), BlendMode.color),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.grey[300]!, Colors.grey[600]!],
-                begin: Alignment.bottomRight,
-                end: Alignment.topLeft,
-              ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: ColorFiltered(
+        colorFilter: ColorFilter.mode(genColor(name), BlendMode.color),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.grey[300]!, Colors.grey[600]!],
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft,
             ),
-            child: SizedBox(
-              width: big ? 60 : 40,
-              height: big ? 60 : 40,
-              child: Center(
-                child: Text(
-                  name.substring(0, 2).toUpperCase(),
-                  style: TextStyle(
-                    fontSize: big ? 24 : 17,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+          ),
+          child: SizedBox(
+            width: big ? 60 : 40,
+            height: big ? 60 : 40,
+            child: Center(
+              child: Text(
+                name.substring(0, 2).toUpperCase(),
+                style: TextStyle(
+                  fontSize: big ? 24 : 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
             ),

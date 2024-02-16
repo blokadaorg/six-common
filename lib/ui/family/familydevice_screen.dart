@@ -62,46 +62,10 @@ class FamilyDeviceScreenState extends State<FamilyDeviceScreen>
       return ListView(
         children: [
           const SizedBox(height: 8),
-          Row(
-            children: [
-              const SizedBox(width: 8),
-              Touch(
-                onTap: widget.onBack,
-                decorationBuilder: (value) {
-                  return BoxDecoration(
-                    color: theme.bgMiniCard.withOpacity(value),
-                    borderRadius: BorderRadius.circular(4),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 2, right: 8, top: 8, bottom: 8),
-                  child: Row(
-                    children: [
-                      Icon(CupertinoIcons.chevron_left,
-                          color: theme.textSecondary, size: 18),
-                      Text(
-                        _store.selectedDevice ?? "No device selected",
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Touch(
-                onTap: _displayDeviceRename,
-                decorationBuilder: (value) {
-                  return BoxDecoration(
-                    color: theme.bgMiniCard.withOpacity(value),
-                    borderRadius: BorderRadius.circular(4),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(CupertinoIcons.pencil,
-                      color: theme.textSecondary, size: 18),
-                ),
-              ),
-            ],
+          BackEditHeaderWidget(
+            name: _store.selectedDevice ?? "No selected device",
+            onBack: widget.onBack,
+            onEdit: _displayDeviceRename,
           ),
           SizedBox(
             width: width > 600 ? 600 : width,
@@ -120,24 +84,6 @@ class FamilyDeviceScreenState extends State<FamilyDeviceScreen>
                     const SizedBox(height: 16),
                     const Divider(),
                     ColumnChart(stats: _stats),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Container(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: MiniCard(
-                child: Column(
-                  children: [
-                    MiniCardHeader(
-                      text: "Configuration",
-                      icon: CupertinoIcons.gear,
-                      color: theme.textSecondary,
-                    ),
-                    //Toplist(stats: _stats, blocked: true),
                   ],
                 ),
               ),

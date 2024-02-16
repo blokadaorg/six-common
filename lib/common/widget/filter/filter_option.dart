@@ -28,10 +28,11 @@ class FilterOptionWidgetState extends State<FilterOptionWidget> {
           child: Row(
             children: [
               TwoLetterIconWidget(name: widget.option.optionName, big: true),
-              const SizedBox(width: 8.0),
+              const SizedBox(width: 12.0),
               Text(widget.option.optionName.firstLetterUppercase()),
               Expanded(child: Container()),
               CupertinoSwitch(
+                activeColor: context.theme.family,
                 value: selected,
                 onChanged: (bool? value) {
                   setState(() {

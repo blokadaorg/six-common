@@ -5,6 +5,7 @@ class MiniCardHeader extends StatelessWidget {
   final IconData icon;
   final Color color;
   final IconData? chevronIcon;
+  final String? chevronText;
 
   const MiniCardHeader({
     super.key,
@@ -12,6 +13,7 @@ class MiniCardHeader extends StatelessWidget {
     required this.icon,
     required this.color,
     this.chevronIcon,
+    this.chevronText,
   });
 
   @override
@@ -40,7 +42,14 @@ class MiniCardHeader extends StatelessWidget {
           ),
         ),
         if (chevronIcon != null)
-          Icon(chevronIcon, color: context.theme.textSecondary)
+          Row(
+            children: [
+              if (chevronText != null)
+                Text(chevronText!,
+                    style: TextStyle(color: context.theme.textSecondary)),
+              Icon(chevronIcon, color: context.theme.textSecondary),
+            ],
+          )
       ],
     );
   }

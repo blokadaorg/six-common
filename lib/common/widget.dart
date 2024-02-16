@@ -23,3 +23,4 @@ part 'widget/minicard/summary.dart';
 part 'widget/minicard/chart.dart';
 part 'widget/minicard/counter.dart';
 part 'widget/touch.dart';
+part 'widget/back_edit_header.dart';

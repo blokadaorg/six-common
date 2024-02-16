@@ -5,6 +5,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
   final Color bgColorHome1;
   final Color bgColorHome2;
   final Color bgColorHome3;
+  final Color bgColorCard;
   final Color panelBackground;
   final Color cloud;
   final Color plus;
@@ -20,6 +21,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
     required this.bgColorHome1,
     required this.bgColorHome2,
     required this.bgColorHome3,
+    required this.bgColorCard,
     required this.panelBackground,
     required this.cloud,
     required this.plus,
@@ -37,6 +39,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
     Color? bgColorHome1,
     Color? bgColorHome2,
     Color? bgColorHome3,
+    Color? bgColorCard,
     Color? panelBackground,
     Color? cloud,
     Color? plus,
@@ -52,6 +55,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
         bgColorHome1: bgColorHome1 ?? this.bgColorHome1,
         bgColorHome2: bgColorHome2 ?? this.bgColorHome2,
         bgColorHome3: bgColorHome3 ?? this.bgColorHome3,
+        bgColorCard: bgColorCard ?? this.bgColorCard,
         panelBackground: panelBackground ?? this.panelBackground,
         cloud: cloud ?? this.cloud,
         plus: plus ?? this.plus,
@@ -73,6 +77,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
       bgColorHome1: Color.lerp(bgColorHome1, other.bgColorHome1, t)!,
       bgColorHome2: Color.lerp(bgColorHome2, other.bgColorHome2, t)!,
       bgColorHome3: Color.lerp(bgColorHome3, other.bgColorHome3, t)!,
+      bgColorCard: Color.lerp(bgColorCard, other.bgColorCard, t)!,
       panelBackground: Color.lerp(panelBackground, other.panelBackground, t)!,
       cloud: Color.lerp(cloud, other.cloud, t)!,
       plus: Color.lerp(plus, other.plus, t)!,
