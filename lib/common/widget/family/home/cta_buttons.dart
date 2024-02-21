@@ -1,6 +1,7 @@
 import 'package:common/service/I18nService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:vistraced/via.dart';
 
 import '../../../../family/devices.dart';
@@ -9,6 +10,8 @@ import '../../../../stage/channel.pg.dart';
 import '../../../../util/trace.dart';
 import '../../../model.dart';
 import '../../../widget.dart';
+import 'add_device_sheet.dart';
+import 'guest_sheet.dart';
 import 'totalcounter.dart';
 
 part 'cta_buttons.g.dart';
@@ -42,7 +45,8 @@ class CtaButtonsState extends State<CtaButtons>
           _buildBigCtaButton(context) +
               _buildSmallCtaButton(context) +
               _buildScanQrButton(context) +
-              _buildLockButton(context),
+              _buildLockButton(context) +
+              _buildGuestButton(context),
     );
   }
 
@@ -121,11 +125,11 @@ class CtaButtonsState extends State<CtaButtons>
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: MiniCard(
-              onTap: _handleAccountTap(),
+              onTap: _handleLockTap(),
               child: const SizedBox(
                 height: 32,
                 width: 32,
-                child: Icon(CupertinoIcons.qrcode),
+                child: Icon(CupertinoIcons.qrcode_viewfinder),
               )),
         )
       ];
@@ -154,14 +158,41 @@ class CtaButtonsState extends State<CtaButtons>
     return [];
   }
 
+  List<Widget> _buildGuestButton(BuildContext context) {
+    if (_phase.now == FamilyPhase.parentHasDevices ||
+        _phase.now == FamilyPhase.parentNoDevices) {
+      return [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: MiniCard(
+              onTap: _handleGuestTap,
+              child: const SizedBox(
+                height: 32,
+                width: 32,
+                child: Icon(CupertinoIcons.person_crop_circle),
+              )),
+        )
+      ];
+    }
+
+    return [];
+  }
+
   _handleAccountTap() {
-    return () {
-      traceAs("tappedAccountQr", (trace) async {
-        await _modal.set(_phase.now == FamilyPhase.parentHasDevices
-            ? StageModal.accountLink
-            : StageModal.accountChange);
-      });
-    };
+    traceAs("tappedAccountQr", (trace) async {
+      await _modal.set(_phase.now == FamilyPhase.parentHasDevices
+          ? StageModal.accountLink
+          : StageModal.accountChange);
+    });
+  }
+
+  _handleGuestTap() {
+    showCupertinoModalBottomSheet(
+      context: context,
+      backgroundColor: context.theme.bgColorCard,
+      duration: const Duration(milliseconds: 300),
+      builder: (context) => GuestSheet(),
+    );
   }
 
   _handleLockTap() {
@@ -185,10 +216,16 @@ class CtaButtonsState extends State<CtaButtons>
           await _modal.set(StageModal.perms);
         } else if (p.requiresActivation()) {
           await _modal.set(StageModal.payment);
-        } else if (!_devices.now.hasThisDevice) {
-          await _modal.set(StageModal.onboardingAccountDecided);
+          // } else if (!_devices.now.hasThisDevice) {
+          // await _modal.set(StageModal.onboardingAccountDecided);
         } else {
-          await _modal.set(StageModal.accountLink);
+          // await _modal.set(StageModal.accountLink);
+          showCupertinoModalBottomSheet(
+            context: context,
+            duration: const Duration(milliseconds: 300),
+            backgroundColor: context.theme.bgColorCard,
+            builder: (context) => AddDeviceSheet(),
+          );
         }
       });
     };

@@ -4,6 +4,7 @@ import 'package:relative_scale/relative_scale.dart';
 
 import '../../common/widget.dart';
 import '../../common/widget/family/filter/filter_screen.dart';
+import '../../common/widget/family/stats/stats_screen.dart';
 import '../../ui/stats/radial_segment.dart';
 import 'mock_scaffolding.dart';
 
@@ -32,10 +33,16 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
           ),
           SizedBox(
             width: width > 600 ? 600 : width,
-            child: const Padding(
-              padding: EdgeInsets.all(12.0),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
               child: MiniCard(
-                child: Column(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    StandardRoute(builder: (context) => const StatsScreen()),
+                  );
+                },
+                child: const Column(
                   children: [
                     MiniCardHeader(
                       text: "Activity",
@@ -60,7 +67,7 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
           Container(
             constraints: const BoxConstraints(maxWidth: 500),
             child: Padding(
-              padding: EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12.0),
               child: MiniCard(
                 onTap: () {
                   Navigator.push(
@@ -68,7 +75,7 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
                     StandardRoute(builder: (context) => const FilterScreen()),
                   );
                 },
-                child: MiniCardSummary(
+                child: const MiniCardSummary(
                   header: MiniCardHeader(
                     text: "Blocklists",
                     icon: CupertinoIcons.shield,

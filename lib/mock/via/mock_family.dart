@@ -20,6 +20,7 @@ part 'mock_family.g.dart';
   ViaMatcher<void>(EmptyCall<void>, of: "familyUnlink"),
   ViaMatcher<LockStore>(PassLockStore),
   ViaMatcher<bool>(MockStageReady, of: "stage"),
+  ViaMatcher<UiStats>(MockUiStats),
 ])
 class MockModule extends _$MockModule {}
 
@@ -150,8 +151,77 @@ class MockDevices extends HandleVia<FamilyDevices> {
         FamilyDevice(
           deviceName: "Alva",
           deviceDisplayName: "Alva",
-          stats: UiStats.empty(),
+          stats: MockUiStats().defaults(),
           thisDevice: false,
         ),
       ], true);
+}
+
+@Injected()
+class MockUiStats extends HandleVia<UiStats> {
+  @override
+  UiStats defaults() => UiStats(
+        totalAllowed: 723832,
+        totalBlocked: 74384,
+        allowedHistogram: [
+          23,
+          44,
+          78,
+          33,
+          12,
+          0,
+          23,
+          123,
+          3,
+          0,
+          0,
+          0,
+          0,
+          134,
+          38,
+          83,
+          43,
+          27,
+          23,
+          233,
+          23,
+          33,
+          48,
+          23
+        ],
+        blockedHistogram: [
+          3,
+          4,
+          7,
+          3,
+          2,
+          0,
+          3,
+          13,
+          3,
+          0,
+          0,
+          0,
+          0,
+          13,
+          3,
+          8,
+          4,
+          2,
+          3,
+          23,
+          3,
+          3,
+          4,
+          3
+        ],
+        toplist: [],
+        avgDayTotal: 100,
+        avgDayAllowed: 80,
+        avgDayBlocked: 20,
+        latestTimestamp: DateTime.now().millisecondsSinceEpoch,
+      );
+
+  @override
+  Future<UiStats> get() async => defaults();
 }

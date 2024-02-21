@@ -66,6 +66,9 @@ dependencies:
   vistraced:
     path: ../../kar/vistraced/vistraced/
   crypto: ^3.0.3
+  web_socket_channel: ^2.4.0
+  modal_bottom_sheet: ^3.0.0-pre
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:

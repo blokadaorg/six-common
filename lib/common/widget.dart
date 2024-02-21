@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:crypto/crypto.dart';
 import 'package:countup/countup.dart';
 import 'package:common/service/I18nService.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../ui/theme.dart';
@@ -25,3 +27,4 @@ part 'widget/minicard/counter.dart';
 part 'widget/touch.dart';
 part 'widget/back_edit_header.dart';
 part 'widget/icon.dart';
+part 'widget/explain_item.dart';

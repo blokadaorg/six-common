@@ -30,9 +30,34 @@ extension ThemeOnWidget on BuildContext {
   BlokadaTheme get theme => Theme.of(this).extension<BlokadaTheme>()!;
 }
 
-class StandardRoute extends MaterialPageRoute {
+class StandardRoute extends MaterialWithModalsPageRoute {
   StandardRoute({required WidgetBuilder builder}) : super(builder: builder);
 
   @override
   Duration get transitionDuration => const Duration(milliseconds: 500);
+}
+
+void showDefaultDialog(
+  context, {
+  required Text title,
+  required Widget content,
+  required List<Widget> actions,
+}) {
+  Platform.isIOS || Platform.isMacOS
+      ? showCupertinoDialog<String>(
+          context: context,
+          builder: (BuildContext context) => CupertinoAlertDialog(
+            title: title,
+            content: content,
+            actions: actions,
+          ),
+        )
+      : showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: title,
+            content: content,
+            actions: actions,
+          ),
+        );
 }

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:common/common/widget.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,7 +16,7 @@ class FilterScreen extends StatefulWidget {
   const FilterScreen({Key? key}) : super(key: key);
 
   @override
-  State<FilterScreen> createState() => FilterScreenState();
+  State<FilterScreen> createState() => _$FilterScreenState();
 }
 
 @Injected(onlyVia: true, immediate: true)
@@ -101,7 +99,7 @@ class FilterScreenState extends State<FilterScreen>
   }
 
   _showEditProfileNameDialog(BuildContext context) {
-    _showAdaptiveDialog(
+    showDefaultDialog(
       context,
       title: const Text("Profile"),
       content: Column(
@@ -187,7 +185,7 @@ class FilterScreenState extends State<FilterScreen>
   }
 
   void _showNameProfileDialog(BuildContext context, String? name) {
-    _showAdaptiveDialog(
+    showDefaultDialog(
       context,
       title: Text(name == null ? "New Profile" : "Rename Profile"),
       content: Column(
@@ -230,30 +228,5 @@ class FilterScreenState extends State<FilterScreen>
         ),
       ],
     );
-  }
-
-  void _showAdaptiveDialog(
-    context, {
-    required Text title,
-    required Widget content,
-    required List<Widget> actions,
-  }) {
-    Platform.isIOS || Platform.isMacOS
-        ? showCupertinoDialog<String>(
-            context: context,
-            builder: (BuildContext context) => CupertinoAlertDialog(
-              title: title,
-              content: content,
-              actions: actions,
-            ),
-          )
-        : showDialog(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: title,
-              content: content,
-              actions: actions,
-            ),
-          );
   }
 }
