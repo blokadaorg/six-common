@@ -91,6 +91,8 @@ enum CommandName {
   debugHttpOk,
   debugOnboard,
   debugBg,
+  mock,
+  s, // scenario
 }
 
 @HostApi()

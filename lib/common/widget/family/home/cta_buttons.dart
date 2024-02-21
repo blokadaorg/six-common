@@ -1,52 +1,38 @@
 import 'package:common/service/I18nService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
+import 'package:vistraced/via.dart';
 
-import '../../../common/model.dart';
-import '../../../common/widget.dart';
-import '../../../common/widget/family/home/totalcounter.dart';
-import '../../../family/family.dart';
-import '../../../lock/lock.dart';
-import '../../../stage/channel.pg.dart';
-import '../../../stage/stage.dart';
-import '../../../util/di.dart';
-import '../../../util/trace.dart';
-import '../../theme.dart';
+import '../../../../family/devices.dart';
+import '../../../../lock/lock.dart';
+import '../../../../stage/channel.pg.dart';
+import '../../../../util/trace.dart';
+import '../../../model.dart';
+import '../../../widget.dart';
+import 'totalcounter.dart';
+
+part 'cta_buttons.g.dart';
 
 class CtaButtons extends StatefulWidget {
   CtaButtons({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return CtaButtonsState();
-  }
+  State<StatefulWidget> createState() => _$CtaButtonsState();
 }
 
+@Injected(onlyVia: true, immediate: true)
 class CtaButtonsState extends State<CtaButtons>
-    with TickerProviderStateMixin, Traceable, TraceOrigin {
-  final _stage = dep<StageStore>();
-  final _family = dep<FamilyStore>();
-  final _lock = dep<LockStore>();
-
-  late FamilyPhase _phase;
-  late bool _hasThisDevice;
-  late bool _hasPin;
-  late bool _isLocked;
-
-  @override
-  void initState() {
-    super.initState();
-
-    autorun((_) {
-      setState(() {
-        _phase = _family.phase;
-        _hasThisDevice = _family.devices.hasThisDevice;
-        _hasPin = _lock.hasPin;
-        _isLocked = _lock.isLocked;
-      });
-    });
-  }
+    with
+        ViaTools<CtaButtons>,
+        TickerProviderStateMixin,
+        Traceable,
+        TraceOrigin {
+  @MatcherSpec(of: "familyUnlink")
+  late final _unlink = Via.call();
+  late final _devices = Via.as<FamilyDevices>()..also(rebuild);
+  late final _phase = Via.as<FamilyPhase>()..also(rebuild);
+  late final _lock = Via.as<LockStore>()..also(rebuild);
+  late final _modal = Via.as<StageModal?>();
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +48,7 @@ class CtaButtonsState extends State<CtaButtons>
 
   List<Widget> _buildTotalCounter() {
     // Total counter shown only when everything is set up
-    if (_phase == FamilyPhase.parentHasDevices) {
+    if (_phase.now == FamilyPhase.parentHasDevices) {
       return [
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
@@ -77,16 +63,14 @@ class CtaButtonsState extends State<CtaButtons>
 
   // Big CTA button shown during onboarding
   List<Widget> _buildBigCtaButton(BuildContext context) {
-    final theme = Theme.of(context).extension<BlokadaTheme>()!;
-
-    if (_phase.requiresAction()) {
+    if (_phase.now.requiresAction()) {
       return [
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: MiniCard(
               onTap: _handleCtaTap(),
-              color: theme.family,
+              color: context.theme.family,
               child: SizedBox(
                 height: 32,
                 child: Center(
@@ -107,10 +91,8 @@ class CtaButtonsState extends State<CtaButtons>
 
   // Small CTA icon shown only after onboarded
   List<Widget> _buildSmallCtaButton(BuildContext context) {
-    final theme = Theme.of(context).extension<BlokadaTheme>()!;
-
-    final canAddDevices =
-        !_phase.requiresAction() && _phase.isParent() && !_phase.isLocked();
+    final p = _phase.now;
+    final canAddDevices = !p.requiresAction() && p.isParent() && !p.isLocked();
 
     if (canAddDevices) {
       return [
@@ -118,7 +100,7 @@ class CtaButtonsState extends State<CtaButtons>
           padding: const EdgeInsets.all(8.0),
           child: MiniCard(
               onTap: _handleCtaTap(),
-              color: theme.family,
+              color: context.theme.family,
               child: const SizedBox(
                 height: 32,
                 width: 32,
@@ -133,9 +115,8 @@ class CtaButtonsState extends State<CtaButtons>
 
   // Small lock QR icon shown only when onboarding
   List<Widget> _buildScanQrButton(BuildContext context) {
-    final theme = Theme.of(context).extension<BlokadaTheme>()!;
-
-    if (_phase == FamilyPhase.fresh || _phase == FamilyPhase.parentNoDevices) {
+    final p = _phase.now;
+    if (p == FamilyPhase.fresh || p == FamilyPhase.parentNoDevices) {
       return [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -155,9 +136,7 @@ class CtaButtonsState extends State<CtaButtons>
 
   // Lock icon shown almost always
   List<Widget> _buildLockButton(BuildContext context) {
-    final theme = Theme.of(context).extension<BlokadaTheme>()!;
-
-    if (_phase.isLockable()) {
+    if (_phase.now.isLockable()) {
       return [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -178,11 +157,9 @@ class CtaButtonsState extends State<CtaButtons>
   _handleAccountTap() {
     return () {
       traceAs("tappedAccountQr", (trace) async {
-        await _stage.showModal(
-            trace,
-            _phase == FamilyPhase.parentHasDevices
-                ? StageModal.accountLink
-                : StageModal.accountChange);
+        await _modal.set(_phase.now == FamilyPhase.parentHasDevices
+            ? StageModal.accountLink
+            : StageModal.accountChange);
       });
     };
   }
@@ -190,7 +167,7 @@ class CtaButtonsState extends State<CtaButtons>
   _handleLockTap() {
     return () {
       traceAs("tappedLock", (trace) async {
-        await _stage.showModal(trace, StageModal.lock);
+        await _modal.set(StageModal.lock);
       });
     };
   }
@@ -198,30 +175,32 @@ class CtaButtonsState extends State<CtaButtons>
   _handleCtaTap() {
     return () {
       traceAs("tappedCta", (trace) async {
-        if (_phase == FamilyPhase.linkedUnlocked) {
-          await _family.unlink(trace);
+        final p = _phase.now;
+        if (p == FamilyPhase.linkedUnlocked) {
+          await _unlink.call();
           return;
-        } else if (_phase == FamilyPhase.linkedNoPerms && !_hasPin) {
-          await _stage.showModal(trace, StageModal.lock);
-        } else if (_phase.requiresPerms()) {
-          await _stage.showModal(trace, StageModal.perms);
-        } else if (_phase.requiresActivation()) {
-          await _stage.showModal(trace, StageModal.payment);
-        } else if (!_hasThisDevice) {
-          await _stage.showModal(trace, StageModal.onboardingAccountDecided);
+        } else if (p == FamilyPhase.linkedNoPerms && !_lock.now.hasPin) {
+          await _modal.set(StageModal.lock);
+        } else if (p.requiresPerms()) {
+          await _modal.set(StageModal.perms);
+        } else if (p.requiresActivation()) {
+          await _modal.set(StageModal.payment);
+        } else if (!_devices.now.hasThisDevice) {
+          await _modal.set(StageModal.onboardingAccountDecided);
         } else {
-          await _stage.showModal(trace, StageModal.accountLink);
+          await _modal.set(StageModal.accountLink);
         }
       });
     };
   }
 
   String _getCtaText() {
-    if (_phase == FamilyPhase.linkedUnlocked) {
+    final p = _phase.now;
+    if (p == FamilyPhase.linkedUnlocked) {
       return "family account cta unlink".i18n;
-    } else if (_phase.requiresPerms()) {
+    } else if (p.requiresPerms()) {
       return "family cta action finish setup".i18n;
-    } else if (_phase.requiresActivation()) {
+    } else if (p.requiresActivation()) {
       return "family cta action activate".i18n;
     } else {
       return "family cta action add device".i18n;

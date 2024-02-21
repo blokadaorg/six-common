@@ -9,27 +9,38 @@ import '../actions.dart';
 
 part 'device.g.dart';
 
-@ViaInjected()
+@Injected()
 class DeviceMachine {
-  final _devices = Via.list<JsonDevice>(doApi);
-  final _profiles = Via.list<JsonProfile>(doApi);
-  final _thisDevice = Via.as<JsonDevice?>(doPersistence);
-  final _nextAlias = Via.as<DeviceAlias>(doGenerator);
-  final _userConfig = Via.as<UserFilterConfig?>(doDirect);
+  @MatcherSpec(of: ofApi)
+  final _devices = Via.list<JsonDevice>();
+  // item add
+
+  @MatcherSpec(of: ofApi)
+  final _profiles = Via.list<JsonProfile>();
+  // item add
+
+  @MatcherSpec(of: ofPersistence)
+  final _thisDevice = Via.as<JsonDevice?>();
+
+  @MatcherSpec(of: ofGenerator)
+  final _nextAlias = Via.as<DeviceAlias>();
+
+  @MatcherSpec(of: ofDirect)
+  final _userConfig = Via.as<UserFilterConfig?>();
 
   JsonDevice? _selectedDevice;
   JsonProfile? _selectedProfile;
 
   DeviceMachine() {
-    _userConfig.onSet(_updateProfileConfig);
+    _userConfig.also(_updateProfileConfig);
   }
 
   reload() async {
-    final devices = await _devices.get();
-    final d = await _thisDevice.get();
+    final devices = await _devices.fetch();
+    final d = await _thisDevice.fetch();
 
     final tag = d?.deviceTag;
-    final alias = d?.alias ?? await _nextAlias.get();
+    final alias = d?.alias ?? await _nextAlias.fetch();
     final existing = devices.find((it) => it.deviceTag == tag);
 
     // A new device needs to be created
@@ -51,8 +62,8 @@ class DeviceMachine {
   }
 
   selectDevice(DeviceTag tag) async {
-    final devices = await _devices.get();
-    final profiles = await _profiles.get();
+    final devices = await _devices.fetch();
+    final profiles = await _profiles.fetch();
 
     _selectedDevice = devices.find((it) => it.deviceTag == tag);
     if (_selectedDevice == null) throw Exception("Device $tag not found");
@@ -69,7 +80,7 @@ class DeviceMachine {
   }
 
   _updateProfileConfig() async {
-    final userConfig = await _userConfig.get();
+    final userConfig = await _userConfig.fetch();
     if (userConfig == null) throw Exception("No user config");
 
     final p = _selectedProfile;

@@ -78,7 +78,7 @@ class TotalCounterState extends State<TotalCounter> with TraceOrigin {
           chevronIcon: Icons.ios_share_outlined,
         ),
         // bigText: _formatCounter(blocked),
-        big: Text(_stats.formatCounter(blocked),
+        big: Text(StatsStoreBase.formatCounter(blocked),
             style: const TextStyle(
               fontSize: 34,
               fontWeight: FontWeight.w600,

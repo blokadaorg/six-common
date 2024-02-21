@@ -24,7 +24,7 @@ abstract class StatsStoreBase with Store, Traceable, Dependable {
     });
   }
 
-  String formatCounter(int counter) {
+  static String formatCounter(int counter) {
     if (counter >= 1000000) {
       return "${(counter / 1000000.0).toStringAsFixed(2)}M";
     } else if (counter >= 1000) {

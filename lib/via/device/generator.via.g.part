@@ -1,9 +1,0 @@
-// **************************************************************************
-// ViaModuleGenerator
-// **************************************************************************
-
-class _$GeneratorModule {
-  _$GeneratorModule() {
-    injector.registerVia<ViaBase<String>>('generator', _$GeneratorVia());
-  }
-}

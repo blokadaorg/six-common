@@ -13,26 +13,26 @@ part 'api.g.dart';
 typedef JsonString = String;
 typedef Json = Map<String, dynamic>;
 
-@ViaModule([
-  InjectedVia(doApi, ViaBase<JsonDevice>, ApiVia<JsonDevice>),
-  InjectedVia(doApi, ViaBase<JsonProfile>, ApiVia<JsonProfile>),
-  InjectedVia(doApi, ViaList<JsonDevice>, ApiViaList<JsonDevice>),
-  InjectedVia(doApi, ViaList<JsonProfile>, ApiViaList<JsonProfile>),
+@Module([
+  ViaMatcher<JsonDevice>(ApiVia<JsonDevice>, of: ofApi),
+  ViaMatcher<JsonProfile>(ApiVia<JsonProfile>, of: ofApi),
+  ViaMatcher<List<JsonDevice>>(ApiViaList<JsonDevice>, of: ofApi),
+  ViaMatcher<List<JsonProfile>>(ApiViaList<JsonProfile>, of: ofApi),
 ])
 class ApiViaModule extends _$ApiViaModule {}
 
 @Module([
-  Api<List<JsonProfile>>,
-  Api<List<JsonDevice>>,
-  Api<JsonDevice>,
-  Api<JsonProfile>,
-  Http,
-  HttpClient,
+  SimpleMatcher(Api<List<JsonProfile>>),
+  SimpleMatcher(Api<List<JsonDevice>>),
+  SimpleMatcher(Api<JsonDevice>),
+  SimpleMatcher(Api<JsonProfile>),
+  SimpleMatcher(Http),
+  SimpleMatcher(HttpClient),
 ])
 class ApiModule extends _$ApiModule {}
 
 @Injected()
-class ApiVia<T> extends ViaBase<T> {
+class ApiVia<T> extends HandleVia<T> {
   late final Api<T> _api;
 
   @override
@@ -46,10 +46,16 @@ class ApiVia<T> extends ViaBase<T> {
     // TODO: implement set
     throw UnimplementedError();
   }
+
+  @override
+  Future<T> add(T value) async {
+    // todo: new context - figure out endpoint
+    return value;
+  }
 }
 
 @Injected()
-class ApiViaList<T> extends ViaList<T> {
+class ApiViaList<T> extends HandleVia<List<T>> {
   late final Api<List<T>> _api;
 
   @override
@@ -60,18 +66,6 @@ class ApiViaList<T> extends ViaList<T> {
 
   @override
   Future<void> set(List<T> value) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<T> add(T value) {
-    // TODO: implement add
-    throw UnimplementedError();
-  }
-
-  @override
-  T? find(bool Function(T p1) predicate) {
-    // TODO: implement find
     throw UnimplementedError();
   }
 }

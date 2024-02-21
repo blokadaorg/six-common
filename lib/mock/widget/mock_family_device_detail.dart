@@ -1,11 +1,11 @@
-import 'package:common/common/model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:relative_scale/relative_scale.dart';
 
 import '../../common/widget.dart';
-import '../../ui/stats/column_chart.dart';
+import '../../common/widget/family/filter/filter_screen.dart';
 import '../../ui/stats/radial_segment.dart';
+import 'mock_scaffolding.dart';
 
 class MockFamilyDeviceDetailScreen extends StatelessWidget {
   const MockFamilyDeviceDetailScreen({super.key});
@@ -16,7 +16,7 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
       return ListView(
         children: [
           const SizedBox(height: 8),
-          BackEditHeaderWidget(
+          const BackEditHeaderWidget(
             name: "Home",
           ),
           Padding(
@@ -32,8 +32,8 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
           ),
           SizedBox(
             width: width > 600 ? 600 : width,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
+            child: const Padding(
+              padding: EdgeInsets.all(12.0),
               child: MiniCard(
                 child: Column(
                   children: [
@@ -43,8 +43,8 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
                       color: Color(0xff33c75a),
                       chevronIcon: Icons.chevron_right,
                     ),
-                    const SizedBox(height: 4),
-                    const RadialSegment(autoRefresh: true),
+                    SizedBox(height: 4),
+                    RadialSegment(autoRefresh: true),
                   ],
                 ),
               ),
@@ -60,8 +60,14 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
           Container(
             constraints: const BoxConstraints(maxWidth: 500),
             child: Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: EdgeInsets.all(12.0),
               child: MiniCard(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    StandardRoute(builder: (context) => const FilterScreen()),
+                  );
+                },
                 child: MiniCardSummary(
                   header: MiniCardHeader(
                     text: "Blocklists",
@@ -79,8 +85,8 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
           ),
           Container(
             constraints: const BoxConstraints(maxWidth: 500),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
               child: MiniCard(
                 child: MiniCardSummary(
                   header: MiniCardHeader(
@@ -108,8 +114,8 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
                       textBaseline: TextBaseline.alphabetic,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        TwoLetterIconWidget(name: "Alva"),
-                        SizedBox(width: 12),
+                        const TwoLetterIconWidget(name: "Alva"),
+                        const SizedBox(width: 12),
                         Text("Alva",
                             style: TextStyle(
                               fontSize: 18,
@@ -120,7 +126,7 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
                           "Edit",
                           style: TextStyle(color: context.theme.family),
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                       ],
                     ),
                     //Toplist(stats: _stats, blocked: true),
@@ -149,7 +155,7 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
                           child: Icon(CupertinoIcons.power,
                               color: context.theme.bgColor, size: 24),
                         ),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         Text("Enabled",
                             style: TextStyle(
                               fontSize: 18,
@@ -173,11 +179,11 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Container(
             constraints: const BoxConstraints(maxWidth: 500),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
+            child: const Padding(
+              padding: EdgeInsets.all(12.0),
               child: MiniCard(
                 child: Column(
                   children: [

@@ -5,13 +5,13 @@ import '../actions.dart';
 
 part 'generator.g.dart';
 
-@ViaModule([
-  InjectedVia(doGenerator, ViaBase<String>, GeneratorVia),
+@Module([
+  ViaMatcher<String>(GeneratorVia, of: ofGenerator),
 ])
 class GeneratorModule extends _$GeneratorModule {}
 
 @Injected()
-class GeneratorVia extends ViaBase<String> {
+class GeneratorVia extends HandleVia<String> {
   final _generator = names.UniqueNamesGenerator(
     config: names.Config(
       length: 1,
@@ -23,7 +23,4 @@ class GeneratorVia extends ViaBase<String> {
 
   @override
   Future<String> get() async => _generator.generate();
-
-  @override
-  Future<void> set(String value) => throw Exception("Generator cannot set");
 }

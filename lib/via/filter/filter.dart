@@ -8,16 +8,25 @@ import '../actions.dart';
 
 part 'filter.g.dart';
 
-@Module([FilterMachine])
+@Module([SimpleMatcher(FilterMachine)])
 class FilterModule extends _$FilterModule {}
 
-@ViaInjected()
+@Injected()
 class FilterMachine {
-  final _lists = Via.as<List<JsonListItem>>(doApi);
-  final _filters = Via.as<List<Filter>>(doGenerator)..also(doPlatform);
-  final _selectedFilters = Via.as<List<FilterSelection>>(doPlatform);
-  final _userConfig = Via.as<UserFilterConfig?>(doDirect);
-  final _defaultFilters = Via.as<List<FilterSelection>>(doDefaults);
+  @MatcherSpec(of: ofApi)
+  final _lists = Via.as<List<JsonListItem>>();
+
+  @MatcherSpec(of: ofGenerator)
+  final _filters = Via.as<List<Filter>>() /*..also(doPlatform)*/;
+
+  @MatcherSpec(of: ofPlatform)
+  final _selectedFilters = Via.as<List<FilterSelection>>();
+
+  @MatcherSpec(of: ofDirect)
+  final _userConfig = Via.as<UserFilterConfig?>();
+
+  @MatcherSpec(of: ofDefaults)
+  final _defaultFilters = Via.as<List<FilterSelection>>();
 
   var _listsToTags = <ListHashId, ListTag>{};
 
@@ -25,11 +34,11 @@ class FilterMachine {
   bool _needsReload = true;
 
   FilterMachine() {
-    _userConfig.onSet(reload);
+    _userConfig.also(reload);
   }
 
   reload() async {
-    final lists = await _lists.get();
+    final lists = await _lists.fetch();
 
     // Prepare a map for quick lookups
     _listsToTags = {};
@@ -46,8 +55,8 @@ class FilterMachine {
 
   _parse() async {
     // 1: read filters that we know about (no selections yet)
-    final filters = await _filters.get();
-    final userConfig = await _userConfig.get();
+    final filters = await _filters.fetch();
+    final userConfig = await _userConfig.fetch();
     final selectedFilters = <FilterSelection>[];
 
     // 2: map user selected lists to internal tags
@@ -90,10 +99,10 @@ class FilterMachine {
   }
 
   _reconfigure() async {
-    final filters = await _filters.get();
-    final selectedFilters = await _selectedFilters.get();
-    final lists = await _lists.get();
-    final userConfig = await _userConfig.get();
+    final filters = await _filters.fetch();
+    final selectedFilters = await _selectedFilters.fetch();
+    final lists = await _lists.fetch();
+    final userConfig = await _userConfig.fetch();
 
     // 1. figure out how to activate each filter
     Set<ListHashId> shouldBeLists = {};
@@ -146,7 +155,7 @@ class FilterMachine {
   }
 
   _defaults() async {
-    final selectedFilters = await _selectedFilters.get();
+    final selectedFilters = await _selectedFilters.fetch();
 
     // Do nothing if has selections
     if (selectedFilters.any((it) => it.options.isNotEmpty)) return;
@@ -155,7 +164,7 @@ class FilterMachine {
     if (_defaultsApplied) return;
 
     //c.log("Applying defaults");
-    final defaults = await _defaultFilters.get();
+    final defaults = await _defaultFilters.fetch();
     _selectedFilters.set(defaults);
 
     _defaultsApplied = true;

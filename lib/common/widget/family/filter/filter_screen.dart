@@ -1,145 +1,50 @@
 import 'dart:io';
 
-import 'package:common/util/config.dart';
+import 'package:common/common/widget.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:vistraced/via.dart';
 
-import '../../common/defaults/filter_decor_defaults.dart';
-import '../../common/model.dart';
-import '../../common/widget.dart';
-import '../../common/widget/family/home/big_logo.dart';
-import '../../common/widget/family/home/cta_buttons.dart';
-import '../../common/widget/family/home/home_screen.dart';
-import '../../common/widget/family/home/totalcounter.dart';
-import 'mock_family_device_detail.dart';
+import '../../../../stage/channel.pg.dart';
+import '../../../../ui/overlay/overlay_container.dart';
+import '../../../../util/config.dart';
+import '../../../defaults/filter_decor_defaults.dart';
+import '../../../model.dart';
 
-class MockScaffoldingWidget extends StatelessWidget {
-  MockScaffoldingWidget({Key? key}) : super(key: key);
+part 'filter_screen.g.dart';
 
-  late final _pages = <Map<String, Widget Function(BuildContext)>>[
-    {"Family components": _buildFamilyComponents},
-    {"Filter components": _buildFilterComponents},
-    {"": _buildHome},
-    {"Screens": (c) => _buildScreens(c)},
-    {"Device detail": (c) => const MockFamilyDeviceDetailScreen()},
-    {"Filters": _buildFilters},
-  ];
+class FilterScreen extends StatefulWidget {
+  const FilterScreen({Key? key}) : super(key: key);
 
-  final _ctrl = PageController(initialPage: 2);
+  @override
+  State<FilterScreen> createState() => FilterScreenState();
+}
+
+@Injected(onlyVia: true, immediate: true)
+class FilterScreenState extends State<FilterScreen>
+    with ViaTools<FilterScreen> {
+  late final _modal = Via.as<StageModal?>()..also(rebuild);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xff4ae5f6),
-              Color(0xff3c8cff),
-              Color(0xff3c8cff),
-            ],
-          ),
-        ),
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [
-                Colors.transparent,
-                Color(0xffe450cd),
-                Color(0xffe450cd),
-              ],
-            ),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.transparent,
-                  Colors.transparent,
-                  Colors.transparent,
-                  context.theme.bgColorHome1.withOpacity(0.4),
-                  context.theme.bgColorHome2,
-                  context.theme.bgColorHome2,
-                  context.theme.bgColorHome2,
-                ],
-              ),
-            ),
-            child: Container(
-              //color: context.theme.bgColor,
-              child: Stack(
-                children: [
-                  PageView(
-                    controller: _ctrl,
-                    scrollDirection: Axis.horizontal,
-                    children: _buildPages(context),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        color: context.theme.bgColor,
+        child: Stack(
+          children: [
+            _buildFilters(context),
+            OverlayContainer(modal: _modal.now),
+          ],
         ),
       ),
-    );
-  }
-
-  Widget _buildBack(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      child: MaterialButton(
-        onPressed: () => _ctrl.animateToPage(0,
-            duration: const Duration(milliseconds: 700),
-            curve: Curves.easeInOut),
-        child: const Text("< go home"),
-      ),
-    );
-  }
-
-  List<Widget> _buildPages(BuildContext context) {
-    return _pages.map((e) {
-      return e.entries.first.value(context);
-    }).toList();
-  }
-
-  Widget _buildHome(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: _pages.map((e) {
-          return MaterialButton(
-              onPressed: () {
-                _ctrl.animateToPage(
-                  _pages.indexOf(e),
-                  duration: const Duration(milliseconds: 700),
-                  curve: Curves.easeInOut,
-                );
-              },
-              child: Text(e.entries.first.key));
-        }).toList());
-  }
-
-  Widget _buildFilterComponents(BuildContext context) {
-    return Column(
-      children: [
-        _buildBack(context),
-        _buildTwoLetterIcon(context, "hello", false),
-        _buildTwoLetterIcon(context, "wworld", false),
-        _buildTwoLetterIcon(context, "lol", true),
-        _buildTwoLetterIcon(context, "ad", true),
-        _buildFilterOption(context),
-      ],
     );
   }
 
   Widget _buildFilters(BuildContext context) {
     return ListView(
       children: [
-        _buildBackEditHeader(context),
+        BackEditHeaderWidget(name: "Alva"),
         _buildProfileHeader(context),
         _buildFilter(context, 0, color: const Color(0xFFA9CCFE)),
         _buildFilter(context, 1),
@@ -350,52 +255,5 @@ class MockScaffoldingWidget extends StatelessWidget {
               actions: actions,
             ),
           );
-  }
-
-  Widget _buildBackEditHeader(BuildContext context) {
-    return BackEditHeaderWidget(name: "Alva");
-  }
-
-  Widget _buildTwoLetterIcon(BuildContext context, String name, bool big) {
-    return TwoLetterIconWidget(name: name, big: big);
-  }
-
-  Widget _buildFilterOption(BuildContext context) {
-    final filter = getKnownFilters(cfg.act)[0];
-    return FilterOptionWidget(option: filter.options.first, selections: []);
-  }
-
-  Widget _buildFamilyComponents(BuildContext context) {
-    return Stack(
-      children: [
-        BigLogo(),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [FamilyTotalCounter(autoRefresh: true), CtaButtons()],
-        )
-      ],
-    );
-  }
-
-  Widget _buildScreens(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            MaterialButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  StandardRoute(builder: (context) => const HomeScreen()),
-                );
-              },
-              child: const Text("Family Home"),
-            ),
-          ],
-        ),
-      ],
-    );
   }
 }

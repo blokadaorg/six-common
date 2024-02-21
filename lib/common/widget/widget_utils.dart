@@ -1,5 +1,9 @@
 part of '../widget.dart';
 
+mixin ViaTools<T extends StatefulWidget> on State<T> {
+  rebuild() => setState(() {});
+}
+
 Color genColor(String id) {
   final bytes = utf8.encode(id);
   final hash = sha256.convert(bytes);
@@ -24,4 +28,11 @@ extension StringExtension on String {
 
 extension ThemeOnWidget on BuildContext {
   BlokadaTheme get theme => Theme.of(this).extension<BlokadaTheme>()!;
+}
+
+class StandardRoute extends MaterialPageRoute {
+  StandardRoute({required WidgetBuilder builder}) : super(builder: builder);
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 500);
 }

@@ -1,6 +1,8 @@
-const doApi = "api";
-const doPersistence = "persistence";
-const doGenerator = "generator";
-const doPlatform = "platform";
-const doDefaults = "defaults";
-const doDirect = "direct";
+const ofApi = "api";
+const ofPersistence = "persistence";
+const ofGenerator = "generator";
+const ofPlatform = "platform";
+const ofDefaults = "defaults";
+const ofDirect = "direct";
+
+const ofStage = "stage";

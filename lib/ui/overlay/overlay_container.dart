@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../stage/channel.pg.dart';
 import '../crash/crash_screen.dart';
 import '../../common/widget/lock/lock_screen.dart';
-import '../family/onboard/family_onboard_screen.dart';
+import '../../common/widget/family/onboard/family_onboard_screen.dart';
 import '../rate/rate_screen.dart';
 
 class OverlayContainer extends StatelessWidget {

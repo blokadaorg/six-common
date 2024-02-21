@@ -1,9 +1,13 @@
+import 'package:common/mock/via/mock_family.dart';
+import 'package:common/util/async.dart';
 import 'package:dartx/dartx.dart';
+import 'package:vistraced/via.dart';
 
 import '../account/account.dart';
 import '../account/payment/payment.dart';
 import '../account/refresh/refresh.dart';
 import '../app/start/start.dart';
+import '../common/model.dart';
 import '../custom/custom.dart';
 import '../device/device.dart';
 import '../family/family.dart';
@@ -256,6 +260,33 @@ class CommandStore
         return;
       case CommandName.setFlavor:
         return;
+      case CommandName.mock:
+        _ensureParam(p1);
+        await mockCommands.handleCommand("$p1 ${p2 ?? ""}");
+        return;
+      case CommandName.s:
+        _ensureParam(p1);
+        final scenarios = {
+          "start": [
+            "mock appstatus reconfiguring",
+            "mock appstatus paused",
+            "mock phase fresh",
+          ],
+          "devices": [
+            "mock appstatus reconfiguring",
+            "mock appstatus paused",
+            "mock phase parentHasDevices",
+          ],
+        };
+        final scenario = scenarios[p1];
+        if (scenario != null) {
+          for (var cmd in scenario) {
+            await onCommandString(trace, cmd);
+            await sleepAsync(const Duration(seconds: 1));
+          }
+        } else {
+          throw ArgumentError("Unknown scenario: $p1");
+        }
     }
   }
 

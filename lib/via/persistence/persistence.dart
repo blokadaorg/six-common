@@ -5,18 +5,17 @@ import '../actions.dart';
 
 part 'persistence.g.dart';
 
-@ViaModule([
-  InjectedVia(doPersistence, ViaBase<String>, ViaPersistence<String>),
-  InjectedVia(
-      doPersistence, ViaBase<JsonDevice?>, ViaPersistence<JsonDevice?>),
+@Module([
+  ViaMatcher<String>(ViaPersistence<String>, of: ofPersistence),
+  ViaMatcher<JsonDevice?>(ViaPersistence<JsonDevice?>, of: ofPersistence),
 ])
 class PersistenceModule extends _$PersistenceModule {}
 
 @Injected()
-class ViaPersistence<T> extends ViaBase<T> {
+class ViaPersistence<T> extends HandleVia<T> {
   @override
   Future<T> get() async {
-    if (type == String) return "3" as T;
+    if (T == String) return "3" as T;
     throw Exception("not implemented");
   }
 
