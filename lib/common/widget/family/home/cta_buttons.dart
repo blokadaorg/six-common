@@ -126,7 +126,7 @@ class CtaButtonsState extends State<CtaButtons>
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: MiniCard(
-              onTap: _handleAccountTap(),
+              onTap: _handleAccountTap,
               child: const SizedBox(
                 height: 32,
                 width: 32,

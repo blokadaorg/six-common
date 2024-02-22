@@ -6,7 +6,9 @@ import '../../app/channel.pg.dart';
 import '../../common/model.dart';
 import '../../lock/lock.dart';
 import '../../stage/channel.pg.dart';
+import '../../stage/stage.dart';
 import '../../util/di.dart';
+import '../../util/trace.dart';
 
 part 'mock_family.g.dart';
 
@@ -14,7 +16,8 @@ part 'mock_family.g.dart';
   ViaMatcher<FamilyPhase>(MockFamilyPhase),
   ViaMatcher<FamilyDevices>(MockDevices),
   ViaMatcher<AppStatus>(MockAppStatus),
-  ViaMatcher<StageModal?>(MockStageModal),
+  //ViaMatcher<StageModal?>(MockStageModal),
+  ViaMatcher<StageModal?>(ActualStageModal),
   ViaMatcher<String>(MockStageRoute, of: "stage"),
   ViaMatcher<String>(MockSelectedDevice, of: "family"),
   ViaMatcher<void>(EmptyCall<void>, of: "familyUnlink"),
@@ -224,4 +227,29 @@ class MockUiStats extends HandleVia<UiStats> {
 
   @override
   Future<UiStats> get() async => defaults();
+}
+
+@Injected()
+class ActualStageModal extends HandleVia<StageModal?> with TraceOrigin {
+  late final _stage = dep<StageStore>();
+
+  ActualStageModal() {
+    _stage.addOn(routeChanged, (route) => dirty());
+  }
+
+  @override
+  Future<StageModal?> get() async {
+    return _stage.route.modal;
+  }
+
+  @override
+  Future<void> set(StageModal? value) async {
+    await traceAs("actualmodal", (trace) async {
+      if (value == null) {
+        await _stage.dismissModal(trace);
+      } else {
+        await _stage.showModal(trace, value);
+      }
+    });
+  }
 }
