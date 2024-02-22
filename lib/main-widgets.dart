@@ -32,20 +32,26 @@ void main() async {
   MockModule();
   injector.inject();
 
-  DevWebsocket().handle();
+  final ws = DevWebsocket();
+  depend(ws);
+  ws.handle();
 
   runApp(Root(content: MockScaffoldingWidget()));
 }
 
 class DevWebsocket with TraceOrigin {
+  var ip = "192.168.1.176";
+  //var ip = "192.168.234.100";
+
   late final command = dep<CommandStore>();
-  late final WebSocketChannel channel = WebSocketChannel.connect(
-    // Uri.parse('ws://192.168.1.176:8765'),
-    Uri.parse('ws://192.168.234.100:8765'),
-  );
+  WebSocketChannel? channel;
 
   handle() async {
-    channel.stream.listen((msg) async {
+    channel = WebSocketChannel.connect(
+      // Uri.parse('ws://192.168.1.176:8765'),
+      Uri.parse('ws://$ip:8765'),
+    );
+    channel?.stream.listen((msg) async {
       traceAs("devwebsocket", (trace) => command.onCommandString(trace, msg));
     });
   }

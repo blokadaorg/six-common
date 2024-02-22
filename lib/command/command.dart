@@ -1,3 +1,4 @@
+import 'package:common/main-widgets.dart';
 import 'package:common/mock/via/mock_family.dart';
 import 'package:common/util/async.dart';
 import 'package:dartx/dartx.dart';
@@ -287,6 +288,11 @@ class CommandStore
         } else {
           throw ArgumentError("Unknown scenario: $p1");
         }
+      case CommandName.ws:
+        _ensureParam(p1);
+        final ws = dep<DevWebsocket>();
+        ws.ip = p1!;
+        ws.handle();
     }
   }
 

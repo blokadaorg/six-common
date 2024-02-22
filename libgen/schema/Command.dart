@@ -93,6 +93,7 @@ enum CommandName {
   debugBg,
   mock,
   s, // scenario
+  ws // websocket
 }
 
 @HostApi()

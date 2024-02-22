@@ -16,9 +16,7 @@ class RadialSegment extends StatefulWidget {
   State<StatefulWidget> createState() => RadialSegmentState();
 }
 
-@Injected(onlyVia: true, immediate: true)
 class RadialSegmentState extends State<RadialSegment> {
-
   var blocked = 0.0;
   var allowed = 0.0;
   var total = 0.0;
