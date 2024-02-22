@@ -229,7 +229,7 @@ class MockUiStats extends HandleVia<UiStats> {
   Future<UiStats> get() async => defaults();
 }
 
-@Injected()
+@Injected(onlyVia: true)
 class ActualStageModal extends HandleVia<StageModal?> with TraceOrigin {
   late final _stage = dep<StageStore>();
 
