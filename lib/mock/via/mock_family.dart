@@ -234,7 +234,7 @@ class ActualStageModal extends HandleVia<StageModal?> with TraceOrigin {
   late final _stage = dep<StageStore>();
 
   ActualStageModal() {
-    _stage.addOn(routeChanged, (route) => dirty());
+    _stage.addOnValue(routeChanged, (trace, route) => dirty());
   }
 
   @override
