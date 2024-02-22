@@ -30,8 +30,10 @@ class ProdFilterActor extends FilterActor with TraceOrigin {
         ) {
     _device.addOn(deviceChanged, (trace) async {
       // todo: will fail on every time except first
-      await waitForState(FilterStates.ready);
-      await config(_device.lists?.toSet(), {});
+      Future(() async {
+        await waitForState(FilterStates.ready);
+        await config(_device.lists?.toSet(), {});
+      });
     });
 
     addOnState(FilterStates.ready, "ops", (state, c) {
