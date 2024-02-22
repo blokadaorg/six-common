@@ -69,6 +69,8 @@ dependencies:
   web_socket_channel: ^2.4.0
   modal_bottom_sheet: ^3.0.0-pre
   qr_flutter: ^4.1.0
+  video_player: ^2.8.2
+  chewie: ^1.7.5
 
 dev_dependencies:
   flutter_test:
@@ -99,6 +101,7 @@ flutter:
   assets:
     - assets/images/
     - assets/translations/
+    - assets/videos/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

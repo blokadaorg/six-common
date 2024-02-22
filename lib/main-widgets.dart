@@ -40,7 +40,8 @@ void main() async {
 class DevWebsocket with TraceOrigin {
   late final command = dep<CommandStore>();
   late final WebSocketChannel channel = WebSocketChannel.connect(
-    Uri.parse('ws://192.168.1.176:8765'),
+    // Uri.parse('ws://192.168.1.176:8765'),
+    Uri.parse('ws://192.168.234.100:8765'),
   );
 
   handle() async {

@@ -1,3 +1,4 @@
+import 'package:common/common/widget/family/home/private_dns_sheet.dart';
 import 'package:common/service/I18nService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -125,7 +126,7 @@ class CtaButtonsState extends State<CtaButtons>
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: MiniCard(
-              onTap: _handleLockTap(),
+              onTap: _handleAccountTap(),
               child: const SizedBox(
                 height: 32,
                 width: 32,
@@ -213,7 +214,13 @@ class CtaButtonsState extends State<CtaButtons>
         } else if (p == FamilyPhase.linkedNoPerms && !_lock.now.hasPin) {
           await _modal.set(StageModal.lock);
         } else if (p.requiresPerms()) {
-          await _modal.set(StageModal.perms);
+          // await _modal.set(StageModal.perms);
+          showCupertinoModalBottomSheet(
+            context: context,
+            duration: const Duration(milliseconds: 300),
+            backgroundColor: context.theme.bgColorCard,
+            builder: (context) => PrivateDnsSheet(),
+          );
         } else if (p.requiresActivation()) {
           await _modal.set(StageModal.payment);
           // } else if (!_devices.now.hasThisDevice) {
