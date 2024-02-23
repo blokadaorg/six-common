@@ -82,10 +82,10 @@ class HomeScreenState extends State<HomeScreen>
                                   CtaButtons(),
 
                                   // Leave space for navbar
-                                  (!_phase.now.isLocked())
-                                      ? SizedBox(height: sy(40))
-                                      : Container(),
-                                  SizedBox(height: sy(30)),
+                                  // (!_phase.now.isLocked())
+                                  //     ? SizedBox(height: sy(40))
+                                  //     : Container(),
+                                  SizedBox(height: sy(24)),
                                 ],
                               ),
 

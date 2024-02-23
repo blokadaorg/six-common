@@ -1,11 +1,15 @@
+import 'package:common/common/widget/family/home/header.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:vistraced/via.dart';
 
 import '../../../model.dart';
 import '../../../widget.dart';
 import '../../../../util/trace.dart';
 import '../device/device_screen.dart';
+import 'guest_sheet.dart';
 
 part 'device.g.dart';
 
@@ -54,11 +58,9 @@ class HomeDeviceState extends State<HomeDevice>
         outlined: false,
         child: Column(
           children: [
-            MiniCardHeader(
+            DeviceCardHeader(
               text: widget.device.deviceDisplayName,
-              icon: widget.device.thisDevice
-                  ? Icons.phonelink_lock
-                  : Icons.phone_iphone,
+              iconName: widget.device.deviceName,
               color: widget.color,
               chevronIcon: Icons.chevron_right,
             ),
@@ -70,10 +72,58 @@ class HomeDeviceState extends State<HomeDevice>
                     MiniCardChart(device: widget.device, color: widget.color),
               ),
             ),
+            SizedBox(height: 12),
+            (widget.device.thisDevice)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      MiniCard(
+                          color: context.theme.bgColor.darken(8),
+                          //onTap: _handleGuestTap,
+                          child: SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: Icon(CupertinoIcons.power,
+                                color: context.theme.family),
+                            //child: Icon(CupertinoIcons.power),
+                          )),
+                      SizedBox(width: 8),
+                      MiniCard(
+                          color: context.theme.bgColor,
+                          onTap: _handleGuestTap,
+                          child: SizedBox(
+                            height: 24,
+                            width: 24,
+                            // child: Icon(CupertinoIcons.lock_shield_fill,
+                            //     color: context.theme.family),
+                            child: Icon(CupertinoIcons.lock_shield),
+                          )),
+                      SizedBox(width: 8),
+                      MiniCard(
+                          color: context.theme.bgColor,
+                          //onTap: _handleGuestTap,
+                          child: SizedBox(
+                            height: 24,
+                            width: 24,
+                            // child: Icon(CupertinoIcons.lock_shield_fill),
+                            child: Icon(CupertinoIcons.ellipsis),
+                          )),
+                    ],
+                  )
+                : Container(),
           ],
           //footer: "home status detail active".i18n.replaceAll("*", ""),
         ),
       ),
+    );
+  }
+
+  _handleGuestTap() {
+    showCupertinoModalBottomSheet(
+      context: context,
+      backgroundColor: context.theme.bgColorCard,
+      duration: const Duration(milliseconds: 300),
+      builder: (context) => GuestSheet(),
     );
   }
 }

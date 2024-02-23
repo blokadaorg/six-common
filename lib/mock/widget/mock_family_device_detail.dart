@@ -66,9 +66,15 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
           ),
           Container(
             constraints: const BoxConstraints(maxWidth: 500),
-            child: const Padding(
+            child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: MiniCard(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    StandardRoute(builder: (context) => const FilterScreen()),
+                  );
+                },
                 child: MiniCardSummary(
                   header: MiniCardHeader(
                     text: "Blocklists",
@@ -124,7 +130,7 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
                       children: [
                         const TwoLetterIconWidget(name: "Alva"),
                         const SizedBox(width: 12),
-                        Text("Alva",
+                        Text("Name: Alva",
                             style: TextStyle(
                               fontSize: 18,
                               color: context.theme.textSecondary,

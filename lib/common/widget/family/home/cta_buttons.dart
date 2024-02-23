@@ -46,8 +46,8 @@ class CtaButtonsState extends State<CtaButtons>
           _buildBigCtaButton(context) +
               _buildSmallCtaButton(context) +
               _buildScanQrButton(context) +
-              _buildLockButton(context) +
-              _buildGuestButton(context),
+              _buildLockButton(context),
+      //_buildGuestButton(context),
     );
   }
 
