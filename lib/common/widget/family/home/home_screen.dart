@@ -41,6 +41,7 @@ class HomeScreenState extends State<HomeScreen>
   var _working = true;
 
   rebuild() {
+    print("home screen rebuild called");
     setState(() => _working = _status.now.isWorking() || !_ready.now);
   }
 

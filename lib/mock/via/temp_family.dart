@@ -91,7 +91,10 @@ class TempFamilyPhase extends HandleVia<FamilyPhase> with TraceOrigin {
   late final _family = dep<FamilyStore>();
 
   TempFamilyPhase() {
-    reaction((_) => _family.phase, (phase) => dirty());
+    reaction((_) => _family.phase, (phase) {
+      print("family phase reaction called");
+      dirty();
+    });
   }
 
   @override
