@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vistraced/via.dart';
 
@@ -62,9 +63,12 @@ class HomeDeviceState extends State<HomeDevice>
               chevronIcon: Icons.chevron_right,
             ),
             const SizedBox(height: 20),
-            IgnorePointer(
-              ignoring: true,
-              child: MiniCardChart(device: widget.device, color: widget.color),
+            ClipRect(
+              child: IgnorePointer(
+                ignoring: true,
+                child:
+                    MiniCardChart(device: widget.device, color: widget.color),
+              ),
             ),
           ],
           //footer: "home status detail active".i18n.replaceAll("*", ""),

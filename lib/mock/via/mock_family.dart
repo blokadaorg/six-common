@@ -147,14 +147,17 @@ class EmptyCall<T> extends HandleVia<T> {
 @Injected()
 class MockDevices extends HandleVia<FamilyDevices> {
   @override
-  Future<FamilyDevices> get() async => FamilyDevices([
+  FamilyDevices defaults() => FamilyDevices([
         FamilyDevice(
           deviceName: "Alva",
           deviceDisplayName: "Alva",
           stats: MockUiStats().defaults(),
-          thisDevice: false,
+          thisDevice: true,
         ),
       ], true);
+
+  @override
+  Future<FamilyDevices> get() async => defaults();
 }
 
 @Injected()

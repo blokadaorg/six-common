@@ -1,4 +1,5 @@
 import 'package:common/app/app.dart';
+import 'package:common/common/widget/family/home/device.dart';
 import 'package:common/service/I18nService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:relative_scale/relative_scale.dart';
 import 'package:vistraced/via.dart';
 
 import '../../../../app/channel.pg.dart';
+import '../../../../family/devices.dart';
 import '../../../../stage/channel.pg.dart';
 import '../../../../ui/debug/commanddialog.dart';
 import '../../../../ui/overlay/overlay_container.dart';
@@ -34,6 +36,7 @@ class HomeScreenState extends State<HomeScreen>
   late final _status = Via.as<AppStatus>()..also(rebuild);
   late final _phase = Via.as<FamilyPhase>()..also(rebuild);
   late final _modal = Via.as<StageModal?>()..also(rebuild);
+  late final _devices = Via.as<FamilyDevices>()..also(rebuild);
 
   @MatcherSpec(of: "stage")
   late final _ready = Via.as<bool>()..also(rebuild);
@@ -77,9 +80,70 @@ class HomeScreenState extends State<HomeScreen>
 
                                   // Devices list or the status texts
                                   (_phase.now == FamilyPhase.parentHasDevices)
-                                      ? const Devices()
-                                      : StatusTexts(phase: _phase.now),
-                                  CtaButtons(),
+                                      ? Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                              // SizedBox(
+                                              //   width: 300,
+                                              //   height: 200,
+                                              //   child: Devices(),
+                                              // ),
+                                              Column(children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: MiniCard(
+                                                      // color: context.theme.family,
+                                                      //onTap: _handleGuestTap,
+                                                      child: SizedBox(
+                                                    height: 32,
+                                                    width: 32,
+                                                    // child: Icon(CupertinoIcons.lock_shield_fill),
+                                                    child: Icon(
+                                                      CupertinoIcons
+                                                          .lock_shield,
+                                                      // CupertinoIcons
+                                                      //     .lock_shield_fill,
+                                                      // color:
+                                                      //     context.theme.family,
+                                                    ),
+                                                  )),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 8.0),
+                                                  child: MiniCard(
+                                                      //onTap: _handleCtaTap(),
+                                                      color:
+                                                          context.theme.family,
+                                                      child: const SizedBox(
+                                                        height: 32,
+                                                        width: 32,
+                                                        child: Icon(
+                                                            CupertinoIcons
+                                                                .plus_circle,
+                                                            color:
+                                                                Colors.white),
+                                                      )),
+                                                ),
+                                              ]),
+                                              SizedBox(
+                                                width: 300,
+                                                child: HomeDevice(
+                                                  device: _devices
+                                                      .now.entries.first,
+                                                  color: context.theme.family,
+                                                ),
+                                              ),
+                                            ])
+                                      : Column(
+                                          children: [
+                                            StatusTexts(phase: _phase.now),
+                                            CtaButtons(),
+                                          ],
+                                        ),
 
                                   // Leave space for navbar
                                   (!_phase.now.isLocked())

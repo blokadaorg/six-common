@@ -119,7 +119,7 @@ class DevicesState extends State<Devices>
               enlargeCenterPage: false,
               scrollDirection: Axis.vertical,
             )),
-        d.first,
+        //d.first,
       ],
     );
   }
