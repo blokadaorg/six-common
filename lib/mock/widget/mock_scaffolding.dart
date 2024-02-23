@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:common/common/widget/family/home/private_dns_setting_guide.dart';
 import 'package:common/util/config.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
@@ -367,11 +368,30 @@ class MockScaffoldingWidget extends StatelessWidget {
 
   Widget _buildFamilyComponents(BuildContext context) {
     return Stack(
+      alignment: Alignment.center,
       children: [
         BigLogo(),
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: [FamilyTotalCounter(autoRefresh: true), CtaButtons()],
+          children: [
+            PrivateDnsSettingGuideWidget(
+                title: "General", icon: Icons.settings),
+            PrivateDnsSettingGuideWidget(title: "VPN & Device Management"),
+            PrivateDnsSettingGuideWidget(
+                title: "DNS",
+                icon: CupertinoIcons.ellipsis,
+                edgeText: "Automatic"),
+            PrivateDnsSettingGuideWidget(
+              title: "Blokada Family",
+              subtitle: "Blokada Family",
+              icon: CupertinoIcons.shield_fill,
+              chevron: false,
+            ),
+            SizedBox(height: 28),
+            FamilyTotalCounter(autoRefresh: true),
+            CtaButtons(),
+            SizedBox(height: 48),
+          ],
         )
       ],
     );

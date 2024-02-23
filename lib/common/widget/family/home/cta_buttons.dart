@@ -166,11 +166,16 @@ class CtaButtonsState extends State<CtaButtons>
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: MiniCard(
+              // color: context.theme.family,
               onTap: _handleGuestTap,
-              child: const SizedBox(
+              child: SizedBox(
                 height: 32,
                 width: 32,
-                child: Icon(CupertinoIcons.person_crop_circle),
+                // child: Icon(CupertinoIcons.lock_shield_fill),
+                child: (!_lock.now.hasPin)
+                    ? Icon(CupertinoIcons.lock_shield)
+                    : Icon(CupertinoIcons.lock_shield_fill,
+                        color: context.theme.family),
               )),
         )
       ];

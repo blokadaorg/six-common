@@ -1,3 +1,4 @@
+import 'package:common/common/widget/family/home/private_dns_setting_guide.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -16,6 +17,7 @@ class PrivateDnsSheet extends StatefulWidget {
 class PrivateDnsSheetState extends State<PrivateDnsSheet> {
   late VideoPlayerController _controller;
   late final ChewieController chewieController;
+  var showVideo = false;
 
   @override
   void initState() {
@@ -64,26 +66,62 @@ class PrivateDnsSheetState extends State<PrivateDnsSheet> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32.0),
             child: Text(
-                "Activate \"Blokada Family\" in Settings by following the video instructions.",
+                "Activate \"Blokada Family\" in Settings by following these instructions.",
                 softWrap: true,
                 textAlign: TextAlign.justify,
                 style: TextStyle(color: context.theme.textSecondary)),
           ),
           Spacer(),
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: SizedBox(
-                width: 257,
-                height: 430,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    color: context.theme.bgColor,
-                    child: Chewie(controller: chewieController),
-                  ),
+          (showVideo)
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: SizedBox(
+                    width: 257,
+                    height: 430,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        color: context.theme.bgColor,
+                        child: Chewie(controller: chewieController),
+                      ),
+                    ),
+                  ))
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("In the main section of Settings, tap:",
+                            style:
+                                TextStyle(color: context.theme.textSecondary)),
+                        PrivateDnsSettingGuideWidget(
+                            title: "General", icon: Icons.settings),
+                        SizedBox(height: 16),
+                        Text("... then swipe down, and tap:",
+                            style:
+                                TextStyle(color: context.theme.textSecondary)),
+                        PrivateDnsSettingGuideWidget(
+                            title: "VPN & Device Management"),
+                        SizedBox(height: 16),
+                        Text("... next, tap:",
+                            style:
+                                TextStyle(color: context.theme.textSecondary)),
+                        PrivateDnsSettingGuideWidget(
+                            title: "DNS",
+                            icon: CupertinoIcons.ellipsis,
+                            edgeText: "Automatic"),
+                        SizedBox(height: 16),
+                        Text("... and finally, select:",
+                            style:
+                                TextStyle(color: context.theme.textSecondary)),
+                        PrivateDnsSettingGuideWidget(
+                          title: "Blokada Family",
+                          subtitle: "Blokada Family",
+                          icon: CupertinoIcons.shield_fill,
+                          chevron: false,
+                        ),
+                      ]),
                 ),
-              )),
-
           Spacer(),
           Row(
             children: [

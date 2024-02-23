@@ -1,4 +1,5 @@
 import 'dart:io' as io;
+import 'package:common/common/widget/family/home/home_screen.dart';
 import 'package:common/json/json.dart';
 import 'package:common/ui/family/family_scaffolding.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:vistraced/via.dart';
 import 'entrypoint.dart';
 import 'main-widgets.dart';
 import 'mock/via/mock_family.dart';
+import 'mock/via/temp_family.dart';
 import 'mock/widget/mock_scaffolding.dart';
 import 'service/I18nService.dart';
 import 'common/widget/root.dart';
@@ -45,18 +47,17 @@ void main() async {
 
   entrypoint.onStartApp();
 
-  // runApp(Root(
-  //   content: (flavor == Flavor.family)
-  //       ? const FamilyScaffolding(title: 'Blokada')
-  //       : const Scaffolding(title: 'Blokada'),
-  // ));
-
   MockModule();
+  TempModule();
   injector.inject();
 
   final ws = DevWebsocket();
   depend(ws);
   ws.handle();
 
-  runApp(Root(content: MockScaffoldingWidget()));
+  runApp(Root(
+    content: (flavor == Flavor.family)
+        ? const HomeScreen()
+        : const Scaffolding(title: 'Blokada'),
+  ));
 }

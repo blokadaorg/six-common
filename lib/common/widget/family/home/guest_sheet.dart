@@ -17,7 +17,7 @@ class GuestSheet extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 48),
-          Text("Guest mode",
+          Text("Lockdown mode",
               style: Theme.of(context)
                   .textTheme
                   .displaySmall!
@@ -28,7 +28,7 @@ class GuestSheet extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                    "To share this device with your children, enable guest mode to filter the content they can access.",
+                    "To share this device with your child, enable lockdown mode to filter the content they can access.",
                     textAlign: TextAlign.justify,
                     style: TextStyle(color: context.theme.textSecondary)),
                 const SizedBox(height: 48),

@@ -66,8 +66,28 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
           ),
           Container(
             constraints: const BoxConstraints(maxWidth: 500),
-            child: Padding(
+            child: const Padding(
               padding: const EdgeInsets.all(12.0),
+              child: MiniCard(
+                child: MiniCardSummary(
+                  header: MiniCardHeader(
+                    text: "Blocklists",
+                    icon: CupertinoIcons.shield,
+                    color: Color(0xff3c8cff),
+                    chevronIcon: Icons.chevron_right,
+                    chevronText: "Adblocking only",
+                  ),
+                  big: MiniCardCounter(counter: 2),
+                  small: "selected",
+                  //footer: "applies when Blokada is unlocked",
+                ),
+              ),
+            ),
+          ),
+          Container(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
               child: MiniCard(
                 onTap: () {
                   Navigator.push(
@@ -77,35 +97,16 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
                 },
                 child: const MiniCardSummary(
                   header: MiniCardHeader(
-                    text: "Blocklists",
-                    icon: CupertinoIcons.shield,
+                    text: "Lockdown mode",
+                    icon: CupertinoIcons.lock_shield,
                     color: Color(0xff3c8cff),
                     chevronIcon: Icons.chevron_right,
                     chevronText: "Alva",
                   ),
                   big: MiniCardCounter(counter: 8),
                   small: "selected",
+                  footer: "applies when Blokada is locked",
                   //footer: "in safe search, ads, adult content, streaming apps",
-                ),
-              ),
-            ),
-          ),
-          Container(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-              child: MiniCard(
-                child: MiniCardSummary(
-                  header: MiniCardHeader(
-                    text: "Unlocked mode",
-                    icon: CupertinoIcons.lock_open,
-                    color: Color(0xff3c8cff),
-                    chevronIcon: Icons.chevron_right,
-                    chevronText: "Adblocking only",
-                  ),
-                  big: MiniCardCounter(counter: 2),
-                  small: "selected",
-                  footer: "applies when Blokada is unlocked",
                 ),
               ),
             ),
