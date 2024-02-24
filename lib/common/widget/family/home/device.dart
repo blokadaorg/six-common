@@ -64,7 +64,7 @@ class HomeDeviceState extends State<HomeDevice>
               color: widget.color,
               chevronIcon: Icons.chevron_right,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 4),
             ClipRect(
               child: IgnorePointer(
                 ignoring: true,
@@ -78,15 +78,15 @@ class HomeDeviceState extends State<HomeDevice>
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       MiniCard(
-                          color: context.theme.bgColor.darken(8),
+                          // color: context.theme.bgColor,
                           //onTap: _handleGuestTap,
                           child: SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: Icon(CupertinoIcons.power,
-                                color: context.theme.family),
-                            //child: Icon(CupertinoIcons.power),
-                          )),
+                        height: 24,
+                        width: 24,
+                        //child: Icon(CupertinoIcons.power),
+                        child: Icon(CupertinoIcons.power,
+                            color: context.theme.textSecondary),
+                      )),
                       SizedBox(width: 8),
                       MiniCard(
                           color: context.theme.bgColor,
@@ -94,20 +94,22 @@ class HomeDeviceState extends State<HomeDevice>
                           child: SizedBox(
                             height: 24,
                             width: 24,
-                            // child: Icon(CupertinoIcons.lock_shield_fill,
-                            //     color: context.theme.family),
                             child: Icon(CupertinoIcons.lock_shield),
+                            // child: Icon(CupertinoIcons.lock_shield,
+                            //     color: context.theme.textSecondary),
                           )),
-                      SizedBox(width: 8),
+                      //SizedBox(width: 8),
+                      Spacer(),
                       MiniCard(
-                          color: context.theme.bgColor,
+                          //color: context.theme.bgColor,
                           //onTap: _handleGuestTap,
                           child: SizedBox(
-                            height: 24,
-                            width: 24,
-                            // child: Icon(CupertinoIcons.lock_shield_fill),
-                            child: Icon(CupertinoIcons.ellipsis),
-                          )),
+                        height: 24,
+                        width: 24,
+                        // child: Icon(CupertinoIcons.lock_shield_fill),
+                        child: Icon(CupertinoIcons.ellipsis,
+                            color: context.theme.textSecondary),
+                      )),
                     ],
                   )
                 : Container(),

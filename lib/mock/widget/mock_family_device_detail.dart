@@ -93,34 +93,7 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
           Container(
             constraints: const BoxConstraints(maxWidth: 500),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-              child: MiniCard(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    StandardRoute(builder: (context) => const FilterScreen()),
-                  );
-                },
-                child: const MiniCardSummary(
-                  header: MiniCardHeader(
-                    text: "Lockdown mode",
-                    icon: CupertinoIcons.lock_shield,
-                    color: Color(0xff3c8cff),
-                    chevronIcon: Icons.chevron_right,
-                    chevronText: "Alva",
-                  ),
-                  big: MiniCardCounter(counter: 8),
-                  small: "selected",
-                  footer: "applies when Blokada is locked",
-                  //footer: "in safe search, ads, adult content, streaming apps",
-                ),
-              ),
-            ),
-          ),
-          Container(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: MiniCard(
                 child: Column(
                   children: [
@@ -162,12 +135,12 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: context.theme.textPrimary,
+                            color: context.theme.bgColor,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           padding: const EdgeInsets.all(8),
                           child: Icon(CupertinoIcons.power,
-                              color: context.theme.bgColor, size: 24),
+                              color: context.theme.textSecondary, size: 24),
                         ),
                         const SizedBox(width: 12),
                         Text("Enabled",
@@ -193,7 +166,80 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(top: 12, left: 24, right: 24),
+            child: Text(
+                "Use different configuration when Blokada is locked on this device:",
+                style: TextStyle(color: context.theme.textSecondary)),
+          ),
+          Container(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Padding(
+              padding: EdgeInsets.all(12),
+              child: MiniCard(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    StandardRoute(builder: (context) => const FilterScreen()),
+                  );
+                },
+                child: const MiniCardSummary(
+                  header: MiniCardHeader(
+                    text: "Blocklists",
+                    icon: CupertinoIcons.lock_shield,
+                    color: Color(0xff3c8cff),
+                    chevronIcon: Icons.chevron_right,
+                    chevronText: "Alva",
+                  ),
+                  big: MiniCardCounter(counter: 8),
+                  small: "selected",
+                  footer: "applies when Blokada is locked",
+                  //footer: "in safe search, ads, adult content, streaming apps",
+                ),
+              ),
+            ),
+          ),
+          Container(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: MiniCard(
+                child: Column(
+                  children: [
+                    Row(
+                      textBaseline: TextBaseline.alphabetic,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: context.theme.bgColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: Icon(CupertinoIcons.lock,
+                              color: context.theme.textSecondary, size: 24),
+                        ),
+                        const SizedBox(width: 12),
+                        Text("Change pin",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: context.theme.textSecondary,
+                            )),
+                        Expanded(child: Container()),
+                        Text(
+                          "Edit",
+                          style: TextStyle(color: context.theme.family),
+                        ),
+                        const SizedBox(width: 4),
+                      ],
+                    ),
+                    //Toplist(stats: _stats, blocked: true),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           Container(
             constraints: const BoxConstraints(maxWidth: 500),
             child: const Padding(
