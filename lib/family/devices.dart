@@ -24,8 +24,8 @@ class FamilyDevices {
                   _deviceDisplayName(name, name == thisDeviceName),
               stats: UiStats.empty(),
               thisDevice: name == thisDeviceName,
-      enabled: true,
-        configured: true,
+              enabled: true,
+              configured: true,
             ))
         .toList();
     return FamilyDevices(devices, devices.isNotEmpty);

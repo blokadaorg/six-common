@@ -153,6 +153,8 @@ class MockDevices extends HandleVia<FamilyDevices> {
           deviceDisplayName: "Alva (this device)",
           stats: MockUiStats().defaults(),
           thisDevice: true,
+          enabled: true,
+          configured: true,
         ),
         // FamilyDevice(
         //   deviceName: "Bobby",
