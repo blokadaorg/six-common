@@ -185,7 +185,7 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
                 },
                 child: const MiniCardSummary(
                   header: MiniCardHeader(
-                    text: "Blocklists",
+                    text: "Locked mode",
                     icon: CupertinoIcons.lock_shield,
                     color: Color(0xff3c8cff),
                     chevronIcon: Icons.chevron_right,

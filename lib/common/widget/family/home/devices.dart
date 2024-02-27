@@ -3,11 +3,13 @@ import 'package:common/service/I18nService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:vistraced/via.dart';
 
 import '../../../widget.dart';
 import '../../../../family/devices.dart';
 import '../../../../util/trace.dart';
+import 'add_device_sheet.dart';
 import 'device.dart';
 
 part 'devices.g.dart';
@@ -49,7 +51,17 @@ class DevicesState extends State<Devices>
     final devices = _getDevices();
 
     if (devices.length <= 2) {
-      return Column(children: devices);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+                child: _buildAddDeviceButton(context),
+              ),
+            ] +
+            devices,
+      );
     }
 
     // Group devices in pairs and allow vertical carousel scrolling
@@ -65,6 +77,8 @@ class DevicesState extends State<Devices>
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
           child: Row(
             children: [
+              _buildAddDeviceButton(context),
+              Spacer(),
               Touch(
                   onTap: () {
                     _carouselCtrl.nextPage();
@@ -108,7 +122,7 @@ class DevicesState extends State<Devices>
             items: d.sublist(1),
             carouselController: _carouselCtrl,
             options: CarouselOptions(
-              height: 176,
+              height: 186,
               //aspectRatio: 16 / 9,
               viewportFraction: 1.0,
               initialPage: d.length - 1 - 1,
@@ -119,7 +133,7 @@ class DevicesState extends State<Devices>
               enlargeCenterPage: false,
               scrollDirection: Axis.vertical,
             )),
-        //d.first,
+        d.first,
       ],
     );
   }
@@ -175,5 +189,31 @@ class DevicesState extends State<Devices>
     traceAs("tappedDeleteDevice", (trace) async {
       _devices.now.deleteDevice(deviceName);
     });
+  }
+
+  Widget _buildAddDeviceButton(BuildContext context) {
+    return Touch(
+        onTap: () {
+          showCupertinoModalBottomSheet(
+            context: context,
+            duration: const Duration(milliseconds: 300),
+            backgroundColor: context.theme.bgColorCard,
+            builder: (context) => AddDeviceSheet(),
+          );
+        },
+        decorationBuilder: (value) {
+          return BoxDecoration(
+            color: context.theme.bgMiniCard.withOpacity(value),
+            borderRadius: BorderRadius.circular(4),
+          );
+        },
+        child: const Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Icon(
+            CupertinoIcons.plus_circle,
+            size: 32,
+            color: Colors.white,
+          ),
+        ));
   }
 }

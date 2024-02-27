@@ -24,6 +24,8 @@ class FamilyDevices {
                   _deviceDisplayName(name, name == thisDeviceName),
               stats: UiStats.empty(),
               thisDevice: name == thisDeviceName,
+      enabled: true,
+        configured: true,
             ))
         .toList();
     return FamilyDevices(devices, devices.isNotEmpty);
@@ -38,6 +40,8 @@ class FamilyDevices {
         deviceDisplayName: d.deviceDisplayName,
         stats: s,
         thisDevice: d.thisDevice,
+        enabled: d.enabled,
+        configured: d.configured,
       );
     }).toList();
 
@@ -54,6 +58,8 @@ class FamilyDevices {
       deviceDisplayName: name,
       stats: stats,
       thisDevice: false,
+      enabled: true,
+      configured: true,
     ));
 
     return FamilyDevices(updated, true);
@@ -70,6 +76,8 @@ class FamilyDevices {
       deviceDisplayName: _deviceDisplayName(name, true),
       stats: stats,
       thisDevice: true,
+      enabled: false,
+      configured: false,
     );
 
     return FamilyDevices([thisDevice, ...entries], true);
@@ -102,6 +110,8 @@ class FamilyDevices {
       deviceDisplayName: d.deviceDisplayName,
       stats: stats,
       thisDevice: d.thisDevice,
+      enabled: d.enabled,
+      configured: d.configured,
     );
 
     return FamilyDevices(updated, true);
@@ -117,6 +127,8 @@ class FamilyDevices {
       deviceDisplayName: d.deviceDisplayName,
       stats: d.stats,
       thisDevice: true,
+      enabled: d.enabled,
+      configured: d.configured,
     );
 
     return FamilyDevices(updated, true);

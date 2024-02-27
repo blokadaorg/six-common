@@ -169,6 +169,7 @@ abstract class FamilyStoreBase
       final json = await _persistence.load(trace, _key);
       if (json == null) {
         devices = FamilyDevices([], false);
+        await _addThisDevice(trace);
         return;
       }
 
@@ -288,10 +289,10 @@ abstract class FamilyStoreBase
         await _device.setCloudEnabled(parentTrace, true);
       }
 
-      // Add "this device" to the list
-      if (devices.hasThisDevice == false) {
-        await _addThisDevice(parentTrace);
-      }
+      // // Add "this device" to the list
+      // if (devices.hasThisDevice == false) {
+      //   await _addThisDevice(parentTrace);
+      // }
     }
     _updatePhase();
   }

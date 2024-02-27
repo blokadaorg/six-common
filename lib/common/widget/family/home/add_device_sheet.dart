@@ -5,9 +5,22 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../widget.dart';
 
-class AddDeviceSheet extends StatelessWidget {
+class AddDeviceSheet extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => AddDeviceSheetState();
+}
+
+class AddDeviceSheetState extends State<AddDeviceSheet> {
+  bool _showQr = false; // The widget would stutter animation, show async
+
   @override
   Widget build(BuildContext context) {
+    if (!_showQr) {
+      Future.delayed(const Duration(seconds: 0), () {
+        setState(() => _showQr = true);
+      });
+    }
+
     return Scaffold(
       body: Container(
         color: context.theme.bgColorCard,
@@ -91,13 +104,13 @@ class AddDeviceSheet extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-            Builder(builder: (context) {
-              return QrImageView(
-                data: familyLinkBase + linkTemplate,
-                version: QrVersions.auto,
-                size: 200.0,
-              );
-            }),
+            _showQr
+                ? QrImageView(
+                    data: familyLinkBase + linkTemplate,
+                    version: QrVersions.auto,
+                    size: 200.0,
+                  )
+                : const SizedBox(height: 200),
             const SizedBox(height: 48),
             const CupertinoActivityIndicator(),
           ]),

@@ -83,21 +83,21 @@ class HomeDeviceState extends State<HomeDevice>
                           child: SizedBox(
                         height: 24,
                         width: 24,
-                        //child: Icon(CupertinoIcons.power),
+                        // child: Icon(CupertinoIcons.power),
                         child: Icon(CupertinoIcons.power,
                             color: context.theme.textSecondary),
                       )),
-                      SizedBox(width: 8),
-                      MiniCard(
-                          color: context.theme.bgColor,
-                          onTap: _handleGuestTap,
-                          child: SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: Icon(CupertinoIcons.lock_shield),
-                            // child: Icon(CupertinoIcons.lock_shield,
-                            //     color: context.theme.textSecondary),
-                          )),
+                      // SizedBox(width: 8),
+                      // MiniCard(
+                      //     // color: context.theme.bgColor,
+                      //     onTap: _handleGuestTap,
+                      //     child: SizedBox(
+                      //       height: 24,
+                      //       width: 24,
+                      //       // child: Icon(CupertinoIcons.lock),
+                      //       child: Icon(CupertinoIcons.lock_open,
+                      //           color: context.theme.textSecondary),
+                      //     )),
                       //SizedBox(width: 8),
                       Spacer(),
                       MiniCard(

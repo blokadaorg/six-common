@@ -97,7 +97,8 @@ class CtaButtonsState extends State<CtaButtons>
   // Small CTA icon shown only after onboarded
   List<Widget> _buildSmallCtaButton(BuildContext context) {
     final p = _phase.now;
-    final canAddDevices = !p.requiresAction() && p.isParent() && !p.isLocked();
+    var canAddDevices = !p.requiresAction() && p.isParent() && !p.isLocked();
+    canAddDevices = false;
 
     if (canAddDevices) {
       return [

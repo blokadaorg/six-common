@@ -19,7 +19,7 @@ class GuestSheet extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 48),
-            Text("Lockdown mode",
+            Text("Locked mode",
                 style: Theme.of(context)
                     .textTheme
                     .displaySmall!
@@ -30,22 +30,22 @@ class GuestSheet extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                      "To share this device with your child, enable lockdown mode to filter the content they can access.",
+                      "If this device is shared with your child, activate Locked mode to prevent any changes to the Blokada settings until you disable it.",
                       textAlign: TextAlign.justify,
                       style: TextStyle(color: context.theme.textSecondary)),
                   const SizedBox(height: 48),
                   const ExplainItemWidget(
                     icon: CupertinoIcons.lock,
-                    title: "Lock your device",
+                    title: "PIN code",
                     description:
-                        "Once you set the pin code in the next step, Blokada will activate for this device.",
+                        "Set the PIN code in the following step, and Blokada will automatically lock.",
                   ),
                   const SizedBox(height: 24),
                   const ExplainItemWidget(
-                    icon: CupertinoIcons.eye_slash,
-                    title: "Content filtering",
+                    icon: CupertinoIcons.lock_shield,
+                    title: "Separate configuration",
                     description:
-                        "You can unlock Blokada and adjust the filtering settings whenever you like.",
+                        "Adjust your settings to enable stricter filtering when Blokada is in Locked mode.",
                   ),
                 ],
               ),

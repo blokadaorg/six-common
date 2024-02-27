@@ -5,12 +5,16 @@ class FamilyDevice {
   final String deviceDisplayName;
   final UiStats stats;
   final bool thisDevice;
+  final bool enabled;
+  final bool configured;
 
   FamilyDevice({
     required this.deviceName,
     required this.deviceDisplayName,
     required this.stats,
     required this.thisDevice,
+    required this.enabled,
+    required this.configured,
   });
 }
 
