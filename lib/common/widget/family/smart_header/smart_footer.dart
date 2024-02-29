@@ -101,6 +101,23 @@ class SmartFooterState extends State<SmartFooter> with ViaTools<SmartFooter> {
           child: Column(
             children: [
               Icon(
+                CupertinoIcons.device_phone_portrait,
+                color: context.theme.textPrimary,
+              ),
+              Text("This device",
+                  style: TextStyle(color: context.theme.textPrimary))
+            ],
+          ),
+        ),
+      ),
+      SizedBox(width: 32),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          height: 48,
+          child: Column(
+            children: [
+              Icon(
                 CupertinoIcons.profile_circled,
                 color: context.theme.textPrimary,
               ),

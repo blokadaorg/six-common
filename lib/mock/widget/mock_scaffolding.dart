@@ -402,7 +402,7 @@ class MockScaffoldingWidget extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SmartOnboard(phase: phase),
+            SmartOnboard(phase: phase, hasMultipleDevices: false),
           ],
         ),
         Column(

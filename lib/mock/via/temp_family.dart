@@ -21,6 +21,7 @@ part 'temp_family.g.dart';
   ViaMatcher<bool>(TempStageReady, of: "stage"),
   ViaMatcher<AppStatus>(TempAppStatus),
   ViaMatcher<FamilyPhase>(TempFamilyPhase),
+  ViaMatcher<FamilyDevices>(TempFamilyDevices),
   ViaMatcher<String>(TempStageRoute, of: "stage"),
   ViaMatcher<void>(TempFamilyOpenPerms, of: "familyOpenPerms"),
 ])
@@ -115,6 +116,25 @@ class TempFamilyPhase extends HandleVia<FamilyPhase> with TraceOrigin {
   @override
   Future<FamilyPhase> get() async {
     return _family.phase;
+  }
+}
+
+@Injected(onlyVia: true)
+class TempFamilyDevices extends HandleVia<FamilyDevices> with TraceOrigin {
+  late final _family = dep<FamilyStore>();
+
+  TempFamilyDevices() {
+    reaction((_) => _family.devices, (phase) {
+      dirty();
+    });
+  }
+
+  @override
+  FamilyDevices defaults() => _family.devices;
+
+  @override
+  Future<FamilyDevices> get() async {
+    return _family.devices;
   }
 }
 

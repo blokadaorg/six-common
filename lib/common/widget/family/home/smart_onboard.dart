@@ -9,8 +9,10 @@ import '../../../../util/trace.dart';
 
 class SmartOnboard extends StatefulWidget {
   final FamilyPhase phase;
+  final bool hasMultipleDevices;
 
-  const SmartOnboard({super.key, required this.phase});
+  const SmartOnboard(
+      {super.key, required this.phase, required this.hasMultipleDevices});
 
   @override
   State<StatefulWidget> createState() => SmartOnboardState();
@@ -32,7 +34,8 @@ class SmartOnboardState extends State<SmartOnboard>
       child: Center(
         child: Column(
           children: [
-            BigIcon(icon: getIcon(widget.phase)),
+            BigIcon(
+                icon: widget.hasMultipleDevices ? getIcon(widget.phase) : null),
             const SizedBox(height: 90),
             Text(
               texts.first!,
