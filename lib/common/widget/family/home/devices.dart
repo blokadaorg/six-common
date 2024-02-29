@@ -9,6 +9,7 @@ import 'package:vistraced/via.dart';
 import '../../../widget.dart';
 import '../../../../family/devices.dart';
 import '../../../../util/trace.dart';
+import '../smart_header/smart_header_button.dart';
 import 'add_device_sheet.dart';
 import 'device.dart';
 
@@ -53,13 +54,21 @@ class DevicesState extends State<Devices>
     if (devices.length <= 2) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-                child: _buildAddDeviceButton(context),
-              ),
-            ] +
+        children: <Widget>[] +
+            //devices +
+            // [
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.start,
+            //     children: [
+            //       Padding(
+            //         padding: const EdgeInsets.symmetric(
+            //             horizontal: 16.0, vertical: 8),
+            //         child: SmartHeaderButton(icon: CupertinoIcons.plus_circle),
+            //       ),
+            //       //_buildAddDeviceButton2(context),
+            //     ],
+            //   ),
+            // ] +
             devices,
       );
     }
@@ -192,7 +201,9 @@ class DevicesState extends State<Devices>
   }
 
   Widget _buildAddDeviceButton(BuildContext context) {
-    return Touch(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+      child: Touch(
         onTap: () {
           showCupertinoModalBottomSheet(
             context: context,
@@ -214,6 +225,45 @@ class DevicesState extends State<Devices>
             size: 32,
             color: Colors.white,
           ),
-        ));
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddDeviceButton2(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: MiniCard(
+        onTap: () {
+          showCupertinoModalBottomSheet(
+            context: context,
+            duration: const Duration(milliseconds: 300),
+            backgroundColor: context.theme.bgColorCard,
+            builder: (context) => AddDeviceSheet(),
+          );
+        },
+        color: context.theme.family,
+        child: SizedBox(
+          height: 32,
+          child: Center(
+            child: Row(
+              children: [
+                Icon(
+                  CupertinoIcons.plus,
+                  size: 28,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  "Add a device",
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

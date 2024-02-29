@@ -1,0 +1,197 @@
+import 'package:common/common/widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' as foundation;
+
+class BigIcon extends StatefulWidget {
+  final IconData? icon;
+
+  const BigIcon({Key? key, required this.icon}) : super(key: key);
+
+  @override
+  State<BigIcon> createState() => BigIconState();
+}
+
+class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
+  late final _ctrl = AnimationController(
+    duration: const Duration(milliseconds: 400),
+    vsync: this,
+  );
+
+  late final _scaleDown =
+      Tween<double>(begin: 1.0, end: 0.0).animate(CurvedAnimation(
+    parent: _ctrl,
+    curve: Curves.easeInQuad,
+  ));
+
+  late final _scaleUp =
+      Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+    parent: _ctrl,
+    curve: Curves.easeOutQuad,
+  ));
+
+  late final _ctrlIdle = AnimationController(
+    duration: const Duration(milliseconds: 1400),
+    vsync: this,
+  );
+
+  late final _scaleIdle =
+      Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+    parent: _ctrlIdle,
+    curve: Curves.easeInOut,
+  ));
+
+  bool _introduced = false;
+  bool _show = false; // To play scaleDown or scaleUp
+  bool _logo = true; // To show logo or icon
+
+  @override
+  void initState() {
+    super.initState();
+
+    _ctrl.addStatusListener((status) {
+      if (status != AnimationStatus.completed) return;
+
+      // As intro, scale up the logo ...
+      if (!_introduced) {
+        setState(() {
+          _introduced = true;
+        });
+
+        // ... then if icon is set, scale down the logo ...
+        if (widget.icon != null) {
+          Future.delayed(const Duration(milliseconds: 800), () {
+            setState(() {
+              _show = false;
+            });
+            _ctrl.reset();
+            _ctrl.forward();
+          });
+        } else {
+          _ctrlIdle.repeat(reverse: true);
+        }
+      } else {
+        // ... and then scale up the icon (or the logo)
+        if (widget.icon != null && _logo) {
+          setState(() {
+            _show = true;
+            _logo = false;
+          });
+          _ctrl.reset();
+          _ctrl.forward();
+        } else if (widget.icon == null && !_logo) {
+          setState(() {
+            _show = true;
+            _logo = true;
+          });
+          _ctrl.reset();
+          _ctrl.forward();
+        } else {
+          _ctrlIdle.repeat(reverse: true);
+        }
+      }
+    });
+
+    // Fire off the intro animation
+    if (!_introduced) {
+      setState(() {
+        _show = true;
+        _logo = true;
+      });
+      Future.delayed(const Duration(milliseconds: 500), () {
+        _ctrl.forward();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _ctrl.dispose();
+    _ctrlIdle.dispose();
+  }
+
+  @override
+  void didUpdateWidget(BigIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.icon == widget.icon) return;
+    _ctrlIdle.stop();
+    setState(() {
+      _show = false;
+    });
+    _ctrl.reset();
+    _ctrl.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      child: AnimatedBuilder(
+          animation: foundation.Listenable.merge([_ctrl, _ctrlIdle]),
+          builder: (context, child) {
+            return Transform.scale(
+              scale: (_show ? _scaleUp.value : _scaleDown.value),
+              alignment: Alignment.center,
+              child: _logo || widget.icon == null
+                  ? _buildLogo(context)
+                  : _buildIcon(context),
+            );
+          }),
+    );
+  }
+
+  Widget _buildLogo(BuildContext context) {
+    return Stack(
+      children: [
+        Transform.translate(
+          offset: Offset(8 + _scaleIdle.value * 4, 8 + _scaleIdle.value * 4),
+          child: Image.asset(
+            "assets/images/family-logo.png",
+            width: 160,
+            fit: BoxFit.contain,
+            //height: 600,
+            //filterQuality: FilterQuality.high,
+            color: context.theme.textPrimary.withOpacity(0.2),
+          ),
+        ),
+        Transform.translate(
+          offset: Offset(_scaleIdle.value * -4, _scaleIdle.value * -4),
+          child: Image.asset(
+            "assets/images/family-logo.png",
+            width: 160,
+            fit: BoxFit.contain,
+            //height: 600,
+            //filterQuality: FilterQuality.high,
+            //color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIcon(BuildContext context) {
+    return Stack(
+      children: [
+        Transform.translate(
+          offset: Offset(8 + _scaleIdle.value * 4, 8 + _scaleIdle.value * 4),
+          // offset: Offset(12, 8),
+          child: Icon(
+            widget.icon,
+            size: 190,
+            color: context.theme.textPrimary.withOpacity(0.2),
+            //color: Colors.white.withOpacity(0.2),
+          ),
+        ),
+        Transform.translate(
+          offset: Offset(_scaleIdle.value * -4, _scaleIdle.value * -4),
+          // offset: Offset(4, 2),
+          child: Icon(
+            widget.icon,
+            size: 192,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+}

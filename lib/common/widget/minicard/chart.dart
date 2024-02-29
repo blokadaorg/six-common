@@ -14,16 +14,21 @@ class MiniCardChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       //decoration: BoxDecoration(color: Colors.greenAccent),
-      child: (false &&
+      child: (!device.thisDevice &&
               device.deviceName.isNotEmpty &&
               device.stats.totalAllowed > 0)
           ? _ColumnChart(stats: device.stats, color: color)
-          : Container(
-              constraints: const BoxConstraints(maxHeight: 60),
+          : SizedBox(
+              height: 40,
               // constraints: const BoxConstraints(maxHeight: 90),
               child: //Container(),
                   // Center(child: Text("universal status waiting for data".i18n)),
-                  Center(child: Text("Device not configured for filtering.")),
+                  Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text("Blokada is disabled for Alva"),
+                ],
+              ),
             ),
     );
   }

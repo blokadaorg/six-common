@@ -1,4 +1,5 @@
 import 'package:common/app/app.dart';
+import 'package:common/common/widget/family/home/animated_bg.dart';
 import 'package:common/service/I18nService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +13,13 @@ import '../../../../ui/overlay/overlay_container.dart';
 import '../../../../util/trace.dart';
 import '../../../model.dart';
 import '../../../widget.dart';
-import '../onboard/family_onboard_screen.dart';
+import '../smart_header/smart_footer.dart';
+import '../smart_header/smart_header.dart';
 import 'bg.dart';
 import 'big_logo.dart';
 import 'cta_buttons.dart';
 import 'devices.dart';
+import 'smart_onboard.dart';
 import 'status_texts.dart';
 
 part 'home_screen.g.dart';
@@ -47,65 +50,99 @@ class HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final phase = _phase.now;
     return Scaffold(
-      body: FamilyBgWidget(
-        child: Stack(
-          children: [
-            Container(
-              child: Stack(
-                alignment: Alignment.topCenter,
+        body: Stack(
+      children: [
+        AnimatedBg(),
+        phase == FamilyPhase.parentHasDevices
+            ? ListView(
+                reverse: true,
                 children: [
-                  const BigLogo(),
-                  _buildHelpButton(),
-                  AbsorbPointer(
-                    absorbing: false,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: RelativeBuilder(
-                          builder: (context, height, width, sy, sx) {
-                        return Container(
-                          constraints: const BoxConstraints(maxWidth: 500),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              // Main home screen content
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Spacer(),
-
-                                  // Devices list or the status texts
-                                  (_phase.now == FamilyPhase.parentHasDevices)
-                                      ? const Devices()
-                                      : StatusTexts(phase: _phase.now),
-                                  CtaButtons(),
-
-                                  // Leave space for navbar
-                                  // (!_phase.now.isLocked())
-                                  //     ? SizedBox(height: sy(40))
-                                  //     : Container(),
-                                  SizedBox(height: sy(24)),
-                                ],
-                              ),
-
-                              // Loading spinner on covering the content
-                              _buildLoadingSpinner(context),
-                            ],
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
+                  SizedBox(height: 64),
+                  Devices(),
                 ],
-              ),
-            ),
-            OverlayContainer(modal: _modal.now),
+              )
+            : Container(),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SmartOnboard(phase: phase),
           ],
         ),
-      ),
-    );
+        Column(
+          children: [
+            SizedBox(height: 48),
+            SmartHeader(phase: phase),
+            Spacer(),
+            SmartFooter(phase: phase, hasPin: true),
+          ],
+        )
+      ],
+    ));
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     body: FamilyBgWidget(
+  //       child: Stack(
+  //         children: [
+  //           Container(
+  //             child: Stack(
+  //               alignment: Alignment.topCenter,
+  //               children: [
+  //                 const BigLogo(),
+  //                 _buildHelpButton(),
+  //                 AbsorbPointer(
+  //                   absorbing: false,
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
+  //                     child: RelativeBuilder(
+  //                         builder: (context, height, width, sy, sx) {
+  //                       return Container(
+  //                         constraints: const BoxConstraints(maxWidth: 500),
+  //                         child: Stack(
+  //                           alignment: Alignment.center,
+  //                           children: [
+  //                             // Main home screen content
+  //                             Column(
+  //                               mainAxisSize: MainAxisSize.max,
+  //                               mainAxisAlignment: MainAxisAlignment.center,
+  //                               children: [
+  //                                 const Spacer(),
+  //
+  //                                 // Devices list or the status texts
+  //                                 (_phase.now == FamilyPhase.parentHasDevices)
+  //                                     ? const Devices()
+  //                                     : StatusTexts(phase: _phase.now),
+  //                                 CtaButtons(),
+  //
+  //                                 // Leave space for navbar
+  //                                 // (!_phase.now.isLocked())
+  //                                 //     ? SizedBox(height: sy(40))
+  //                                 //     : Container(),
+  //                                 SizedBox(height: sy(24)),
+  //                               ],
+  //                             ),
+  //
+  //                             // Loading spinner on covering the content
+  //                             _buildLoadingSpinner(context),
+  //                           ],
+  //                         ),
+  //                       );
+  //                     }),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           OverlayContainer(modal: _modal.now),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   _buildHelpButton() {
     return GestureDetector(

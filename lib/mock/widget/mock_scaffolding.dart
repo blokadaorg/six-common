@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:common/common/widget/family/home/devices.dart';
 import 'package:common/common/widget/family/home/private_dns_setting_guide.dart';
+import 'package:common/common/widget/family/home/smart_onboard.dart';
+import 'package:common/common/widget/family/smart_header/smart_header.dart';
+import 'package:common/common/widget/family/smart_header/smart_header_onboard.dart';
 import 'package:common/util/config.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,83 +13,42 @@ import 'package:flutter/material.dart';
 import '../../common/defaults/filter_decor_defaults.dart';
 import '../../common/model.dart';
 import '../../common/widget.dart';
+import '../../common/widget/family/home/animated_bg.dart';
 import '../../common/widget/family/home/big_logo.dart';
 import '../../common/widget/family/home/cta_buttons.dart';
 import '../../common/widget/family/home/home_screen.dart';
+import '../../common/widget/family/home/status_texts.dart';
 import '../../common/widget/family/home/totalcounter.dart';
+import '../../common/widget/family/smart_header/smart_footer.dart';
 import 'mock_family_device_detail.dart';
 
 class MockScaffoldingWidget extends StatelessWidget {
   MockScaffoldingWidget({Key? key}) : super(key: key);
 
   late final _pages = <Map<String, Widget Function(BuildContext)>>[
-    {"Family components": _buildFamilyComponents},
     {"Filter components": _buildFilterComponents},
+    {"Family components": _buildFamilyComponents},
+    {"Smart header": _buildSmartHeader},
     {"": _buildHome},
     {"Screens": (c) => _buildScreens(c)},
     {"Device detail": (c) => const MockFamilyDeviceDetailScreen()},
     {"Filters": _buildFilters},
   ];
 
-  final _ctrl = PageController(initialPage: 2);
+  final _ctrl = PageController(initialPage: 3);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xff4ae5f6),
-              Color(0xff3c8cff),
-              Color(0xff3c8cff),
-            ],
+      body: Stack(
+        children: [
+          AnimatedBg(),
+          PageView(
+            controller: _ctrl,
+            scrollDirection: Axis.horizontal,
+            children: _buildPages(context),
           ),
-        ),
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [
-                Colors.transparent,
-                Color(0xffe450cd),
-                Color(0xffe450cd),
-              ],
-            ),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.transparent,
-                  Colors.transparent,
-                  Colors.transparent,
-                  context.theme.bgColorHome1.withOpacity(0.4),
-                  context.theme.bgColorHome2,
-                  context.theme.bgColorHome2,
-                  context.theme.bgColorHome2,
-                ],
-              ),
-            ),
-            child: Container(
-              //color: context.theme.bgColor,
-              child: Stack(
-                children: [
-                  PageView(
-                    controller: _ctrl,
-                    scrollDirection: Axis.horizontal,
-                    children: _buildPages(context),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+        ],
       ),
     );
   }
@@ -415,6 +378,41 @@ class MockScaffoldingWidget extends StatelessWidget {
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildSmartHeader(BuildContext context) {
+    final phase = FamilyPhase.fresh;
+    return Stack(
+      children: [
+        phase == FamilyPhase.parentHasDevices
+            ? ListView(
+                reverse: true,
+                children: [
+                  SizedBox(height: 64),
+                  Devices(),
+                  //StatusTexts(phase: FamilyPhase.fresh),
+                  //StatusTexts(phase: FamilyPhase.lockedActive),
+                  //StatusTexts(phase: FamilyPhase.noPerms),
+                  //CtaButtons(),
+                ],
+              )
+            : Container(),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SmartOnboard(phase: phase),
+          ],
+        ),
+        Column(
+          children: [
+            SizedBox(height: 48),
+            SmartHeader(phase: phase),
+            Spacer(),
+            SmartFooter(phase: phase, hasPin: true),
+          ],
+        )
       ],
     );
   }

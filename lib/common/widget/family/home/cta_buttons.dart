@@ -87,7 +87,7 @@ class CtaButtonsState extends State<CtaButtons>
               ),
             ),
           ),
-        )
+        ),
       ];
     }
 

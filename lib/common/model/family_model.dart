@@ -45,12 +45,38 @@ extension FamilyPhaseExt on FamilyPhase {
         this == FamilyPhase.linkedUnlocked;
   }
 
+  bool isLocked2() {
+    return this == FamilyPhase.starting ||
+        this == FamilyPhase.lockedNoPerms ||
+        this == FamilyPhase.lockedNoAccount ||
+        this == FamilyPhase.lockedActive ||
+        this == FamilyPhase.linkedNoPerms ||
+        this == FamilyPhase.linkedActive;
+  }
+
   bool requiresAction() {
     return this == FamilyPhase.fresh ||
         this == FamilyPhase.noPerms ||
         this == FamilyPhase.linkedNoPerms ||
         this == FamilyPhase.parentNoDevices ||
-        //this == FamilyPhase.parentHasDevices ||
+        this == FamilyPhase.lockedNoPerms ||
+        this == FamilyPhase.lockedNoAccount;
+  }
+
+  bool hasBottomBar() {
+    return requiresAction() ||
+        this == FamilyPhase.parentHasDevices ||
+        this == FamilyPhase.linkedActive ||
+        this == FamilyPhase.lockedActive;
+  }
+
+  bool requiresBobo() {
+    return this == FamilyPhase.fresh ||
+        this == FamilyPhase.noPerms ||
+        this == FamilyPhase.linkedNoPerms ||
+        this == FamilyPhase.parentNoDevices ||
+        this == FamilyPhase.linkedActive ||
+        this == FamilyPhase.lockedActive ||
         this == FamilyPhase.lockedNoPerms ||
         this == FamilyPhase.lockedNoAccount ||
         this == FamilyPhase.linkedUnlocked;

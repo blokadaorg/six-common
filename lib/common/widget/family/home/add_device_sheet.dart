@@ -16,7 +16,7 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
   @override
   Widget build(BuildContext context) {
     if (!_showQr) {
-      Future.delayed(const Duration(seconds: 0), () {
+      Future.delayed(const Duration(milliseconds: 1000), () {
         setState(() => _showQr = true);
       });
     }
@@ -29,11 +29,13 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
           child: Column(children: [
             Row(
               children: [
+                Text("Use this device",
+                    style: TextStyle(color: context.theme.family)),
                 Expanded(child: Container()),
                 Text("Cancel", style: TextStyle(color: context.theme.family)),
               ],
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 42),
             Text("Add a device",
                 style: Theme.of(context)
                     .textTheme
@@ -49,12 +51,12 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
                       softWrap: true,
                       textAlign: TextAlign.justify,
                       style: TextStyle(color: context.theme.textSecondary)),
-                  const SizedBox(height: 48),
+                  const SizedBox(height: 32),
                   Row(
                     children: [
-                      Icon(CupertinoIcons.device_phone_portrait,
-                          color: context.theme.family),
-                      const SizedBox(width: 12),
+                      // Icon(CupertinoIcons.device_phone_portrait,
+                      //     color: context.theme.family),
+                      // const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,19 +101,55 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
+                  // Text("- or -",
+                  //     style: TextStyle(
+                  //         color: context.theme.textSecondary, fontSize: 16)),
+                  // const SizedBox(height: 12),
+                  // Row(
+                  //   children: [
+                  //     // Icon(CupertinoIcons.lock_open,
+                  //     //     color: context.theme.family),
+                  //     // const SizedBox(width: 12),
+                  //     Expanded(
+                  //       child: MiniCard(
+                  //         //onTap: _handleCtaTap(),
+                  //         color: context.theme.family,
+                  //         child: SizedBox(
+                  //           height: 32,
+                  //           child: Center(
+                  //             child: Text(
+                  //               "Use this device",
+                  //               style: const TextStyle(
+                  //                   color: Colors.white,
+                  //                   fontWeight: FontWeight.w600),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 60),
             _showQr
-                ? QrImageView(
-                    data: familyLinkBase + linkTemplate,
-                    version: QrVersions.auto,
-                    size: 200.0,
+                ? Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: context.theme.divider.withOpacity(0.05),
+                          width: 2,
+                        )),
+                    child: QrImageView(
+                      data: familyLinkBase + linkTemplate,
+                      version: QrVersions.auto,
+                      size: 200.0,
+                    ),
                   )
                 : const SizedBox(height: 200),
-            const SizedBox(height: 48),
+            const SizedBox(height: 80),
             const CupertinoActivityIndicator(),
           ]),
         ),
