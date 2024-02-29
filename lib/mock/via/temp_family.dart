@@ -124,7 +124,7 @@ class TempFamilyDevices extends HandleVia<FamilyDevices> with TraceOrigin {
   late final _family = dep<FamilyStore>();
 
   TempFamilyDevices() {
-    reaction((_) => _family.devices, (phase) {
+    reaction((_) => _family.devices, (devices) {
       dirty();
     });
   }

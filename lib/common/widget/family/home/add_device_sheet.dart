@@ -1,16 +1,24 @@
 import 'package:common/family/family.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:vistraced/via.dart';
 
+import '../../../../stage/channel.pg.dart';
 import '../../../widget.dart';
+
+part 'add_device_sheet.g.dart';
 
 class AddDeviceSheet extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => AddDeviceSheetState();
+  State<StatefulWidget> createState() => _$AddDeviceSheetState();
 }
 
+@Injected(onlyVia: true, immediate: true)
 class AddDeviceSheetState extends State<AddDeviceSheet> {
+  late final _modal = Via.as<StageModal?>();
+
   bool _showQr = false; // The widget would stutter animation, show async
 
   @override
@@ -29,8 +37,14 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
           child: Column(children: [
             Row(
               children: [
-                Text("Use this device",
-                    style: TextStyle(color: context.theme.family)),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _modal.set(StageModal.lock);
+                  },
+                  child: Text("Use this device",
+                      style: TextStyle(color: context.theme.family)),
+                ),
                 Expanded(child: Container()),
                 Text("Cancel", style: TextStyle(color: context.theme.family)),
               ],
