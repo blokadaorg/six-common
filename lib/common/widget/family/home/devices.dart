@@ -6,10 +6,11 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:vistraced/via.dart';
 
+import '../../../../family/family.dart';
+import '../../../../util/di.dart';
 import '../../../widget.dart';
 import '../../../../family/devices.dart';
 import '../../../../util/trace.dart';
-import '../smart_header/smart_header_button.dart';
 import 'add_device_sheet.dart';
 import 'device.dart';
 
@@ -26,6 +27,7 @@ class Devices extends StatefulWidget {
 class DevicesState extends State<Devices>
     with ViaTools<Devices>, TickerProviderStateMixin, Traceable, TraceOrigin {
   late final _devices = Via.as<FamilyDevices>()..also(rebuild);
+  late final _family = dep<FamilyStore>();
 
   late final AnimationController _ctrl = AnimationController(
     duration: const Duration(seconds: 1),
@@ -196,7 +198,8 @@ class DevicesState extends State<Devices>
 
   void _delete(String deviceName) {
     traceAs("tappedDeleteDevice", (trace) async {
-      _devices.now.deleteDevice(deviceName);
+      //_devices.now.deleteDevice(deviceName);
+      _family.deleteDevice(trace, deviceName);
     });
   }
 
