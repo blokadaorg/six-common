@@ -35,7 +35,10 @@ class SmartOnboardState extends State<SmartOnboard>
         child: Column(
           children: [
             BigIcon(
-                icon: widget.hasMultipleDevices ? getIcon(widget.phase) : null),
+              icon: getIcon(widget.phase),
+              canShowLogo: !(widget.phase == FamilyPhase.parentHasDevices &&
+                  widget.hasMultipleDevices),
+            ),
             const SizedBox(height: 90),
             Text(
               texts.first!,

@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart' as foundation;
 
 class BigIcon extends StatefulWidget {
   final IconData? icon;
+  final bool canShowLogo;
 
-  const BigIcon({Key? key, required this.icon}) : super(key: key);
+  const BigIcon({Key? key, required this.icon, required this.canShowLogo})
+      : super(key: key);
 
   @override
   State<BigIcon> createState() => BigIconState();
@@ -78,14 +80,14 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
           });
           _ctrl.reset();
           _ctrl.forward();
-        } else if (widget.icon == null && !_logo) {
+        } else if (widget.icon == null && widget.canShowLogo && !_logo) {
           setState(() {
             _show = true;
             _logo = true;
           });
           _ctrl.reset();
           _ctrl.forward();
-        } else if (!_show) {
+        } else if (widget.icon != null && !_show) {
           setState(() {
             _show = true;
           });
@@ -119,7 +121,7 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
   @override
   void didUpdateWidget(BigIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.icon == widget.icon) return;
+    if (oldWidget.icon == widget.icon && widget.icon != null) return;
     _ctrlIdle.stop();
     setState(() {
       _show = false;
