@@ -409,10 +409,14 @@ class MockScaffoldingWidget extends StatelessWidget {
           children: [
             SizedBox(height: 48),
             SmartHeader(phase: phase),
+          ],
+        ),
+        Column(
+          children: [
             Spacer(),
             SmartFooter(phase: phase, hasPin: true),
           ],
-        )
+        ),
       ],
     );
   }

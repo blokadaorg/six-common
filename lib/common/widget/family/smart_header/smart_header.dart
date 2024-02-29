@@ -4,10 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:vistraced/via.dart';
 
+import '../../../../stage/channel.pg.dart';
 import '../../../model.dart';
 import '../home/add_device_sheet.dart';
 import 'smart_header_button.dart';
+
+part 'smart_header.g.dart';
 
 class SmartHeader extends StatefulWidget {
   final FamilyPhase phase;
@@ -15,11 +19,16 @@ class SmartHeader extends StatefulWidget {
   const SmartHeader({super.key, required this.phase});
 
   @override
-  State<StatefulWidget> createState() => SmartHeaderState();
+  State<StatefulWidget> createState() => _$SmartHeaderState();
 }
 
+@Injected(onlyVia: true, immediate: true)
 class SmartHeaderState extends State<SmartHeader>
     with TickerProviderStateMixin {
+  @MatcherSpec(of: "familyUnlink")
+  late final _unlink = Via.call();
+  late final _modal = Via.as<StageModal?>();
+
   // bool _opened = false;
 
   // late final _ctrl = AnimationController(
@@ -50,7 +59,10 @@ class SmartHeaderState extends State<SmartHeader>
                 [
                   Spacer(),
                   SmartHeaderButton(
-                      icon: CupertinoIcons.question_circle, onTap: () {}),
+                      icon: CupertinoIcons.question_circle,
+                      onTap: () {
+                        _modal.set(StageModal.help);
+                      }),
                 ],
           ),
         ),
@@ -64,10 +76,17 @@ class SmartHeaderState extends State<SmartHeader>
     if (widget.phase == FamilyPhase.fresh ||
         widget.phase == FamilyPhase.parentNoDevices) {
       list.add(SmartHeaderButton(
-          icon: CupertinoIcons.qrcode_viewfinder, onTap: () {}));
+          icon: CupertinoIcons.qrcode_viewfinder,
+          onTap: () {
+            _modal.set(StageModal.accountChange);
+          }));
     }
     if (widget.phase == FamilyPhase.linkedUnlocked) {
-      list.add(SmartHeaderButton(icon: CupertinoIcons.link, onTap: () {}));
+      list.add(SmartHeaderButton(
+          icon: CupertinoIcons.link,
+          onTap: () {
+            _unlink.call();
+          }));
     }
     if (widget.phase == FamilyPhase.parentHasDevices) {
       list.add(SmartHeaderButton(

@@ -18,6 +18,7 @@ part 'mock_family.g.dart';
   ViaMatcher<String>(MockStageRoute, of: "stage"),
   ViaMatcher<String>(MockSelectedDevice, of: "family"),
   ViaMatcher<void>(EmptyCall<void>, of: "familyUnlink"),
+  ViaMatcher<void>(EmptyCall<void>, of: "familyOpenPerms"),
   ViaMatcher<LockStore>(PassLockStore),
   ViaMatcher<bool>(MockStageReady, of: "stage"),
   ViaMatcher<UiStats>(MockUiStats),

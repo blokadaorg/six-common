@@ -2,19 +2,26 @@ import 'package:common/common/widget/family/home/private_dns_setting_guide.dart'
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:vistraced/via.dart';
 
 import '../../../widget.dart';
 
 import 'package:chewie/chewie.dart';
 
+part 'private_dns_sheet.g.dart';
+
 class PrivateDnsSheet extends StatefulWidget {
   const PrivateDnsSheet({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => PrivateDnsSheetState();
+  State<StatefulWidget> createState() => _$PrivateDnsSheetState();
 }
 
+@Injected(onlyVia: true, immediate: true)
 class PrivateDnsSheetState extends State<PrivateDnsSheet> {
+  @MatcherSpec(of: "familyOpenPerms")
+  late final _openPerms = Via.call();
+
   late VideoPlayerController _controller;
   late final ChewieController chewieController;
   var showVideo = false;
@@ -131,7 +138,10 @@ class PrivateDnsSheetState extends State<PrivateDnsSheet> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: MiniCard(
-                      onTap: () => {},
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        _openPerms.call();
+                      },
                       color: context.theme.family,
                       child: const SizedBox(
                         height: 32,

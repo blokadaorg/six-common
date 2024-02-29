@@ -55,11 +55,12 @@ class AnimatedBgState extends State<AnimatedBg> with TickerProviderStateMixin {
                   begin: Alignment.topRight,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.transparent,
-                    Color(0xffe450cd).withOpacity(0.3 + _anim.value * 0.3),
+                    //Colors.transparent,
+                    Color(0xffe450cd).withOpacity((1 - _anim.value) * 0.9),
+                    Color(0xffe450cd).withOpacity(0.1 + _anim.value * 0.9),
                     Color(0xffe450cd),
                   ],
-                  stops: [0.0, 0.4, 1.0],
+                  stops: [0.1, 0.7, 1.0],
                 ),
               ),
               child: Container(

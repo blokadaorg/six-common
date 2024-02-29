@@ -85,6 +85,12 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
           });
           _ctrl.reset();
           _ctrl.forward();
+        } else if (!_show) {
+          setState(() {
+            _show = true;
+          });
+          _ctrl.reset();
+          _ctrl.forward();
         } else {
           _ctrlIdle.repeat(reverse: true);
         }

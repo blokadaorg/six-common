@@ -12,6 +12,8 @@ import '../../../model.dart';
 import '../../../widget.dart';
 import '../home/private_dns_sheet.dart';
 
+part 'smart_footer.g.dart';
+
 class SmartFooter extends StatefulWidget {
   final FamilyPhase phase;
   final bool hasPin;
@@ -19,7 +21,7 @@ class SmartFooter extends StatefulWidget {
   const SmartFooter({super.key, required this.phase, required this.hasPin});
 
   @override
-  State<StatefulWidget> createState() => SmartFooterState();
+  State<StatefulWidget> createState() => _$SmartFooterState();
 }
 
 @Injected(onlyVia: true, immediate: true)
@@ -145,11 +147,9 @@ class SmartFooterState extends State<SmartFooter> with ViaTools<SmartFooter> {
 
   _handleCtaTap() {
     final p = widget.phase;
-    if (p == FamilyPhase.linkedUnlocked) {
-      _unlink.call();
-      return;
-    } else if (p == FamilyPhase.linkedNoPerms && !widget.hasPin) {
-      _modal.set(StageModal.lock);
+
+    if (p.requiresActivation()) {
+      _modal.set(StageModal.payment);
     } else if (p.requiresPerms()) {
       showCupertinoModalBottomSheet(
         context: context,
@@ -157,8 +157,8 @@ class SmartFooterState extends State<SmartFooter> with ViaTools<SmartFooter> {
         backgroundColor: context.theme.bgColorCard,
         builder: (context) => PrivateDnsSheet(),
       );
-    } else if (p.requiresActivation()) {
-      _modal.set(StageModal.payment);
+    } else if (p.isLocked2()) {
+      _modal.set(StageModal.lock);
       // } else if (!_devices.now.hasThisDevice) {
       // await _modal.set(StageModal.onboardingAccountDecided);
     } else {

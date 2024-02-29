@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:common/app/app.dart';
 import 'package:common/family/devices.dart';
 import 'package:common/family/family.dart';
+import 'package:common/perm/channel.pg.dart';
 import 'package:mobx/mobx.dart';
 import 'package:vistraced/via.dart';
 
@@ -21,8 +22,19 @@ part 'temp_family.g.dart';
   ViaMatcher<AppStatus>(TempAppStatus),
   ViaMatcher<FamilyPhase>(TempFamilyPhase),
   ViaMatcher<String>(TempStageRoute, of: "stage"),
+  ViaMatcher<void>(TempFamilyOpenPerms, of: "familyOpenPerms"),
 ])
 class TempModule extends _$TempModule {}
+
+@Injected(onlyVia: true)
+class TempFamilyOpenPerms extends HandleVia<void> with TraceOrigin {
+  late final _ops = dep<PermOps>();
+
+  @override
+  Future<void> set(void value) async {
+    _ops.doOpenSettings();
+  }
+}
 
 @Injected(onlyVia: true)
 class TempStageModal extends HandleVia<StageModal?> with TraceOrigin {

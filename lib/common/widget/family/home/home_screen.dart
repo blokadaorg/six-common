@@ -74,10 +74,15 @@ class HomeScreenState extends State<HomeScreen>
           children: [
             SizedBox(height: 48),
             SmartHeader(phase: phase),
+          ],
+        ),
+        Column(
+          children: [
             Spacer(),
             SmartFooter(phase: phase, hasPin: true),
           ],
-        )
+        ),
+        OverlayContainer(modal: _modal.now),
       ],
     ));
   }

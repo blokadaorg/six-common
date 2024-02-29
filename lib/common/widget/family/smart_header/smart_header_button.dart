@@ -25,10 +25,21 @@ class SmartHeaderButtonState extends State<SmartHeaderButton> {
         height: 48,
         child: widget.iconWidget != null
             ? widget.iconWidget
-            : IconButton(
-                icon: Icon(widget.icon),
-                color: Colors.white,
-                onPressed: widget.onTap,
+            : Touch(
+                onTap: widget.onTap,
+                decorationBuilder: (value) {
+                  return BoxDecoration(
+                    color: context.theme.bgMiniCard.withOpacity(value * 0.25),
+                    borderRadius: BorderRadius.circular(12),
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(
+                    widget.icon,
+                    color: Colors.white,
+                  ),
+                ),
               ),
       ),
     );
