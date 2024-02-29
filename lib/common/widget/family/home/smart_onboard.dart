@@ -97,9 +97,9 @@ class SmartOnboardState extends State<SmartOnboard>
           "family status locked header".i18n,
         ];
       case FamilyPhase.starting:
-        return ["", "Please wait..."];
+        return [" ", "Please wait..."];
       default:
-        return [""];
+        return [" ", " "];
     }
   }
 }
