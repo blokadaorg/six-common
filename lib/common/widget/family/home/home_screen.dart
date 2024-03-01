@@ -71,20 +71,10 @@ class HomeScreenState extends State<HomeScreen>
               )
             : Container(),
         Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SmartOnboard(phase: phase, hasMultipleDevices: hasMultiple),
-          ],
-        ),
-        Column(
           children: [
             SizedBox(height: 48),
             SmartHeader(phase: phase),
-          ],
-        ),
-        Column(
-          children: [
-            Spacer(),
+            SmartOnboard(phase: phase, hasMultipleDevices: hasMultiple),
             SmartFooter(phase: phase, hasPin: true),
           ],
         ),
