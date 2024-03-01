@@ -1,5 +1,6 @@
 import 'package:common/app/app.dart';
 import 'package:common/common/widget/family/home/animated_bg.dart';
+import 'package:common/common/widget/family/home/this_device_onboard.dart';
 import 'package:common/mock/widget/mock_family_device_detail.dart';
 import 'package:common/service/I18nService.dart';
 import 'package:flutter/cupertino.dart';
@@ -77,6 +78,7 @@ class HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     final phase = _phase.now;
     final hasMultiple = _devices.now.entries.length > 1;
+    final hasThisDevice = _devices.now.hasThisDevice;
 
     return Scaffold(
         body: Stack(
@@ -104,25 +106,35 @@ class HomeScreenState extends State<HomeScreen>
                         SmartHeader(phase: phase),
                         SmartOnboard(
                             phase: phase, hasMultipleDevices: hasMultiple),
-                        SizedBox(height: 96),
+                        SizedBox(height: (_phase.now.hideTabs() ? 48 : 96)),
                       ],
                     ),
                   ],
                 ),
-                MockFamilyDeviceDetailThisScreen(),
+                hasThisDevice
+                    ? MockFamilyDeviceDetailThisScreen()
+                    : Column(
+                        children: [
+                          SizedBox(height: 48),
+                          ThisDeviceOnboard(),
+                          SizedBox(height: 96),
+                        ],
+                      ),
               ],
             ),
             Column(
               children: [
                 Spacer(),
-                SmartFooter(
-                    enabled: !phase.isLocked2(),
-                    tab: _page,
-                    onTab: (int tab) {
-                      _ctrl.animateToPage(tab,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeOut);
-                    }),
+                (_phase.now.hideTabs())
+                    ? Container()
+                    : SmartFooter(
+                        enabled: !phase.isLocked2(),
+                        tab: _page,
+                        onTab: (int tab) {
+                          _ctrl.animateToPage(tab,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut);
+                        }),
               ],
             ),
           ],

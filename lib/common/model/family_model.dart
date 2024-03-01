@@ -82,6 +82,18 @@ extension FamilyPhaseExt on FamilyPhase {
         this == FamilyPhase.linkedUnlocked;
   }
 
+  bool hideTabs() {
+    return this == FamilyPhase.fresh ||
+        this == FamilyPhase.noPerms ||
+        this == FamilyPhase.linkedNoPerms ||
+        this == FamilyPhase.starting ||
+        this == FamilyPhase.linkedActive ||
+        this == FamilyPhase.lockedActive ||
+        this == FamilyPhase.lockedNoPerms ||
+        this == FamilyPhase.lockedNoAccount ||
+        this == FamilyPhase.linkedUnlocked;
+  }
+
   bool requiresPerms() {
     return this == FamilyPhase.noPerms ||
         this == FamilyPhase.linkedNoPerms ||

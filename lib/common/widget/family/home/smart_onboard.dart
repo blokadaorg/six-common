@@ -44,6 +44,7 @@ class SmartOnboardState extends State<SmartOnboard>
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
+            const SizedBox(height: 80),
             BigIcon(
               icon: getIcon(widget.phase),
               canShowLogo: !(widget.phase == FamilyPhase.parentHasDevices &&

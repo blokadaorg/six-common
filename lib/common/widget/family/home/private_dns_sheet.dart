@@ -148,7 +148,9 @@ class PrivateDnsSheetState extends State<PrivateDnsSheet> {
                         child: Center(
                           child: Text(
                             "Open Settings",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
                           ),
                         ),
                       ),
