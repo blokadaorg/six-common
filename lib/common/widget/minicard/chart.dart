@@ -26,7 +26,7 @@ class MiniCardChart extends StatelessWidget {
                   Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text("Blokada is disabled for Alva"),
+                  Text("Blokada is turned off for Alva"),
                 ],
               ),
             ),

@@ -52,54 +52,10 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
 
     _ctrl.addStatusListener((status) {
       if (status != AnimationStatus.completed) return;
-
-      // As intro, scale up the logo ...
-      if (!_introduced) {
-        setState(() {
-          _introduced = true;
-        });
-
-        // ... then if icon is set, scale down the logo ...
-        if (widget.icon != null) {
-          Future.delayed(const Duration(milliseconds: 800), () {
-            setState(() {
-              _show = false;
-            });
-            _ctrl.reset();
-            _ctrl.forward();
-          });
-        } else {
-          _ctrlIdle.repeat(reverse: true);
-        }
-      } else {
-        // ... and then scale up the icon (or the logo)
-        if (widget.icon != null && _logo) {
-          setState(() {
-            _show = true;
-            _logo = false;
-          });
-          _ctrl.reset();
-          _ctrl.forward();
-        } else if (widget.icon == null && widget.canShowLogo && !_logo) {
-          setState(() {
-            _show = true;
-            _logo = true;
-          });
-          _ctrl.reset();
-          _ctrl.forward();
-        } else if (widget.icon != null && !_show) {
-          setState(() {
-            _show = true;
-          });
-          _ctrl.reset();
-          _ctrl.forward();
-        } else {
-          _ctrlIdle.repeat(reverse: true);
-        }
-      }
+      _nextAnimationStep();
     });
 
-    // Fire off the intro animation
+    // Fire off the intro animation (scale up the logo)
     if (!_introduced) {
       setState(() {
         _show = true;
@@ -108,6 +64,56 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
       Future.delayed(const Duration(milliseconds: 500), () {
         _ctrl.forward();
       });
+    }
+  }
+
+  _nextAnimationStep() {
+    // As intro, scale up the logo ...
+    if (!_introduced) {
+      setState(() {
+        _introduced = true;
+      });
+
+      // ... then if icon is set, scale down the logo ...
+      if (widget.icon != null) {
+        Future.delayed(const Duration(milliseconds: 800), () {
+          setState(() {
+            _show = false;
+          });
+          _ctrl.reset();
+          _ctrl.forward();
+        });
+      } else {
+        _ctrlIdle.repeat(reverse: true);
+      }
+      return;
+    }
+
+    // ... and then scale up the icon (if set)
+    if (widget.icon != null && _logo) {
+      setState(() {
+        _show = true;
+        _logo = false;
+      });
+      _ctrl.reset();
+      _ctrl.forward();
+      return;
+    }
+
+    // If icon is not set, scale up the logo (but only if allowed)
+    if (widget.icon == null && widget.canShowLogo && !_show) {
+      setState(() {
+        _show = true;
+        _logo = true;
+      });
+      _ctrl.reset();
+      _ctrl.forward();
+      return;
+    }
+
+    // When showing either icon or logo, do the idle animation
+    if (_show) {
+      _ctrlIdle.repeat(reverse: true);
     }
   }
 

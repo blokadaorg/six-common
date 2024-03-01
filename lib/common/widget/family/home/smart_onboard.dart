@@ -30,7 +30,7 @@ class SmartOnboardState extends State<SmartOnboard>
     final texts = _getTexts(widget.phase);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 48.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Center(
         child: Column(
           children: [
@@ -51,14 +51,20 @@ class SmartOnboardState extends State<SmartOnboard>
             ),
             const SizedBox(height: 8),
             if (texts.length > 1)
-              Text(
-                texts[1]!,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white.withOpacity(0.8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: SizedBox(
+                  height: 80,
+                  child: Text(
+                    texts[1]!,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white.withOpacity(0.8),
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 3,
+                  ),
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 3,
               ),
             const SizedBox(height: 32),
           ],
@@ -100,7 +106,10 @@ class SmartOnboardState extends State<SmartOnboard>
           "family status locked header".i18n,
         ];
       case FamilyPhase.starting:
-        return [" ", "Please wait..."];
+        return [
+          " ",
+          "Please wait... baby aheusau htaou snthaoe s unthaeosut haoehusaeoht uaesontuhaoesntuhaeosnt uhaueos hsau"
+        ];
       default:
         return [" ", " "];
     }
