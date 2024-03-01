@@ -1,128 +1,99 @@
 import 'dart:ui';
 
-import 'package:common/common/widget/family/home/add_device_sheet.dart';
-import 'package:common/common/widget/family/home/smart_onboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:vistraced/via.dart';
 
-import '../../../../stage/channel.pg.dart';
-import '../../../model.dart';
 import '../../../widget.dart';
-import '../home/private_dns_sheet.dart';
-
-part 'smart_footer.g.dart';
 
 class SmartFooter extends StatefulWidget {
-  final FamilyPhase phase;
-  final bool hasPin;
+  final bool enabled;
+  final int tab;
+  final void Function(int) onTab;
 
-  const SmartFooter({super.key, required this.phase, required this.hasPin});
+  const SmartFooter({
+    super.key,
+    required this.enabled,
+    required this.tab,
+    required this.onTab,
+  });
 
   @override
-  State<StatefulWidget> createState() => _$SmartFooterState();
+  State<StatefulWidget> createState() => SmartFooterState();
 }
 
-@Injected(onlyVia: true, immediate: true)
 class SmartFooterState extends State<SmartFooter> with ViaTools<SmartFooter> {
-  @MatcherSpec(of: "familyUnlink")
-  late final _unlink = Via.call();
-  late final _modal = Via.as<StageModal?>();
-
   @override
   Widget build(BuildContext context) {
-    return Transform.translate(
-      offset: Offset(0, widget.phase.hasBottomBar() ? 0 : 94),
-      child: SizedBox(
-        height: 94,
-        child: Stack(
-          children: [
-            ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: 25,
-                  sigmaY: 25,
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: context.theme.panelBackground.withOpacity(0.2),
-                    border: Border(
-                      top: BorderSide(
-                        width: 1,
-                        color: context.theme.divider.withOpacity(0.05),
-                      ),
+    return SizedBox(
+      height: 94,
+      child: Stack(
+        children: [
+          ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 25,
+                sigmaY: 25,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.theme.panelBackground.withOpacity(0.2),
+                  border: Border(
+                    top: BorderSide(
+                      width: 1,
+                      color: context.theme.divider.withOpacity(0.05),
                     ),
                   ),
-                  height: 104,
-                  //color: context.theme.divider.withOpacity(0.05),
                 ),
+                height: 104,
+                //color: context.theme.divider.withOpacity(0.05),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _buildTabs(context),
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _buildTabs(context),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   List<Widget> _buildTabs(BuildContext context) {
     return <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          height: 48,
-          child: Column(
-            children: [
-              Icon(
-                CupertinoIcons.home,
-                color: context.theme.family,
-              ),
-              Text("Home", style: TextStyle(color: context.theme.family))
-            ],
-          ),
-        ),
-      ),
+      _buildTab(context, widget.tab == 0, 0, CupertinoIcons.home, "Home"),
       SizedBox(width: 32),
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          height: 48,
-          child: Column(
-            children: [
-              Icon(
-                CupertinoIcons.device_phone_portrait,
-                color: context.theme.textPrimary,
-              ),
-              Text("My Device",
-                  style: TextStyle(color: context.theme.textPrimary))
-            ],
-          ),
-        ),
-      ),
+      _buildTab(context, widget.tab == 1, 1,
+          CupertinoIcons.device_phone_portrait, "My Device"),
       SizedBox(width: 32),
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          height: 48,
-          child: Column(
-            children: [
-              Icon(
-                CupertinoIcons.settings,
-                color: context.theme.textPrimary,
-              ),
-              Text("Settings",
-                  style: TextStyle(color: context.theme.textPrimary))
-            ],
-          ),
-        ),
-      ),
+      _buildTab(context, widget.tab == 2, 2, CupertinoIcons.person, "Profile"),
     ];
+  }
+
+  Widget _buildTab(BuildContext context, bool active, int index, IconData icon,
+      String label) {
+    final color = active ? context.theme.family : context.theme.textPrimary;
+    return GestureDetector(
+      onTap: () {
+        if (widget.enabled) widget.onTab(index);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          height: 48,
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                color: color,
+              ),
+              Text(label, style: TextStyle(color: color))
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

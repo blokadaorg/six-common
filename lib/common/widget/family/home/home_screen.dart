@@ -1,5 +1,6 @@
 import 'package:common/app/app.dart';
 import 'package:common/common/widget/family/home/animated_bg.dart';
+import 'package:common/mock/widget/mock_family_device_detail.dart';
 import 'package:common/service/I18nService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:vistraced/via.dart';
 import '../../../../app/channel.pg.dart';
 import '../../../../family/devices.dart';
 import '../../../../family/family.dart';
+import '../../../../mock/widget/mock_family_device_detail_this.dart';
 import '../../../../stage/channel.pg.dart';
 import '../../../../ui/debug/commanddialog.dart';
 import '../../../../ui/overlay/overlay_container.dart';
@@ -47,6 +49,25 @@ class HomeScreenState extends State<HomeScreen>
 
   var _working = true;
 
+  late final _ctrl = PageController(initialPage: 0);
+  int _page = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl.addListener(() {
+      if (_ctrl.page == 1) {
+        setState(() {
+          _page = 1;
+        });
+      } else {
+        setState(() {
+          _page = 0;
+        });
+      }
+    });
+  }
+
   rebuild() {
     print("home screen rebuild called");
     setState(() => _working = _status.now.isWorking() || !_ready.now);
@@ -61,21 +82,49 @@ class HomeScreenState extends State<HomeScreen>
         body: Stack(
       children: [
         AnimatedBg(),
-        phase == FamilyPhase.parentHasDevices
-            ? ListView(
-                reverse: true,
-                children: [
-                  SizedBox(height: 64),
-                  Devices(),
-                ],
-              )
-            : Container(),
-        Column(
+        Stack(
           children: [
-            SizedBox(height: 48),
-            SmartHeader(phase: phase),
-            SmartOnboard(phase: phase, hasMultipleDevices: hasMultiple),
-            SmartFooter(phase: phase, hasPin: true),
+            PageView(
+              controller: _ctrl,
+              children: [
+                Stack(
+                  children: [
+                    phase == FamilyPhase.parentHasDevices
+                        ? ListView(
+                            reverse: true,
+                            children: [
+                              SizedBox(height: 64),
+                              Devices(),
+                            ],
+                          )
+                        : Container(),
+                    Column(
+                      children: [
+                        SizedBox(height: 48),
+                        SmartHeader(phase: phase),
+                        SmartOnboard(
+                            phase: phase, hasMultipleDevices: hasMultiple),
+                        SizedBox(height: 96),
+                      ],
+                    ),
+                  ],
+                ),
+                MockFamilyDeviceDetailThisScreen(),
+              ],
+            ),
+            Column(
+              children: [
+                Spacer(),
+                SmartFooter(
+                    enabled: !phase.isLocked2(),
+                    tab: _page,
+                    onTab: (int tab) {
+                      _ctrl.animateToPage(tab,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut);
+                    }),
+              ],
+            ),
           ],
         ),
         OverlayContainer(modal: _modal.now),

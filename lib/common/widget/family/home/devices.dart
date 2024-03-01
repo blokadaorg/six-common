@@ -160,7 +160,7 @@ class DevicesState extends State<Devices>
     if (_devices.dirty) return [];
     return _devices.now.entries.reversed
         .map((e) => Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(16.0),
             child: _wrapInDismissible(
               e.thisDevice,
               e.deviceName,

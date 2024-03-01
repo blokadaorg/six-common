@@ -72,58 +72,58 @@ class HomeDeviceState extends State<HomeDevice>
                     MiniCardChart(device: widget.device, color: widget.color),
               ),
             ),
-            SizedBox(height: 12),
-            (widget.device.thisDevice)
-                ? Column(
-                    children: [
-                      // Divider(
-                      //   color: context.theme.divider,
-                      //   height: 1,
-                      //   indent: 4,
-                      //   endIndent: 4,
-                      //   thickness: 0.4,
-                      // ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          MiniCard(
-                              // color: context.theme.bgColor,
-                              //onTap: _handleGuestTap,
-                              child: SizedBox(
-                            height: 24,
-                            width: 24,
-                            // child: Icon(CupertinoIcons.power),
-                            child: Icon(CupertinoIcons.power,
-                                color: context.theme.textSecondary),
-                          )),
-                          SizedBox(width: 8),
-                          MiniCard(
-                              // color: context.theme.bgColor,
-                              onTap: _handleGuestTap,
-                              child: SizedBox(
-                                height: 24,
-                                width: 24,
-                                // child: Icon(CupertinoIcons.lock),
-                                child: Icon(CupertinoIcons.lock_open,
-                                    color: context.theme.textSecondary),
-                              )),
-                          //SizedBox(width: 8),
-                          Spacer(),
-                          // MiniCard(
-                          //     //color: context.theme.bgColor,
-                          //     //onTap: _handleGuestTap,
-                          //     child: SizedBox(
-                          //   height: 24,
-                          //   width: 24,
-                          //   // child: Icon(CupertinoIcons.lock_shield_fill),
-                          //   child: Icon(CupertinoIcons.ellipsis,
-                          //       color: context.theme.textSecondary),
-                          // )),
-                        ],
-                      ),
-                    ],
-                  )
-                : Container(),
+            // SizedBox(height: 12),
+            // (widget.device.thisDevice)
+            //     ? Column(
+            //         children: [
+            //           // Divider(
+            //           //   color: context.theme.divider,
+            //           //   height: 1,
+            //           //   indent: 4,
+            //           //   endIndent: 4,
+            //           //   thickness: 0.4,
+            //           // ),
+            //           Row(
+            //             mainAxisAlignment: MainAxisAlignment.end,
+            //             children: [
+            //               MiniCard(
+            //                   // color: context.theme.bgColor,
+            //                   //onTap: _handleGuestTap,
+            //                   child: SizedBox(
+            //                 height: 24,
+            //                 width: 24,
+            //                 // child: Icon(CupertinoIcons.power),
+            //                 child: Icon(CupertinoIcons.power,
+            //                     color: context.theme.textSecondary),
+            //               )),
+            //               SizedBox(width: 8),
+            //               MiniCard(
+            //                   // color: context.theme.bgColor,
+            //                   onTap: _handleGuestTap,
+            //                   child: SizedBox(
+            //                     height: 24,
+            //                     width: 24,
+            //                     // child: Icon(CupertinoIcons.lock),
+            //                     child: Icon(CupertinoIcons.lock_open,
+            //                         color: context.theme.textSecondary),
+            //                   )),
+            //               //SizedBox(width: 8),
+            //               Spacer(),
+            //               // MiniCard(
+            //               //     //color: context.theme.bgColor,
+            //               //     //onTap: _handleGuestTap,
+            //               //     child: SizedBox(
+            //               //   height: 24,
+            //               //   width: 24,
+            //               //   // child: Icon(CupertinoIcons.lock_shield_fill),
+            //               //   child: Icon(CupertinoIcons.ellipsis,
+            //               //       color: context.theme.textSecondary),
+            //               // )),
+            //             ],
+            //           ),
+            //         ],
+            //       )
+            //     : Container(),
           ],
           //footer: "home status detail active".i18n.replaceAll("*", ""),
         ),

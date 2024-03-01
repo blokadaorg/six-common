@@ -8,8 +8,8 @@ import '../../common/widget/family/stats/stats_screen.dart';
 import '../../ui/stats/radial_segment.dart';
 import 'mock_scaffolding.dart';
 
-class MockFamilyDeviceDetailScreen extends StatelessWidget {
-  const MockFamilyDeviceDetailScreen({super.key});
+class MockFamilyDeviceDetailThisScreen extends StatelessWidget {
+  const MockFamilyDeviceDetailThisScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +17,14 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
       return ListView(
         children: [
           const SizedBox(height: 8),
-          const BackEditHeaderWidget(
-            name: "Home",
-          ),
           Padding(
             padding: const EdgeInsets.only(top: 12, left: 16, right: 8),
             child: Row(
               children: [
-                Text("Alva",
+                Text("My Device",
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         )),
               ],
             ),
@@ -62,6 +60,7 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
             child: Text("Configuration",
                 style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     )),
           ),
           Container(
@@ -145,9 +144,9 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
                       textBaseline: TextBaseline.alphabetic,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const TwoLetterIconWidget(name: "Alva"),
+                        const TwoLetterIconWidget(name: "iP"),
                         const SizedBox(width: 12),
-                        Text("Name: Alva",
+                        Text("Name: iPhone 14 Pro",
                             style: TextStyle(
                               fontSize: 18,
                               color: context.theme.textSecondary,
@@ -166,26 +165,123 @@ class MockFamilyDeviceDetailScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.only(top: 12, left: 24, right: 24),
+            child: Text("Use different configuration when Blokada is locked:",
+                style: TextStyle(color: Colors.white)),
+          ),
           Container(
             constraints: const BoxConstraints(maxWidth: 500),
-            child: const Padding(
-              padding: EdgeInsets.all(12.0),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
               child: MiniCard(
                 child: Column(
                   children: [
-                    MiniCardHeader(
-                      text: "Unlink this device",
-                      icon: CupertinoIcons.link,
-                      color: Colors.red,
+                    Row(
+                      textBaseline: TextBaseline.alphabetic,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: context.theme.bgColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: Icon(CupertinoIcons.lock,
+                              color: context.theme.textSecondary, size: 24),
+                        ),
+                        const SizedBox(width: 12),
+                        Text("Lock Blokada",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: context.theme.textSecondary,
+                            )),
+                        Expanded(child: Container()),
+                        CupertinoSwitch(
+                          activeColor: context.theme.family,
+                          value: true,
+                          onChanged: (bool? value) {
+                            // setState(() {
+                            //   selected = value!;
+                            // });
+                          },
+                        ),
+                      ],
                     ),
-                    //Toplist(stats: _stats, blocked: false),
+                    //Toplist(stats: _stats, blocked: true),
                   ],
                 ),
               ),
             ),
           ),
-          SizedBox(height: sy(10)),
+          Container(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: MiniCard(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    StandardRoute(builder: (context) => const FilterScreen()),
+                  );
+                },
+                child: const MiniCardSummary(
+                  header: MiniCardHeader(
+                    text: "Locked mode",
+                    icon: CupertinoIcons.lock_shield,
+                    color: Color(0xff3c8cff),
+                    chevronIcon: Icons.chevron_right,
+                    chevronText: "Block games",
+                  ),
+                  big: MiniCardCounter(counter: 8),
+                  small: "selected",
+                  footer: "applies when Blokada is locked",
+                  //footer: "in safe search, ads, adult content, streaming apps",
+                ),
+              ),
+            ),
+          ),
+          Container(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: MiniCard(
+                child: Column(
+                  children: [
+                    Row(
+                      textBaseline: TextBaseline.alphabetic,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: context.theme.bgColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: Icon(CupertinoIcons.ellipsis,
+                              color: context.theme.textSecondary, size: 24),
+                        ),
+                        const SizedBox(width: 12),
+                        Text("Change pin",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: context.theme.textSecondary,
+                            )),
+                        Expanded(child: Container()),
+                        Text(
+                          "Edit",
+                          style: TextStyle(color: context.theme.family),
+                        ),
+                        const SizedBox(width: 4),
+                      ],
+                    ),
+                    //Toplist(stats: _stats, blocked: true),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: sy(60)),
         ],
       );
     });

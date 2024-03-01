@@ -19,16 +19,16 @@ class MiniCardChart extends StatelessWidget {
               device.stats.totalAllowed > 0)
           ? _ColumnChart(stats: device.stats, color: color)
           : SizedBox(
-              height: 40,
-              // constraints: const BoxConstraints(maxHeight: 90),
-              child: //Container(),
-                  // Center(child: Text("universal status waiting for data".i18n)),
-                  Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text("Blokada is turned off for Alva"),
-                ],
-              ),
+              height: 90,
+              //constraints: const BoxConstraints(maxHeight: 90),
+              child: // Container(),
+                  Center(child: Text("universal status waiting for data".i18n)),
+              // Column(
+              // mainAxisAlignment: MainAxisAlignment.end,
+              // children: [
+              //   Text("Blokada is turned off for Alva"),
+              // ],
+              // ),
             ),
     );
   }

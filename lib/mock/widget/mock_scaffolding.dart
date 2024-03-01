@@ -404,7 +404,7 @@ class MockScaffoldingWidget extends StatelessWidget {
             SizedBox(height: 48),
             SmartHeader(phase: phase),
             SmartOnboard(phase: phase, hasMultipleDevices: false),
-            SmartFooter(phase: phase, hasPin: true),
+            //SmartFooter(phase: phase, hasPin: true),
           ],
         ),
       ],
