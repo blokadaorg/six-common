@@ -63,12 +63,14 @@ class SmartFooterState extends State<SmartFooter> with ViaTools<SmartFooter> {
 
   List<Widget> _buildTabs(BuildContext context) {
     return <Widget>[
-      _buildTab(context, widget.tab == 0, 0, CupertinoIcons.home, "Home"),
+      _buildTab(context, widget.tab == 0, 0, CupertinoIcons.rectangle_grid_1x2,
+          "Devices"),
       SizedBox(width: 32),
       _buildTab(context, widget.tab == 1, 1,
-          CupertinoIcons.device_phone_portrait, "My Device"),
+          CupertinoIcons.list_bullet_below_rectangle, "Settings"),
       SizedBox(width: 32),
-      _buildTab(context, widget.tab == 2, 2, CupertinoIcons.person, "Profile"),
+      _buildTab(context, widget.tab == 2, 2, CupertinoIcons.person_crop_circle,
+          "Account"),
     ];
   }
 
