@@ -90,7 +90,7 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
     }
 
     // ... and then scale up the icon (if set)
-    if (widget.icon != null && _logo) {
+    if (widget.icon != null && !_show) {
       setState(() {
         _show = true;
         _logo = false;
@@ -127,7 +127,14 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
   @override
   void didUpdateWidget(BigIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.icon == widget.icon && widget.icon != null) return;
+    if (oldWidget.icon != widget.icon) {
+      _hide();
+    } else if (widget.icon == null && !widget.canShowLogo) {
+      _hide();
+    }
+  }
+
+  _hide() {
     _ctrlIdle.stop();
     setState(() {
       _show = false;

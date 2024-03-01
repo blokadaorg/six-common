@@ -1,11 +1,18 @@
 import 'package:common/common/widget.dart';
 import 'package:common/common/widget/family/home/big_icon.dart';
+import 'package:common/common/widget/family/home/private_dns_sheet.dart';
 import 'package:common/service/I18nService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:vistraced/via.dart';
 
+import '../../../../stage/channel.pg.dart';
 import '../../../model.dart';
 import '../../../../util/trace.dart';
+import 'add_device_sheet.dart';
+
+part 'smart_onboard.g.dart';
 
 class SmartOnboard extends StatefulWidget {
   final FamilyPhase phase;
@@ -18,8 +25,11 @@ class SmartOnboard extends StatefulWidget {
   State<StatefulWidget> createState() => SmartOnboardState();
 }
 
+@Injected(onlyVia: true, immediate: true)
 class SmartOnboardState extends State<SmartOnboard>
     with TickerProviderStateMixin, Traceable, TraceOrigin {
+  late final _modal = Via.as<StageModal?>();
+
   @override
   void initState() {
     super.initState();
@@ -29,9 +39,9 @@ class SmartOnboardState extends State<SmartOnboard>
   Widget build(BuildContext context) {
     final texts = _getTexts(widget.phase);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Center(
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             BigIcon(
@@ -66,11 +76,73 @@ class SmartOnboardState extends State<SmartOnboard>
                   ),
                 ),
               ),
-            const SizedBox(height: 32),
+            Spacer(),
+            SizedBox(
+              height: 56,
+              child: widget.phase.requiresBobo()
+                  ? _buildButton(context)
+                  : Container(),
+            )
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+      child: MiniCard(
+        onTap: _handleCtaTap,
+        color: context.theme.family,
+        child: SizedBox(
+          height: 32,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                getIcon(widget.phase),
+                color: Colors.white,
+              ),
+              const SizedBox(width: 12),
+              Center(
+                child: Text(
+                  getCtaText(widget.phase),
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _handleCtaTap() {
+    final p = widget.phase;
+
+    if (p.requiresActivation()) {
+      _modal.set(StageModal.payment);
+    } else if (p.requiresPerms()) {
+      showCupertinoModalBottomSheet(
+        context: context,
+        duration: const Duration(milliseconds: 300),
+        backgroundColor: context.theme.bgColorCard,
+        builder: (context) => PrivateDnsSheet(),
+      );
+    } else if (p.isLocked2()) {
+      _modal.set(StageModal.lock);
+      // } else if (!_devices.now.hasThisDevice) {
+      // await _modal.set(StageModal.onboardingAccountDecided);
+    } else {
+      showCupertinoModalBottomSheet(
+        context: context,
+        duration: const Duration(milliseconds: 300),
+        backgroundColor: context.theme.bgColorCard,
+        builder: (context) => AddDeviceSheet(),
+      );
+    }
   }
 
   List<String?> _getTexts(FamilyPhase phase) {
@@ -106,12 +178,9 @@ class SmartOnboardState extends State<SmartOnboard>
           "family status locked header".i18n,
         ];
       case FamilyPhase.starting:
-        return [
-          " ",
-          "Please wait... baby aheusau htaou snthaoe s unthaeosut haoehusaeoht uaesontuhaoesntuhaeosnt uhaueos hsau"
-        ];
+        return ["", "Please wait..."];
       default:
-        return [" ", " "];
+        return ["", ""];
     }
   }
 }

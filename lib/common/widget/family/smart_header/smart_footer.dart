@@ -63,11 +63,7 @@ class SmartFooterState extends State<SmartFooter> with ViaTools<SmartFooter> {
               padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: widget.phase.requiresBobo()
-                    ? [
-                        _buildButton(context),
-                      ]
-                    : _buildTabs(context),
+                children: _buildTabs(context),
               ),
             ),
           ],
@@ -128,63 +124,5 @@ class SmartFooterState extends State<SmartFooter> with ViaTools<SmartFooter> {
         ),
       ),
     ];
-  }
-
-  Widget _buildButton(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-        child: MiniCard(
-          onTap: _handleCtaTap,
-          color: context.theme.family,
-          child: SizedBox(
-            height: 32,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  getIcon(widget.phase),
-                  color: Colors.white,
-                ),
-                const SizedBox(width: 12),
-                Center(
-                  child: Text(
-                    getCtaText(widget.phase),
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  _handleCtaTap() {
-    final p = widget.phase;
-
-    if (p.requiresActivation()) {
-      _modal.set(StageModal.payment);
-    } else if (p.requiresPerms()) {
-      showCupertinoModalBottomSheet(
-        context: context,
-        duration: const Duration(milliseconds: 300),
-        backgroundColor: context.theme.bgColorCard,
-        builder: (context) => PrivateDnsSheet(),
-      );
-    } else if (p.isLocked2()) {
-      _modal.set(StageModal.lock);
-      // } else if (!_devices.now.hasThisDevice) {
-      // await _modal.set(StageModal.onboardingAccountDecided);
-    } else {
-      showCupertinoModalBottomSheet(
-        context: context,
-        duration: const Duration(milliseconds: 300),
-        backgroundColor: context.theme.bgColorCard,
-        builder: (context) => AddDeviceSheet(),
-      );
-    }
   }
 }
