@@ -22,7 +22,7 @@ class SmartOnboard extends StatefulWidget {
       {super.key, required this.phase, required this.hasMultipleDevices});
 
   @override
-  State<StatefulWidget> createState() => SmartOnboardState();
+  State<StatefulWidget> createState() => _$SmartOnboardState();
 }
 
 @Injected(onlyVia: true, immediate: true)

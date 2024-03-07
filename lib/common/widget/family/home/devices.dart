@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:common/service/I18nService.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -158,7 +159,9 @@ class DevicesState extends State<Devices>
 
   List<Widget> _getDevices() {
     if (_devices.dirty) return [];
-    return _devices.now.entries.reversed
+    return _devices.now.entries
+        .filter((e) => !e.thisDevice)
+        .reversed
         .map((e) => Padding(
             padding: const EdgeInsets.all(16.0),
             child: _wrapInDismissible(
