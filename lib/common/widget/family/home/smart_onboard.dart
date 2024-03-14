@@ -116,7 +116,7 @@ class SmartOnboardState extends State<SmartOnboard>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                getIcon(widget.phase),
+                getIcon(widget.phase, forCta: true),
                 color: Colors.white,
               ),
               const SizedBox(width: 12),
@@ -175,6 +175,7 @@ class SmartOnboardState extends State<SmartOnboard>
       case FamilyPhase.linkedUnlocked:
         return [
           "family status linked header".i18n,
+          "Use the parent device to manage your family\n\n",
         ];
       case FamilyPhase.linkedNoPerms ||
             FamilyPhase.lockedNoPerms ||
@@ -209,7 +210,7 @@ class SmartOnboardState extends State<SmartOnboard>
   }
 }
 
-IconData? getIcon(FamilyPhase phase) {
+IconData? getIcon(FamilyPhase phase, {bool forCta = false}) {
   switch (phase) {
     case FamilyPhase.fresh || FamilyPhase.lockedNoAccount:
       return CupertinoIcons.person_crop_circle;
@@ -218,6 +219,7 @@ IconData? getIcon(FamilyPhase phase) {
     case FamilyPhase.linkedActive || FamilyPhase.lockedActive:
       return CupertinoIcons.lock;
     case FamilyPhase.linkedUnlocked:
+      if (forCta) return CupertinoIcons.lock;
       return CupertinoIcons.link;
     case FamilyPhase.linkedNoPerms ||
           FamilyPhase.lockedNoPerms ||
@@ -230,7 +232,8 @@ IconData? getIcon(FamilyPhase phase) {
 
 String getCtaText(FamilyPhase p) {
   if (p == FamilyPhase.linkedUnlocked) {
-    return "family account cta unlink".i18n;
+    //return "family account cta unlink".i18n;
+    return "Lock";
   } else if (p.requiresPerms()) {
     return "family cta action finish setup".i18n;
   } else if (p.requiresActivation()) {
