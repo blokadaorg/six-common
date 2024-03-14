@@ -6,8 +6,6 @@ import 'package:dartx/dartx.dart';
 import 'package:mobx/mobx.dart';
 
 import '../account/account.dart';
-import '../app/app.dart';
-import '../app/start/start.dart';
 import '../common/model.dart';
 import '../device/device.dart';
 import '../journal/journal.dart';

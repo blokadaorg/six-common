@@ -9,6 +9,7 @@ import 'package:vistraced/via.dart';
 import '../../../../mock/widget/nav_close_button.dart';
 import '../../../../stage/channel.pg.dart';
 import '../../../../util/di.dart';
+import '../../../../util/trace.dart';
 import '../../../widget.dart';
 
 part 'add_device_sheet.g.dart';
@@ -19,7 +20,7 @@ class AddDeviceSheet extends StatefulWidget {
 }
 
 @Injected(onlyVia: true, immediate: true)
-class AddDeviceSheetState extends State<AddDeviceSheet> {
+class AddDeviceSheetState extends State<AddDeviceSheet> with TraceOrigin {
   late final _modal = Via.as<StageModal?>();
   late final _family = dep<FamilyStore>();
 
@@ -31,7 +32,9 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
   void initState() {
     super.initState();
     _ctrl.addListener(() => setState(() {
-          // rebuild
+          traceAs("mockedStart", (trace) async {
+            _family.setWaitingForDevice(trace, _ctrl.text);
+          });
         }));
   }
 
