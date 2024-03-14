@@ -100,19 +100,22 @@ class PrivateDnsSheetState extends State<PrivateDnsSheet> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("In the main section of Settings, tap:",
+                          //Text("In the main section of Settings, tap:",
+                          Text("1.",
                               style: TextStyle(
                                   color: context.theme.textSecondary)),
                           PrivateDnsSettingGuideWidget(
                               title: "General", icon: CupertinoIcons.settings),
                           SizedBox(height: 16),
-                          Text("... then swipe down, and tap:",
+                          //Text("... then swipe down, and tap:",
+                          Text("2.",
                               style: TextStyle(
                                   color: context.theme.textSecondary)),
                           PrivateDnsSettingGuideWidget(
                               title: "VPN & Device Management"),
                           SizedBox(height: 16),
-                          Text("... next, tap:",
+                          // Text("... next, tap:",
+                          Text("3.",
                               style: TextStyle(
                                   color: context.theme.textSecondary)),
                           PrivateDnsSettingGuideWidget(
@@ -120,7 +123,8 @@ class PrivateDnsSheetState extends State<PrivateDnsSheet> {
                               icon: CupertinoIcons.ellipsis,
                               edgeText: "Automatic"),
                           SizedBox(height: 16),
-                          Text("... and finally, select:",
+                          //Text("... and finally, select:",
+                          Text("4.",
                               style: TextStyle(
                                   color: context.theme.textSecondary)),
                           PrivateDnsSettingGuideWidget(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../common/model.dart';
 import '../../../common/widget.dart';
+import '../../../common/widget/minicard/chart.dart';
 import '../../../stage/stage.dart';
 import '../../../stats/stats.dart';
 import '../../../util/di.dart';

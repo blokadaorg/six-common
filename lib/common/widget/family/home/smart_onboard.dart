@@ -44,7 +44,17 @@ class SmartOnboardState extends State<SmartOnboard>
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            const SizedBox(height: 80),
+            //const SizedBox(height: 80),
+            widget.hasMultipleDevices
+                ? SizedBox(
+                    height: 64,
+                    child: Image(
+                      image: AssetImage('assets/images/header.png'),
+                      width: 120,
+                    ),
+                  )
+                : Container(height: 90),
+            const SizedBox(height: 120),
             BigIcon(
               icon: getIcon(widget.phase),
               canShowLogo: !(widget.phase == FamilyPhase.parentHasDevices &&
@@ -79,11 +89,12 @@ class SmartOnboardState extends State<SmartOnboard>
               ),
             Spacer(),
             SizedBox(
-              height: 56,
+              height: 64,
               child: widget.phase.requiresBobo()
                   ? _buildButton(context)
                   : Container(),
-            )
+            ),
+            SizedBox(height: 44),
           ],
         ),
       ),

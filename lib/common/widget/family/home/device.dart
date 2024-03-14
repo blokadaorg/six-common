@@ -8,6 +8,7 @@ import 'package:vistraced/via.dart';
 import '../../../model.dart';
 import '../../../widget.dart';
 import '../../../../util/trace.dart';
+import '../../minicard/chart.dart';
 import '../device/device_screen.dart';
 import 'guest_sheet.dart';
 
@@ -62,9 +63,10 @@ class HomeDeviceState extends State<HomeDevice>
               text: widget.device.deviceDisplayName,
               iconName: widget.device.deviceName,
               color: widget.color,
+              chevronText: widget.device.thisDevice ? "Parent" : "Child",
               chevronIcon: Icons.chevron_right,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 12),
             ClipRect(
               child: IgnorePointer(
                 ignoring: true,

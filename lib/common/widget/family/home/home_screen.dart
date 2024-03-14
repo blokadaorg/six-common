@@ -95,7 +95,6 @@ class HomeScreenState extends State<HomeScreen>
                         ? ListView(
                             reverse: true,
                             children: [
-                              SizedBox(height: 64),
                               Devices(),
                             ],
                           )
@@ -104,9 +103,13 @@ class HomeScreenState extends State<HomeScreen>
                       children: [
                         SizedBox(height: 48),
                         SmartHeader(phase: phase),
-                        SmartOnboard(
-                            phase: phase, hasMultipleDevices: hasMultiple),
-                        SizedBox(height: (_phase.now.hideTabs() ? 48 : 96)),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        SizedBox(height: 48),
+                        SmartOnboard(phase: phase, hasMultipleDevices: true),
+                        //SmartFooter(phase: phase, hasPin: true),
                       ],
                     ),
                   ],
@@ -117,26 +120,26 @@ class HomeScreenState extends State<HomeScreen>
                         children: [
                           SizedBox(height: 48),
                           ThisDeviceOnboard(),
-                          SizedBox(height: 96),
+                          SizedBox(height: 26),
                         ],
                       ),
               ],
             ),
-            Column(
-              children: [
-                Spacer(),
-                (_phase.now.hideTabs())
-                    ? Container()
-                    : SmartFooter(
-                        enabled: !phase.isLocked2(),
-                        tab: _page,
-                        onTab: (int tab) {
-                          _ctrl.animateToPage(tab,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeOut);
-                        }),
-              ],
-            ),
+            // Column(
+            //   children: [
+            //     Spacer(),
+            //     (_phase.now.hideTabs())
+            //         ? Container()
+            //         : SmartFooter(
+            //             enabled: !phase.isLocked2(),
+            //             tab: _page,
+            //             onTab: (int tab) {
+            //               _ctrl.animateToPage(tab,
+            //                   duration: const Duration(milliseconds: 300),
+            //                   curve: Curves.easeOut);
+            //             }),
+            //   ],
+            // ),
           ],
         ),
         OverlayContainer(modal: _modal.now),

@@ -5,6 +5,8 @@ import 'package:common/common/widget/family/home/private_dns_setting_guide.dart'
 import 'package:common/common/widget/family/home/smart_onboard.dart';
 import 'package:common/common/widget/family/smart_header/smart_header.dart';
 import 'package:common/common/widget/family/smart_header/smart_header_onboard.dart';
+import 'package:common/mock/widget/mock_family_device_detail_this.dart';
+import 'package:common/mock/widget/mock_settings.dart';
 import 'package:common/util/config.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,10 +30,10 @@ class MockScaffoldingWidget extends StatelessWidget {
   late final _pages = <Map<String, Widget Function(BuildContext)>>[
     {"Filter components": _buildFilterComponents},
     {"Family components": _buildFamilyComponents},
-    {"Smart header": _buildSmartHeader},
+    {"Home preview": _buildFamilyHome},
     {"": _buildHome},
     {"Screens": (c) => _buildScreens(c)},
-    {"Device detail": (c) => const MockFamilyDeviceDetailScreen()},
+    {"Device detail": (c) => const MockFamilyDeviceDetailThisScreen()},
     {"Filters": _buildFilters},
   ];
 
@@ -43,10 +45,13 @@ class MockScaffoldingWidget extends StatelessWidget {
       body: Stack(
         children: [
           AnimatedBg(),
-          PageView(
-            controller: _ctrl,
-            scrollDirection: Axis.horizontal,
-            children: _buildPages(context),
+          Container(
+            //color: context.theme.bgColor,
+            child: PageView(
+              controller: _ctrl,
+              scrollDirection: Axis.horizontal,
+              children: _buildPages(context),
+            ),
           ),
         ],
       ),
@@ -376,21 +381,31 @@ class MockScaffoldingWidget extends StatelessWidget {
               },
               child: const Text("Family Home"),
             ),
+            MaterialButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  StandardRoute(
+                      builder: (context) => const MockSettingsScreen()),
+                );
+              },
+              child: const Text("Settings"),
+            ),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildSmartHeader(BuildContext context) {
-    final phase = FamilyPhase.fresh;
+  Widget _buildFamilyHome(BuildContext context) {
+    final phase = FamilyPhase.parentHasDevices;
     return Stack(
       children: [
         phase == FamilyPhase.parentHasDevices
             ? ListView(
                 reverse: true,
                 children: [
-                  SizedBox(height: 64),
+                  //SizedBox(height: 64),
                   Devices(),
                   //StatusTexts(phase: FamilyPhase.fresh),
                   //StatusTexts(phase: FamilyPhase.lockedActive),
@@ -403,7 +418,12 @@ class MockScaffoldingWidget extends StatelessWidget {
           children: [
             SizedBox(height: 48),
             SmartHeader(phase: phase),
-            SmartOnboard(phase: phase, hasMultipleDevices: false),
+          ],
+        ),
+        Column(
+          children: [
+            SizedBox(height: 48),
+            SmartOnboard(phase: phase, hasMultipleDevices: true),
             //SmartFooter(phase: phase, hasPin: true),
           ],
         ),

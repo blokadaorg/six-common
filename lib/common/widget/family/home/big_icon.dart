@@ -56,7 +56,7 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
     });
 
     // Fire off the intro animation (scale up the logo)
-    if (!_introduced) {
+    if (!_introduced && (widget.canShowLogo || widget.icon != null)) {
       setState(() {
         _show = true;
         _logo = true;
@@ -145,19 +145,22 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      child: AnimatedBuilder(
-          animation: foundation.Listenable.merge([_ctrl, _ctrlIdle]),
-          builder: (context, child) {
-            return Transform.scale(
-              scale: (_show ? _scaleUp.value : _scaleDown.value),
-              alignment: Alignment.center,
-              child: _logo || widget.icon == null
-                  ? _buildLogo(context)
-                  : _buildIcon(context),
-            );
-          }),
+    return Opacity(
+      opacity: (widget.icon != null || widget.canShowLogo) ? 1 : 0,
+      child: SizedBox(
+        height: 200,
+        child: AnimatedBuilder(
+            animation: foundation.Listenable.merge([_ctrl, _ctrlIdle]),
+            builder: (context, child) {
+              return Transform.scale(
+                scale: (_show ? _scaleUp.value : _scaleDown.value),
+                alignment: Alignment.center,
+                child: _logo || widget.icon == null
+                    ? _buildLogo(context)
+                    : _buildIcon(context),
+              );
+            }),
+      ),
     );
   }
 

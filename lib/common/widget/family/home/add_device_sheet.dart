@@ -37,14 +37,14 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
           child: Column(children: [
             Row(
               children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    _modal.set(StageModal.lock);
-                  },
-                  child: Text("Use this device",
-                      style: TextStyle(color: context.theme.family)),
-                ),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.of(context).pop();
+                //     _modal.set(StageModal.lock);
+                //   },
+                //   child: Text("Use this device",
+                //       style: TextStyle(color: context.theme.family)),
+                // ),
                 Expanded(child: Container()),
                 Text("Cancel", style: TextStyle(color: context.theme.family)),
               ],

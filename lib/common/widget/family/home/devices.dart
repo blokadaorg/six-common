@@ -12,6 +12,7 @@ import '../../../../util/di.dart';
 import '../../../widget.dart';
 import '../../../../family/devices.dart';
 import '../../../../util/trace.dart';
+import '../smart_header/smart_header_button.dart';
 import 'add_device_sheet.dart';
 import 'device.dart';
 
@@ -56,24 +57,14 @@ class DevicesState extends State<Devices>
 
     if (devices.length <= 2) {
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[] +
-            //devices +
-            // [
-            //   Row(
-            //     mainAxisAlignment: MainAxisAlignment.start,
-            //     children: [
-            //       Padding(
-            //         padding: const EdgeInsets.symmetric(
-            //             horizontal: 16.0, vertical: 8),
-            //         child: SmartHeaderButton(icon: CupertinoIcons.plus_circle),
-            //       ),
-            //       //_buildAddDeviceButton2(context),
-            //     ],
-            //   ),
-            // ] +
-            devices,
-      );
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[] +
+              devices +
+              [
+                _buildAddDeviceButton2(context),
+              ] // +
+          //devices,
+          );
     }
 
     // Group devices in pairs and allow vertical carousel scrolling
@@ -160,10 +151,10 @@ class DevicesState extends State<Devices>
   List<Widget> _getDevices() {
     if (_devices.dirty) return [];
     return _devices.now.entries
-        .filter((e) => !e.thisDevice)
-        .reversed
+        //.filter((e) => !e.thisDevice)
+        //.reversed
         .map((e) => Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
             child: _wrapInDismissible(
               e.thisDevice,
               e.deviceName,
@@ -185,12 +176,10 @@ class DevicesState extends State<Devices>
         children: [
           SlidableAction(
             onPressed: (context) => _delete(deviceName),
-            backgroundColor: Colors.red,
+            backgroundColor: context.theme.textPrimary.withOpacity(0.15),
             foregroundColor: Colors.white,
-            icon: thisDevice ? CupertinoIcons.power : CupertinoIcons.delete,
-            label: thisDevice
-                ? "universal action disable".i18n
-                : "universal action delete".i18n,
+            icon: CupertinoIcons.profile_circled,
+            label: "Profile",
             borderRadius: const BorderRadius.all(Radius.circular(8)),
           ),
         ],
@@ -238,7 +227,7 @@ class DevicesState extends State<Devices>
 
   Widget _buildAddDeviceButton2(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       child: MiniCard(
         onTap: () {
           showCupertinoModalBottomSheet(
@@ -253,9 +242,10 @@ class DevicesState extends State<Devices>
           height: 32,
           child: Center(
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  CupertinoIcons.plus,
+                  CupertinoIcons.plus_circle,
                   size: 28,
                   color: Colors.white,
                 ),

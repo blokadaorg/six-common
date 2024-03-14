@@ -169,7 +169,7 @@ abstract class FamilyStoreBase
       final json = await _persistence.load(trace, _key);
       if (json == null) {
         devices = FamilyDevices([], false);
-        //await _addThisDevice(trace);
+        await _addThisDevice(trace);
         return;
       }
 
@@ -290,9 +290,9 @@ abstract class FamilyStoreBase
       }
 
       // Add "this device" to the list
-      if (devices.hasThisDevice == false) {
-        await _addThisDevice(parentTrace);
-      }
+      // if (devices.hasThisDevice == false) {
+      //   await _addThisDevice(parentTrace);
+      // }
     }
     _updatePhase();
   }
@@ -414,7 +414,7 @@ abstract class FamilyStoreBase
       phase = FamilyPhase.lockedNoPerms;
     } else if (accountActive == false) {
       phase = FamilyPhase.fresh;
-    } else if (devices.hasThisDevice && permsGranted != true) {
+    } else if (/*devices.hasThisDevice && */ permsGranted != true) {
       phase = FamilyPhase.noPerms;
     } else if (devices.hasDevices == true) {
       phase = FamilyPhase.parentHasDevices;

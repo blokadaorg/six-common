@@ -25,8 +25,8 @@ class DeviceCardHeader extends StatelessWidget {
         Expanded(
           child: Row(
             children: [
-              TwoLetterIconWidget(name: iconName),
-              const SizedBox(width: 8),
+              // TwoLetterIconWidget(name: iconName),
+              // const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   text,

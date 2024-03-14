@@ -40,9 +40,8 @@ void main() async {
 }
 
 class DevWebsocket with TraceOrigin {
-  //var ip = "192.168.1.176";
-  var ip = "192.168.3.156";
-  //var ip = "192.168.234.100";
+  //var ip = "192.168.1.177";
+  var ip = "192.168.234.104";
 
   late final command = dep<CommandStore>();
   WebSocketChannel? channel;

@@ -1,4 +1,12 @@
-part of '../../widget.dart';
+import 'dart:math';
+
+import 'package:common/service/I18nService.dart';
+import 'package:common/util/color_extensions.dart';
+import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+
+import '../../model.dart';
 
 class MiniCardChart extends StatelessWidget {
   final FamilyDevice device;
@@ -14,9 +22,8 @@ class MiniCardChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       //decoration: BoxDecoration(color: Colors.greenAccent),
-      child: (!device.thisDevice &&
-              device.deviceName.isNotEmpty &&
-              device.stats.totalAllowed > 0)
+      child: ( //!device.thisDevice &&
+              device.deviceName.isNotEmpty && device.stats.totalAllowed > 0)
           ? _ColumnChart(stats: device.stats, color: color)
           : SizedBox(
               height: 90,
@@ -31,6 +38,56 @@ class MiniCardChart extends StatelessWidget {
               // ),
             ),
     );
+  }
+}
+
+class _SparkLineChart extends StatelessWidget {
+  final Color color;
+  final UiStats stats;
+
+  late DateTime latestTimestamp;
+  late List<_ChartData> data;
+
+  _SparkLineChart({
+    Key? key,
+    required this.stats,
+    required this.color,
+  }) : super(key: key) {
+    _compute();
+  }
+
+  void _compute() {
+    latestTimestamp =
+        DateTime.fromMillisecondsSinceEpoch(stats.latestTimestamp);
+    data = stats.allowedHistogram
+        .asMap()
+        .entries
+        .map((entry) => _ChartData(
+            latestTimestamp.subtract(Duration(hours: 23 - entry.key)),
+            entry.value * 1))
+        .toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        constraints: const BoxConstraints(maxHeight: 90),
+        child: SfCartesianChart(
+          // Remove the axis line
+          primaryXAxis: NumericAxis(axisLine: const AxisLine(width: 0)),
+          primaryYAxis: NumericAxis(axisLine: const AxisLine(width: 0)),
+          series: <ChartSeries>[
+            // Initialize line series
+            SplineSeries<_ChartData, double>(
+              dataSource: data,
+              xValueMapper: (_ChartData data, _) =>
+                  data.x.millisecondsSinceEpoch.toDouble(),
+              yValueMapper: (_ChartData data, _) => data.y,
+              color: color,
+              width: 3, // Line width
+            )
+          ],
+        ));
   }
 }
 
@@ -106,7 +163,7 @@ class _ColumnChart extends StatelessWidget {
               isVisible: false,
             ),
             primaryYAxis: NumericAxis(
-              minimum: minGreen,
+              minimum: minGreen - 50,
               maximum: maxGreen,
               interval: (maxGreen ~/ 3).toDouble(),
               majorGridLines: const MajorGridLines(width: 0),
@@ -116,22 +173,29 @@ class _ColumnChart extends StatelessWidget {
             enableSideBySideSeriesPlacement: false,
             enableAxisAnimation: true,
             series: [
-              ColumnSeries<_ChartData, DateTime>(
+              SplineSeries<_ChartData, DateTime>(
                 dataSource: dataGreen,
-                xValueMapper: (_ChartData sales, _) => sales.x,
-                yValueMapper: (_ChartData sales, _) => sales.y,
-                name: "stats label allowed".i18n,
-                color: colorsGreen[0],
-                width: 0.8,
-                animationDuration: 1000,
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(4), topRight: Radius.circular(4)),
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: colorsGreen,
-                    stops: stops),
-              ),
+                xValueMapper: (_ChartData data, _) => data.x,
+                yValueMapper: (_ChartData data, _) => data.y,
+                color: color,
+                width: 3, // Line width
+              )
+              // ColumnSeries<_ChartData, DateTime>(
+              //   dataSource: dataGreen,
+              //   xValueMapper: (_ChartData sales, _) => sales.x,
+              //   yValueMapper: (_ChartData sales, _) => sales.y,
+              //   name: "stats label allowed".i18n,
+              //   color: colorsGreen[0],
+              //   width: 0.8,
+              //   animationDuration: 1000,
+              //   borderRadius: const BorderRadius.only(
+              //       topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+              //   gradient: LinearGradient(
+              //       begin: Alignment.topCenter,
+              //       end: Alignment.bottomCenter,
+              //       colors: colorsGreen,
+              //       stops: stops),
+              // ),
             ],
           ),
         ),

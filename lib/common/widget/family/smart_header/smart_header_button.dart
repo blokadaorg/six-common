@@ -1,4 +1,5 @@
 import 'package:common/common/widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SmartHeaderButton extends StatefulWidget {
@@ -18,6 +19,9 @@ class SmartHeaderButtonState extends State<SmartHeaderButton> {
     return Container(
       decoration: BoxDecoration(
         color: context.theme.textPrimary.withOpacity(0.15),
+        // color: widget.icon == CupertinoIcons.settings
+        //     ? Colors.transparent
+        //     : context.theme.textPrimary.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
       ),
       child: SizedBox(
