@@ -58,56 +58,15 @@ class SmartHeaderState extends State<SmartHeader>
           padding: const EdgeInsets.all(16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: //_buildButtons(context) +
-                [
-              // OpenContainer(
-              //   openBuilder: (context, openContainer) {
-              //     return MockSettingsScreen();
-              //   },
-              //   transitionType: ContainerTransitionType.fadeThrough,
-              //   transitionDuration: const Duration(milliseconds: 400),
-              //   closedElevation: 0,
-              //   closedColor: context.theme.textPrimary.withOpacity(0.15),
-              //   closedShape: const RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.all(Radius.circular(12)),
-              //   ),
-              //   openShape: const RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.all(Radius.circular(32)),
-              //   ),
-              //   closedBuilder: (context, openContainer) {
-              //     return SmartHeaderButton(
-              //       icon: CupertinoIcons.settings,
-              //       onTap: () {
-              //         // _modal.set(StageModal.accountChange);
-              //         openContainer();
-              //       },
-              //     );
-              //   },
-              // ),
-              SmartHeaderButton(
-                  icon: CupertinoIcons.question_circle,
-                  onTap: () {
-                    _modal.set(StageModal.help);
-                  }),
-              SizedBox(width: 4),
-              _buildButtons(context),
-              Spacer(),
-              SmartHeaderButton(
-                  icon: CupertinoIcons.lock,
-                  onTap: () {
-                    _modal.set(StageModal.lock);
-                  }),
-              SizedBox(width: 4),
-              SmartHeaderButton(
-                  icon: CupertinoIcons.settings,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      StandardRoute(
-                          builder: (context) => const MockSettingsScreen()),
-                    );
-                  }),
-            ],
+            children: [
+                  SmartHeaderButton(
+                      icon: CupertinoIcons.question_circle,
+                      onTap: () {
+                        _modal.set(StageModal.help);
+                      }),
+                  SizedBox(width: 4),
+                ] +
+                _buildButtons(context),
           ),
         ),
         //SmartHeaderOnboard(key: _containerKey, opened: _opened),
@@ -115,41 +74,45 @@ class SmartHeaderState extends State<SmartHeader>
     );
   }
 
-  Widget _buildButtons(BuildContext context) {
-    // if (widget.phase == FamilyPhase.fresh ||
-    //     widget.phase == FamilyPhase.parentNoDevices) {
-    //   return SmartHeaderButton(
-    //       icon: CupertinoIcons.qrcode_viewfinder,
-    //       onTap: () {
-    //         _modal.set(StageModal.accountChange);
-    //       });
-    // }
+  List<Widget> _buildButtons(BuildContext context) {
+    final list = <Widget>[];
+
     if (widget.phase == FamilyPhase.linkedUnlocked) {
-      return SmartHeaderButton(
+      list.add(SmartHeaderButton(
           icon: CupertinoIcons.link,
           onTap: () {
             _unlink.call();
-          });
-    } else {
-      return SmartHeaderButton(
+          }));
+      list.add(Spacer());
+    }
+
+    if (!widget.phase.isLocked2()) {
+      list.add(SmartHeaderButton(
           icon: CupertinoIcons.qrcode_viewfinder,
           onTap: () {
             _modal.set(StageModal.accountChange);
-          });
+          }));
+      list.add(Spacer());
     }
-    // if (widget.phase == FamilyPhase.parentHasDevices) {
-    //   list.add(SmartHeaderButton(
-    //       icon: CupertinoIcons.add_circled,
-    //       onTap: () {
-    //         showCupertinoModalBottomSheet(
-    //           context: context,
-    //           duration: const Duration(milliseconds: 300),
-    //           backgroundColor: context.theme.bgColorCard,
-    //           builder: (context) => AddDeviceSheet(),
-    //         );
-    //       }));
-    // }
-    return Container();
+
+    if (!widget.phase.isLocked2()) {
+      list.add(SmartHeaderButton(
+          icon: CupertinoIcons.lock,
+          onTap: () {
+            _modal.set(StageModal.lock);
+          }));
+      list.add(SizedBox(width: 4));
+      list.add(SmartHeaderButton(
+          icon: CupertinoIcons.settings,
+          onTap: () {
+            Navigator.push(
+              context,
+              StandardRoute(builder: (context) => const MockSettingsScreen()),
+            );
+          }));
+    }
+
+    return list;
   }
 }
 
