@@ -116,6 +116,7 @@ extension FamilyPhaseExt on FamilyPhase {
   bool isLinkable() {
     return this == FamilyPhase.fresh ||
         this == FamilyPhase.starting ||
+        this == FamilyPhase.noPerms ||
         this == FamilyPhase.parentNoDevices;
   }
 
