@@ -76,8 +76,7 @@ class HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     final phase = _phase.now;
-    final hasMultiple = _devices.now.entries.length > 1;
-    final hasThisDevice = _devices.now.hasThisDevice;
+    final deviceCount = _devices.now.entries.length;
 
     return Scaffold(
         body: Stack(
@@ -85,6 +84,13 @@ class HomeScreenState extends State<HomeScreen>
         AnimatedBg(),
         Stack(
           children: [
+            Column(
+              children: [
+                SizedBox(height: 48),
+                SmartOnboard(phase: phase, deviceCount: deviceCount),
+                //SmartFooter(phase: phase, hasPin: true),
+              ],
+            ),
             phase == FamilyPhase.parentHasDevices
                 ? ListView(
                     reverse: true,
@@ -97,13 +103,6 @@ class HomeScreenState extends State<HomeScreen>
               children: [
                 SizedBox(height: 48),
                 SmartHeader(phase: phase),
-              ],
-            ),
-            Column(
-              children: [
-                SizedBox(height: 48),
-                SmartOnboard(phase: phase, deviceCount: 1),
-                //SmartFooter(phase: phase, hasPin: true),
               ],
             ),
           ],

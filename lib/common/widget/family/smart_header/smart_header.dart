@@ -1,17 +1,12 @@
-import 'package:animations/animations.dart';
 import 'package:common/common/widget.dart';
-import 'package:common/mock/widget/mock_family_device_detail.dart';
 import 'package:common/mock/widget/mock_settings.dart';
-import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:vistraced/via.dart';
 
 import '../../../../stage/channel.pg.dart';
 import '../../../model.dart';
-import '../home/add_device_sheet.dart';
 import 'smart_header_button.dart';
 
 part 'smart_header.g.dart';
@@ -93,7 +88,8 @@ class SmartHeaderState extends State<SmartHeader>
 
     list.add(Spacer());
 
-    if (!widget.phase.isLocked2()) {
+    if (!widget.phase.isLocked2() &&
+        widget.phase != FamilyPhase.linkedUnlocked) {
       list.add(SmartHeaderButton(
           icon: CupertinoIcons.lock,
           onTap: () {
