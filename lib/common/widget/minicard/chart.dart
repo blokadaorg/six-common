@@ -41,56 +41,6 @@ class MiniCardChart extends StatelessWidget {
   }
 }
 
-class _SparkLineChart extends StatelessWidget {
-  final Color color;
-  final UiStats stats;
-
-  late DateTime latestTimestamp;
-  late List<_ChartData> data;
-
-  _SparkLineChart({
-    Key? key,
-    required this.stats,
-    required this.color,
-  }) : super(key: key) {
-    _compute();
-  }
-
-  void _compute() {
-    latestTimestamp =
-        DateTime.fromMillisecondsSinceEpoch(stats.latestTimestamp);
-    data = stats.allowedHistogram
-        .asMap()
-        .entries
-        .map((entry) => _ChartData(
-            latestTimestamp.subtract(Duration(hours: 23 - entry.key)),
-            entry.value * 1))
-        .toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        constraints: const BoxConstraints(maxHeight: 90),
-        child: SfCartesianChart(
-          // Remove the axis line
-          primaryXAxis: NumericAxis(axisLine: const AxisLine(width: 0)),
-          primaryYAxis: NumericAxis(axisLine: const AxisLine(width: 0)),
-          series: <ChartSeries>[
-            // Initialize line series
-            SplineSeries<_ChartData, double>(
-              dataSource: data,
-              xValueMapper: (_ChartData data, _) =>
-                  data.x.millisecondsSinceEpoch.toDouble(),
-              yValueMapper: (_ChartData data, _) => data.y,
-              color: color,
-              width: 3, // Line width
-            )
-          ],
-        ));
-  }
-}
-
 class _ColumnChart extends StatelessWidget {
   final Color color;
   final UiStats stats;

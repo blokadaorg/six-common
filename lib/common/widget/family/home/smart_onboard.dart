@@ -16,10 +16,13 @@ part 'smart_onboard.g.dart';
 
 class SmartOnboard extends StatefulWidget {
   final FamilyPhase phase;
-  final bool hasMultipleDevices;
+  final int deviceCount;
 
-  const SmartOnboard(
-      {super.key, required this.phase, required this.hasMultipleDevices});
+  const SmartOnboard({
+    super.key,
+    required this.phase,
+    required this.deviceCount,
+  });
 
   @override
   State<StatefulWidget> createState() => _$SmartOnboardState();
@@ -37,7 +40,7 @@ class SmartOnboardState extends State<SmartOnboard>
 
   @override
   Widget build(BuildContext context) {
-    final texts = _getTexts(widget.phase);
+    final texts = _getTexts(widget.phase, widget.deviceCount);
 
     return Expanded(
       child: Padding(
@@ -45,7 +48,7 @@ class SmartOnboardState extends State<SmartOnboard>
         child: Column(
           children: [
             //const SizedBox(height: 80),
-            widget.hasMultipleDevices
+            widget.deviceCount > 2
                 ? SizedBox(
                     height: 64,
                     child: Image(
@@ -53,12 +56,12 @@ class SmartOnboardState extends State<SmartOnboard>
                       width: 120,
                     ),
                   )
-                : Container(height: 90),
-            const SizedBox(height: 120),
+                : Container(height: 64),
+            const SizedBox(height: 52),
             BigIcon(
               icon: getIcon(widget.phase),
               canShowLogo: !(widget.phase == FamilyPhase.parentHasDevices &&
-                  widget.hasMultipleDevices),
+                  widget.deviceCount > 2),
             ),
             const SizedBox(height: 90),
             Text(
@@ -157,7 +160,7 @@ class SmartOnboardState extends State<SmartOnboard>
     }
   }
 
-  List<String?> _getTexts(FamilyPhase phase) {
+  List<String?> _getTexts(FamilyPhase phase, int devicesCount) {
     switch (phase) {
       case FamilyPhase.fresh:
         return [
@@ -189,6 +192,15 @@ class SmartOnboardState extends State<SmartOnboard>
         return [
           "family status locked header".i18n,
         ];
+      case FamilyPhase.parentHasDevices:
+        if (devicesCount > 1) {
+          return ["", ""];
+        } else {
+          return [
+            "Active!",
+            "Tap the device for details\n\n",
+          ];
+        }
       case FamilyPhase.starting:
         return ["", "Please wait..."];
       default:

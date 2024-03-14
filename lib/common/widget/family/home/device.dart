@@ -45,7 +45,7 @@ class HomeDeviceState extends State<HomeDevice>
 
     Navigator.push(
       context,
-      StandardRoute(builder: (context) => const DeviceScreen()),
+      StandardRoute(builder: (context) => DeviceScreen(device: widget.device)),
     );
   }
 

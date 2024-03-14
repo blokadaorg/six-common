@@ -4,8 +4,6 @@ import 'package:common/common/widget/family/home/devices.dart';
 import 'package:common/common/widget/family/home/private_dns_setting_guide.dart';
 import 'package:common/common/widget/family/home/smart_onboard.dart';
 import 'package:common/common/widget/family/smart_header/smart_header.dart';
-import 'package:common/common/widget/family/smart_header/smart_header_onboard.dart';
-import 'package:common/mock/widget/mock_family_device_detail_this.dart';
 import 'package:common/mock/widget/mock_settings.dart';
 import 'package:common/util/config.dart';
 import 'package:dartx/dartx.dart';
@@ -19,10 +17,7 @@ import '../../common/widget/family/home/animated_bg.dart';
 import '../../common/widget/family/home/big_logo.dart';
 import '../../common/widget/family/home/cta_buttons.dart';
 import '../../common/widget/family/home/home_screen.dart';
-import '../../common/widget/family/home/status_texts.dart';
 import '../../common/widget/family/home/totalcounter.dart';
-import '../../common/widget/family/smart_header/smart_footer.dart';
-import 'mock_family_device_detail.dart';
 
 class MockScaffoldingWidget extends StatelessWidget {
   MockScaffoldingWidget({Key? key}) : super(key: key);
@@ -33,7 +28,6 @@ class MockScaffoldingWidget extends StatelessWidget {
     {"Home preview": _buildFamilyHome},
     {"": _buildHome},
     {"Screens": (c) => _buildScreens(c)},
-    {"Device detail": (c) => const MockFamilyDeviceDetailThisScreen()},
     {"Filters": _buildFilters},
   ];
 
@@ -401,6 +395,13 @@ class MockScaffoldingWidget extends StatelessWidget {
     final phase = FamilyPhase.parentHasDevices;
     return Stack(
       children: [
+        Column(
+          children: [
+            SizedBox(height: 48),
+            SmartOnboard(phase: phase, deviceCount: 0),
+            //SmartFooter(phase: phase, hasPin: true),
+          ],
+        ),
         phase == FamilyPhase.parentHasDevices
             ? ListView(
                 reverse: true,
@@ -418,13 +419,6 @@ class MockScaffoldingWidget extends StatelessWidget {
           children: [
             SizedBox(height: 48),
             SmartHeader(phase: phase),
-          ],
-        ),
-        Column(
-          children: [
-            SizedBox(height: 48),
-            SmartOnboard(phase: phase, hasMultipleDevices: true),
-            //SmartFooter(phase: phase, hasPin: true),
           ],
         ),
       ],

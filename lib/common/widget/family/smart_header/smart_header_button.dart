@@ -22,7 +22,7 @@ class SmartHeaderButtonState extends State<SmartHeaderButton> {
         // color: widget.icon == CupertinoIcons.settings
         //     ? Colors.transparent
         //     : context.theme.textPrimary.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: SizedBox(
         width: 48,
@@ -34,7 +34,7 @@ class SmartHeaderButtonState extends State<SmartHeaderButton> {
                 decorationBuilder: (value) {
                   return BoxDecoration(
                     color: context.theme.bgMiniCard.withOpacity(value * 0.25),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(24),
                   );
                 },
                 child: Padding(

@@ -93,6 +93,12 @@ class SmartHeaderState extends State<SmartHeader>
               _buildButtons(context),
               Spacer(),
               SmartHeaderButton(
+                  icon: CupertinoIcons.lock,
+                  onTap: () {
+                    _modal.set(StageModal.lock);
+                  }),
+              SizedBox(width: 4),
+              SmartHeaderButton(
                   icon: CupertinoIcons.settings,
                   onTap: () {
                     Navigator.push(
@@ -110,19 +116,25 @@ class SmartHeaderState extends State<SmartHeader>
   }
 
   Widget _buildButtons(BuildContext context) {
-    if (widget.phase == FamilyPhase.fresh ||
-        widget.phase == FamilyPhase.parentNoDevices) {
-      return SmartHeaderButton(
-          icon: CupertinoIcons.qrcode_viewfinder,
-          onTap: () {
-            _modal.set(StageModal.accountChange);
-          });
-    }
+    // if (widget.phase == FamilyPhase.fresh ||
+    //     widget.phase == FamilyPhase.parentNoDevices) {
+    //   return SmartHeaderButton(
+    //       icon: CupertinoIcons.qrcode_viewfinder,
+    //       onTap: () {
+    //         _modal.set(StageModal.accountChange);
+    //       });
+    // }
     if (widget.phase == FamilyPhase.linkedUnlocked) {
       return SmartHeaderButton(
           icon: CupertinoIcons.link,
           onTap: () {
             _unlink.call();
+          });
+    } else {
+      return SmartHeaderButton(
+          icon: CupertinoIcons.qrcode_viewfinder,
+          onTap: () {
+            _modal.set(StageModal.accountChange);
           });
     }
     // if (widget.phase == FamilyPhase.parentHasDevices) {

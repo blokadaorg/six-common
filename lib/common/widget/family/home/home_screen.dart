@@ -11,7 +11,6 @@ import 'package:vistraced/via.dart';
 import '../../../../app/channel.pg.dart';
 import '../../../../family/devices.dart';
 import '../../../../family/family.dart';
-import '../../../../mock/widget/mock_family_device_detail_this.dart';
 import '../../../../stage/channel.pg.dart';
 import '../../../../ui/debug/commanddialog.dart';
 import '../../../../ui/overlay/overlay_container.dart';
@@ -86,60 +85,27 @@ class HomeScreenState extends State<HomeScreen>
         AnimatedBg(),
         Stack(
           children: [
-            PageView(
-              controller: _ctrl,
+            phase == FamilyPhase.parentHasDevices
+                ? ListView(
+                    reverse: true,
+                    children: [
+                      Devices(),
+                    ],
+                  )
+                : Container(),
+            Column(
               children: [
-                Stack(
-                  children: [
-                    phase == FamilyPhase.parentHasDevices
-                        ? ListView(
-                            reverse: true,
-                            children: [
-                              Devices(),
-                            ],
-                          )
-                        : Container(),
-                    Column(
-                      children: [
-                        SizedBox(height: 48),
-                        SmartHeader(phase: phase),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        SizedBox(height: 48),
-                        SmartOnboard(phase: phase, hasMultipleDevices: true),
-                        //SmartFooter(phase: phase, hasPin: true),
-                      ],
-                    ),
-                  ],
-                ),
-                hasThisDevice
-                    ? MockFamilyDeviceDetailThisScreen()
-                    : Column(
-                        children: [
-                          SizedBox(height: 48),
-                          ThisDeviceOnboard(),
-                          SizedBox(height: 26),
-                        ],
-                      ),
+                SizedBox(height: 48),
+                SmartHeader(phase: phase),
               ],
             ),
-            // Column(
-            //   children: [
-            //     Spacer(),
-            //     (_phase.now.hideTabs())
-            //         ? Container()
-            //         : SmartFooter(
-            //             enabled: !phase.isLocked2(),
-            //             tab: _page,
-            //             onTab: (int tab) {
-            //               _ctrl.animateToPage(tab,
-            //                   duration: const Duration(milliseconds: 300),
-            //                   curve: Curves.easeOut);
-            //             }),
-            //   ],
-            // ),
+            Column(
+              children: [
+                SizedBox(height: 48),
+                SmartOnboard(phase: phase, deviceCount: 1),
+                //SmartFooter(phase: phase, hasPin: true),
+              ],
+            ),
           ],
         ),
         OverlayContainer(modal: _modal.now),

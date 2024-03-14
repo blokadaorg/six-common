@@ -45,6 +45,7 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
   bool _introduced = false;
   bool _show = false; // To play scaleDown or scaleUp
   bool _logo = true; // To show logo or icon
+  IconData? _icon;
 
   @override
   void initState() {
@@ -56,10 +57,11 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
     });
 
     // Fire off the intro animation (scale up the logo)
-    if (!_introduced && (widget.canShowLogo || widget.icon != null)) {
+    if (!_introduced) {
       setState(() {
         _show = true;
         _logo = true;
+        _icon = null;
       });
       Future.delayed(const Duration(milliseconds: 500), () {
         _ctrl.forward();
@@ -94,6 +96,7 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
       setState(() {
         _show = true;
         _logo = false;
+        _icon = widget.icon;
       });
       _ctrl.reset();
       _ctrl.forward();
@@ -105,6 +108,7 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
       setState(() {
         _show = true;
         _logo = true;
+        _icon = null;
       });
       _ctrl.reset();
       _ctrl.forward();
@@ -148,14 +152,14 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
     return Opacity(
       opacity: (widget.icon != null || widget.canShowLogo) ? 1 : 0,
       child: SizedBox(
-        height: 200,
+        height: 150,
         child: AnimatedBuilder(
             animation: foundation.Listenable.merge([_ctrl, _ctrlIdle]),
             builder: (context, child) {
               return Transform.scale(
                 scale: (_show ? _scaleUp.value : _scaleDown.value),
                 alignment: Alignment.center,
-                child: _logo || widget.icon == null
+                child: _logo || _icon == null
                     ? _buildLogo(context)
                     : _buildIcon(context),
               );
@@ -171,9 +175,7 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
           offset: Offset(8 + _scaleIdle.value * 4, 8 + _scaleIdle.value * 4),
           child: Image.asset(
             "assets/images/family-logo.png",
-            width: 160,
             fit: BoxFit.contain,
-            //height: 600,
             //filterQuality: FilterQuality.high,
             color: context.theme.textPrimary.withOpacity(0.2),
           ),
@@ -182,9 +184,7 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
           offset: Offset(_scaleIdle.value * -4, _scaleIdle.value * -4),
           child: Image.asset(
             "assets/images/family-logo.png",
-            width: 160,
             fit: BoxFit.contain,
-            //height: 600,
             //filterQuality: FilterQuality.high,
             //color: Colors.white,
           ),
@@ -200,7 +200,7 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
           offset: Offset(8 + _scaleIdle.value * 4, 8 + _scaleIdle.value * 4),
           // offset: Offset(12, 8),
           child: Icon(
-            widget.icon,
+            _icon,
             size: 190,
             color: context.theme.textPrimary.withOpacity(0.2),
             //color: Colors.white.withOpacity(0.2),
@@ -210,7 +210,7 @@ class BigIconState extends State<BigIcon> with TickerProviderStateMixin {
           offset: Offset(_scaleIdle.value * -4, _scaleIdle.value * -4),
           // offset: Offset(4, 2),
           child: Icon(
-            widget.icon,
+            _icon,
             size: 192,
             color: Colors.white,
           ),

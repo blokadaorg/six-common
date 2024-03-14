@@ -9,6 +9,13 @@ import '../../common/model.dart';
 import '../../util/config.dart';
 
 class EditProfileSheet extends StatefulWidget {
+  final String previous;
+  final String profile;
+
+  const EditProfileSheet(
+      {Key? key, required this.previous, required this.profile})
+      : super(key: key);
+
   @override
   State<StatefulWidget> createState() => EditProfileSheetState();
 }
@@ -22,15 +29,19 @@ class EditProfileSheetState extends State<EditProfileSheet> {
         appBar: SuperAppBar(
           searchBar: SuperSearchBar(enabled: false),
           backgroundColor: context.theme.panelBackground.withOpacity(0.5),
-          largeTitle: SuperLargeTitle(largeTitle: "Child"),
-          //previousPageTitle: "Profiles",
-          previousPageTitle: "Alva",
+          largeTitle: SuperLargeTitle(largeTitle: widget.profile),
+          previousPageTitle: widget.previous,
           actions: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               CupertinoButton(
                 padding: EdgeInsets.zero,
-                onPressed: () => _showNameProfileDialog(context, "Parent"),
+                onPressed: () => showInputDialog(context,
+                    title: "Edit profile",
+                    desc: "Enter a name for this profile.",
+                    inputValue: widget.profile, onConfirm: (value) {
+                  print("Value: $value");
+                }),
                 child: Padding(
                   padding: const EdgeInsets.only(right: 16.0),
                   child: Text("Edit",
@@ -76,57 +87,5 @@ class EditProfileSheetState extends State<EditProfileSheet> {
     final texts = filterDecorDefaults
         .firstWhere((it) => it.filterName == filter.filterName);
     return FilterWidget(filter: filter, texts: texts, bgColor: color);
-  }
-
-  void _showNameProfileDialog(BuildContext context, String name) {
-    showDefaultDialog(
-      context,
-      title: Text("Edit Profile"),
-      content: Column(
-        children: [
-          const Text("Enter a name for this profile."),
-          const SizedBox(height: 16),
-          Material(
-            child: TextField(
-              controller: TextEditingController(text: name),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: context.theme.panelBackground,
-                focusColor: context.theme.panelBackground,
-                hoverColor: context.theme.panelBackground,
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                enabledBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: context.theme.divider, width: 1.0),
-                  borderRadius: BorderRadius.circular(2.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: context.theme.divider, width: 1.0),
-                  borderRadius: BorderRadius.circular(2.0),
-                ),
-              ),
-            ),
-          ),
-          // const SizedBox(height: 20),
-          // Text("Delete this profile",
-          //     style: TextStyle(
-          //         color: Colors.red,
-          //         fontSize: 14,
-          //         fontWeight: FontWeight.w500)),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text("Cancel"),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text("Save"),
-        ),
-      ],
-    );
   }
 }

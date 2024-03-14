@@ -62,13 +62,13 @@ class MockProfilesScreen extends StatelessWidget {
                   SettingsSection(
                     tiles: [
                       SettingsTile.navigation(
-                        onPressed: (context) => _next(context),
+                        onPressed: (context) => _next(context, "Parent"),
                         leading: Icon(CupertinoIcons.person_2_alt,
                             color: Colors.blue),
                         title: Text('Parent'),
                       ),
                       SettingsTile.navigation(
-                        onPressed: (context) => _next(context),
+                        onPressed: (context) => _next(context, "Child"),
                         leading: Icon(CupertinoIcons.person_solid,
                             color: Colors.green),
                         title: Text('Child'),
@@ -86,8 +86,11 @@ class MockProfilesScreen extends StatelessWidget {
     );
   }
 
-  _next(BuildContext context) {
-    Navigator.of(context)
-        .push(StandardRoute(builder: (context) => EditProfileSheet()));
+  _next(BuildContext context, String name) {
+    Navigator.of(context).push(StandardRoute(
+        builder: (context) => EditProfileSheet(
+              previous: "Profiles",
+              profile: name,
+            )));
   }
 }

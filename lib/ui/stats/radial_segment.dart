@@ -216,7 +216,7 @@ class _ColumnChart extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          constraints: const BoxConstraints(maxHeight: 90, maxWidth: 240),
+          constraints: const BoxConstraints(maxHeight: 90, maxWidth: 220),
           child: SfCartesianChart(
             margin: const EdgeInsets.all(0),
             plotAreaBorderWidth: 0,

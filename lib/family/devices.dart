@@ -85,6 +85,7 @@ class FamilyDevices {
 
   _deviceDisplayName(String name, bool thisDevice) {
     if (thisDevice) {
+      return "This device";
       return "family label this device".i18n.replaceFirst("%s", name);
     }
     return name;

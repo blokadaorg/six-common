@@ -15,7 +15,9 @@ import 'totalcounter.dart';
 part 'stats_screen.g.dart';
 
 class StatsScreen extends StatefulWidget {
-  const StatsScreen({Key? key}) : super(key: key);
+  final FamilyDevice device;
+
+  const StatsScreen({Key? key, required this.device}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _$StatsScreenState();
@@ -37,14 +39,14 @@ class StatsScreenState extends State<StatsScreen> with ViaTools<StatsScreen> {
               return Column(
                 children: [
                   const SizedBox(height: 42),
-                  const BackEditHeaderWidget(
-                    name: "Alva",
+                  BackEditHeaderWidget(
+                    name: widget.device.deviceDisplayName,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 12, left: 16, right: 8),
                     child: Row(
                       children: [
-                        Text("Statistics",
+                        Text("Activity",
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineMedium!
@@ -54,31 +56,32 @@ class StatsScreenState extends State<StatsScreen> with ViaTools<StatsScreen> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: MiniCard(
-                      child: Column(
-                        children: [
-                          MiniCardHeader(
-                            text: "stats header day".i18n,
-                            icon: Icons.timelapse,
-                            color: context.theme.textSecondary,
-                          ),
-                          const SizedBox(height: 4),
-                          RadialSegment(stats: _stats.now),
-                          const SizedBox(height: 16),
-                          const Divider(),
-                          ColumnChart(stats: _stats.now),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: TotalCounter(stats: _stats.now),
-                  ),
-                  const Spacer(),
-                  SizedBox(height: sy(60)),
+                  Text("Activity screen TBD")
+                  // Padding(
+                  //   padding: const EdgeInsets.all(12.0),
+                  //   child: MiniCard(
+                  //     child: Column(
+                  //       children: [
+                  //         MiniCardHeader(
+                  //           text: "stats header day".i18n,
+                  //           icon: Icons.timelapse,
+                  //           color: context.theme.textSecondary,
+                  //         ),
+                  //         const SizedBox(height: 4),
+                  //         RadialSegment(stats: _stats.now),
+                  //         const SizedBox(height: 16),
+                  //         const Divider(),
+                  //         ColumnChart(stats: _stats.now),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(12.0),
+                  //   child: TotalCounter(stats: _stats.now),
+                  // ),
+                  // const Spacer(),
+                  // SizedBox(height: sy(60)),
                 ],
               );
             }),

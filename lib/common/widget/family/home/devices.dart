@@ -158,6 +158,7 @@ class DevicesState extends State<Devices>
             child: _wrapInDismissible(
               e.thisDevice,
               e.deviceName,
+              e.deviceDisplayName,
               HomeDevice(
                   device: e,
                   color: e.thisDevice
@@ -167,7 +168,8 @@ class DevicesState extends State<Devices>
         .toList();
   }
 
-  Widget _wrapInDismissible(bool thisDevice, String deviceName, Widget child) {
+  Widget _wrapInDismissible(
+      bool thisDevice, String deviceName, String displayName, Widget child) {
     return Slidable(
       key: Key(deviceName),
       endActionPane: ActionPane(
@@ -175,7 +177,7 @@ class DevicesState extends State<Devices>
         extentRatio: 0.3,
         children: [
           SlidableAction(
-            onPressed: (context) => _delete(deviceName),
+            onPressed: (context) => _selectProfile(displayName),
             backgroundColor: context.theme.textPrimary.withOpacity(0.15),
             foregroundColor: Colors.white,
             icon: CupertinoIcons.profile_circled,
@@ -188,11 +190,12 @@ class DevicesState extends State<Devices>
     );
   }
 
-  void _delete(String deviceName) {
-    traceAs("tappedDeleteDevice", (trace) async {
-      //_devices.now.deleteDevice(deviceName);
-      _family.deleteDevice(trace, deviceName);
-    });
+  void _selectProfile(String deviceName) {
+    // traceAs("tappedDeleteDevice", (trace) async {
+    //   //_devices.now.deleteDevice(deviceName);
+    //   _family.deleteDevice(trace, deviceName);
+    // });
+    _showSelectProfileDialog(context, deviceName: deviceName);
   }
 
   Widget _buildAddDeviceButton(BuildContext context) {
@@ -262,4 +265,67 @@ class DevicesState extends State<Devices>
       ),
     );
   }
+}
+
+void _showSelectProfileDialog(BuildContext context,
+    {required String deviceName}) {
+  showDefaultDialog(
+    context,
+    title: Text("Select profile"),
+    content: Column(
+      children: [
+            Text("Choose a profile to use for $deviceName."),
+            SizedBox(height: 32),
+          ] +
+          ["Parent", "Child", "Custom 1"]
+              .map((it) => _buildProfileItem(context, it))
+              .flatten()
+              .toList()
+              .dropLast(1),
+    ),
+    actions: [],
+  );
+}
+
+List<Widget> _buildProfileItem(BuildContext context, String name) {
+  return [
+    Touch(
+      onTap: () => {Navigator.of(context).pop()},
+      decorationBuilder: (value) {
+        return BoxDecoration(
+          color: context.theme.bgMiniCard.withOpacity(value),
+          borderRadius: BorderRadius.circular(4),
+        );
+      },
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Icon(
+                    name == "Parent"
+                        ? CupertinoIcons.person_2_alt
+                        : (name == "Child"
+                            ? CupertinoIcons.person_crop_circle
+                            : CupertinoIcons.person_3),
+                    color: context.theme.textSecondary,
+                    size: 18),
+                SizedBox(width: 8),
+                Text(name,
+                    style: TextStyle(
+                        color: context.theme.textPrimary, fontSize: 16)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+    Divider(
+        indent: 4,
+        endIndent: 4,
+        thickness: 0.4,
+        height: 4,
+        color: context.theme.divider),
+  ];
 }
