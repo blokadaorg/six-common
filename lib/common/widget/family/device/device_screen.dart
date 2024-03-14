@@ -63,7 +63,7 @@ class DeviceScreenState extends State<DeviceScreen>
             ListView(
               padding: EdgeInsets.zero,
               children: [
-                SizedBox(height: 16),
+                SizedBox(height: 32),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text("STATISTICS",
@@ -104,7 +104,7 @@ class DeviceScreenState extends State<DeviceScreen>
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 32),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text("BLOCKING",
@@ -150,39 +150,36 @@ class DeviceScreenState extends State<DeviceScreen>
                             small: "blocklists",
                             //footer: "applies when Blokada is unlocked",
                           ),
-                          SizedBox(height: 12),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: context.theme.bgColor.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.all(8),
-                            child: Row(
-                              textBaseline: TextBaseline.alphabetic,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const SizedBox(width: 8),
-                                Icon(CupertinoIcons.time,
-                                    color: context.theme.family, size: 24),
-                                const SizedBox(width: 12),
-                                Text("Pause blocking",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: context.theme.textPrimary,
-                                    )),
-                                Expanded(child: Container()),
-                                CupertinoSwitch(
-                                  activeColor: context.theme.family,
-                                  value: false,
-                                  onChanged: (bool? value) {
-                                    // setState(() {
-                                    //   selected = value!;
-                                    // });
-                                  },
-                                ),
-                                const SizedBox(width: 8),
-                              ],
-                            ),
+                          SizedBox(height: 8),
+                          Divider(
+                            color: context.theme.divider,
+                            height: 1,
+                            thickness: 0.2,
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            textBaseline: TextBaseline.alphabetic,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(CupertinoIcons.time,
+                                  color: context.theme.family, size: 24),
+                              const SizedBox(width: 12),
+                              Text("Pause blocking",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: context.theme.textPrimary,
+                                  )),
+                              Expanded(child: Container()),
+                              CupertinoSwitch(
+                                activeColor: context.theme.family,
+                                value: false,
+                                onChanged: (bool? value) {
+                                  // setState(() {
+                                  //   selected = value!;
+                                  // });
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),

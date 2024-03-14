@@ -83,17 +83,15 @@ class SmartHeaderState extends State<SmartHeader>
           onTap: () {
             _unlink.call();
           }));
-      list.add(Spacer());
-    }
-
-    if (!widget.phase.isLocked2()) {
+    } else if (!widget.phase.isLocked2()) {
       list.add(SmartHeaderButton(
           icon: CupertinoIcons.qrcode_viewfinder,
           onTap: () {
             _modal.set(StageModal.accountChange);
           }));
-      list.add(Spacer());
     }
+
+    list.add(Spacer());
 
     if (!widget.phase.isLocked2()) {
       list.add(SmartHeaderButton(

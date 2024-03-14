@@ -92,6 +92,9 @@ abstract class FamilyStoreBase
   @observable
   FamilyDevices devices = FamilyDevices([], null);
 
+  @observable
+  String onboardLinkTemplate = linkTemplate;
+
   String? _waitingForDevice;
 
   bool _onboardingShown = false;
@@ -250,6 +253,7 @@ abstract class FamilyStoreBase
       if (tag == null) return;
       final link = linkTemplate.replaceAll("TAG", tag);
       await _ops.doFamilyLinkTemplateChanged(link);
+      onboardLinkTemplate = link;
       linkedMode = _cloudDevice.tagOverwritten;
       _updatePhase();
       await _maybeShowOnboardOnStart(trace);

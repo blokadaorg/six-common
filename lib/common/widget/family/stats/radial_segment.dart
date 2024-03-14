@@ -43,6 +43,13 @@ class RadialSegmentState extends State<RadialSegment> {
     return Column(
       children: [
         MiniCardChart(device: widget.device, color: Color(0xff33c75a)),
+        // SizedBox(height: 8),
+        // Divider(
+        //   color: context.theme.divider,
+        //   height: 1,
+        //   thickness: 0.2,
+        // ),
+        // SizedBox(height: 4),
         Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,

@@ -1,11 +1,14 @@
 import 'package:common/family/family.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:vistraced/via.dart';
 
+import '../../../../mock/widget/nav_close_button.dart';
 import '../../../../stage/channel.pg.dart';
+import '../../../../util/di.dart';
 import '../../../widget.dart';
 
 part 'add_device_sheet.g.dart';
@@ -18,8 +21,19 @@ class AddDeviceSheet extends StatefulWidget {
 @Injected(onlyVia: true, immediate: true)
 class AddDeviceSheetState extends State<AddDeviceSheet> {
   late final _modal = Via.as<StageModal?>();
+  late final _family = dep<FamilyStore>();
 
   bool _showQr = false; // The widget would stutter animation, show async
+
+  final _ctrl = TextEditingController(text: "Crab");
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl.addListener(() => setState(() {
+          // rebuild
+        }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,31 +44,17 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
     }
 
     return Scaffold(
-      body: Container(
-        color: context.theme.bgColorCard,
+      backgroundColor: context.theme.bgColorCard,
+      body: CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          backgroundColor: context.theme.shadow.withOpacity(0.4),
+          automaticallyImplyLeading: false,
+          middle: const Text('Add a device'),
+          trailing: NavCloseButton(onTap: () => Navigator.of(context).pop()),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(children: [
-            Row(
-              children: [
-                // GestureDetector(
-                //   onTap: () {
-                //     Navigator.of(context).pop();
-                //     _modal.set(StageModal.lock);
-                //   },
-                //   child: Text("Use this device",
-                //       style: TextStyle(color: context.theme.family)),
-                // ),
-                Expanded(child: Container()),
-                Text("Cancel", style: TextStyle(color: context.theme.family)),
-              ],
-            ),
-            const SizedBox(height: 42),
-            Text("Add a device",
-                style: Theme.of(context)
-                    .textTheme
-                    .displaySmall!
-                    .copyWith(fontWeight: FontWeight.w700)),
+          child: ListView(children: [
             const SizedBox(height: 32),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -81,7 +81,7 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
                             const SizedBox(height: 8),
                             Material(
                               child: TextField(
-                                controller: TextEditingController(text: "Crab"),
+                                controller: _ctrl,
                                 style: TextStyle(
                                     color: context.theme.textPrimary,
                                     fontSize: 16),
@@ -149,18 +149,23 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
             ),
             const SizedBox(height: 60),
             _showQr
-                ? Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: context.theme.divider.withOpacity(0.05),
-                          width: 2,
-                        )),
-                    child: QrImageView(
-                      data: familyLinkBase + linkTemplate,
-                      version: QrVersions.auto,
-                      size: 200.0,
-                    ),
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: context.theme.divider.withOpacity(0.05),
+                              width: 2,
+                            )),
+                        child: QrImageView(
+                          data: _generateLink(_ctrl.text),
+                          version: QrVersions.auto,
+                          size: 200.0,
+                        ),
+                      ),
+                    ],
                   )
                 : const SizedBox(height: 200),
             const SizedBox(height: 80),
@@ -169,5 +174,9 @@ class AddDeviceSheetState extends State<AddDeviceSheet> {
         ),
       ),
     );
+  }
+
+  String _generateLink(String name) {
+    return _family.onboardLinkTemplate.replaceAll("NAME", name.urlEncode);
   }
 }
