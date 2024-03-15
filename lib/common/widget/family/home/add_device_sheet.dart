@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:vistraced/via.dart';
+import 'package:unique_names_generator/unique_names_generator.dart' as names;
 
+import '../../../../journal/journal.dart';
 import '../../../../mock/widget/nav_close_button.dart';
 import '../../../../stage/channel.pg.dart';
 import '../../../../util/di.dart';
@@ -13,6 +15,15 @@ import '../../../../util/trace.dart';
 import '../../../widget.dart';
 
 part 'add_device_sheet.g.dart';
+
+final _generator = names.UniqueNamesGenerator(
+  config: names.Config(
+    length: 1,
+    seperator: " ",
+    style: names.Style.capital,
+    dictionaries: [names.animals],
+  ),
+);
 
 class AddDeviceSheet extends StatefulWidget {
   @override
@@ -23,23 +34,37 @@ class AddDeviceSheet extends StatefulWidget {
 class AddDeviceSheetState extends State<AddDeviceSheet> with TraceOrigin {
   late final _modal = Via.as<StageModal?>()..also(dismissOnClose);
   late final _family = dep<FamilyStore>();
+  late final _journal = dep<JournalStore>();
 
   bool _showQr = false; // The widget would stutter animation, show async
 
-  final _ctrl = TextEditingController(text: "Crab");
+  late TextEditingController _ctrl;
 
   @override
   void initState() {
     super.initState();
+    _ctrl = TextEditingController(text: _generator.generate());
+
     _ctrl.addListener(() => setState(() {
           traceAs("mockedStart", (trace) async {
             _family.setWaitingForDevice(trace, _ctrl.text);
           });
         }));
+
+    traceAs("addDevice", (trace) async {
+      _family.setWaitingForDevice(trace, _ctrl.text);
+      _journal.setFrequentRefresh(trace, true);
+    });
+    _family.deviceFound = () {
+      traceAs("deviceFound", (trace) async {
+        Navigator.of(context).pop();
+        _journal.setFrequentRefresh(trace, false);
+      });
+    };
   }
 
   dismissOnClose() {
-    if (_modal.now == null) Navigator.of(context).pop();
+    // if (_modal.now == null) Navigator.of(context).pop();
   }
 
   @override

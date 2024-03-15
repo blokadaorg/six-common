@@ -97,6 +97,8 @@ abstract class FamilyStoreBase
 
   bool _onboardingShown = false;
 
+  var deviceFound = () {};
+
   _onDevicesChanged() {
     reactionOnStore((_) => devices, (devices) async {
       return await traceAs("onDevicesChanged", (trace) async {
@@ -362,6 +364,7 @@ abstract class FamilyStoreBase
 
         // We are waiting on the accountLink sheet, close it
         await _stage.dismissModal(trace);
+        deviceFound();
       }
     });
   }

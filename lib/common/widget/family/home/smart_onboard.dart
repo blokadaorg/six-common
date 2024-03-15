@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:vistraced/via.dart';
 
+import '../../../../lock/lock.dart';
 import '../../../../stage/channel.pg.dart';
+import '../../../../util/di.dart';
 import '../../../model.dart';
 import '../../../../util/trace.dart';
 import 'add_device_sheet.dart';
@@ -32,6 +34,7 @@ class SmartOnboard extends StatefulWidget {
 class SmartOnboardState extends State<SmartOnboard>
     with TickerProviderStateMixin, Traceable, TraceOrigin {
   late final _modal = Via.as<StageModal?>();
+  late final _lock = dep<LockStore>();
 
   @override
   void initState() {
@@ -146,10 +149,14 @@ class SmartOnboardState extends State<SmartOnboard>
         backgroundColor: context.theme.bgColorCard,
         builder: (context) => PrivateDnsSheet(),
       );
-    } else if (p.isLocked2() || p == FamilyPhase.linkedUnlocked) {
+    } else if (p.isLocked2()) {
       _modal.set(StageModal.lock);
       // } else if (!_devices.now.hasThisDevice) {
       // await _modal.set(StageModal.onboardingAccountDecided);
+    } else if (p == FamilyPhase.linkedUnlocked) {
+      traceAs("tappedLock", (trace) async {
+        await _lock.autoLock(trace);
+      });
     } else {
       showCupertinoModalBottomSheet(
         context: context,

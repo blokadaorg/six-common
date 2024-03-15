@@ -99,6 +99,7 @@ class _ColumnChart extends StatelessWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
           constraints: const BoxConstraints(maxHeight: 90),
