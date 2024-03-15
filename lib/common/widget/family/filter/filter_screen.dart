@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:vistraced/via.dart';
 
 import '../../../../stage/channel.pg.dart';
-import '../../../../ui/overlay/overlay_container.dart';
 import '../../../../util/config.dart';
 import '../../../defaults/filter_decor_defaults.dart';
 import '../../../model.dart';
@@ -32,7 +31,6 @@ class FilterScreenState extends State<FilterScreen>
         child: Stack(
           children: [
             _buildFilters(context),
-            OverlayContainer(modal: _modal.now),
           ],
         ),
       ),

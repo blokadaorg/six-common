@@ -12,12 +12,15 @@ import '../../../../app/channel.pg.dart';
 import '../../../../family/devices.dart';
 import '../../../../family/family.dart';
 import '../../../../stage/channel.pg.dart';
+import '../../../../ui/crash/crash_screen.dart';
 import '../../../../ui/debug/commanddialog.dart';
-import '../../../../ui/overlay/overlay_container.dart';
+import '../../../../ui/rate/rate_screen.dart';
 import '../../../../util/di.dart';
 import '../../../../util/trace.dart';
 import '../../../model.dart';
 import '../../../widget.dart';
+import '../../lock/lock_screen.dart';
+import '../onboard/family_onboard_screen.dart';
 import '../smart_header/smart_footer.dart';
 import '../smart_header/smart_header.dart';
 import 'bg.dart';
@@ -42,7 +45,7 @@ class HomeScreenState extends State<HomeScreen>
   late final _status = Via.as<AppStatus>()..also(rebuild);
   late final _phase = Via.as<FamilyPhase>()..also(rebuild);
   late final _devices = Via.as<FamilyDevices>()..also(rebuild);
-  late final _modal = Via.as<StageModal?>()..also(rebuild);
+  late final _modal = Via.as<StageModal?>()..also(overlay);
 
   @MatcherSpec(of: "stage")
   late final _ready = Via.as<bool>()..also(rebuild);
@@ -71,6 +74,20 @@ class HomeScreenState extends State<HomeScreen>
   rebuild() {
     print("home screen rebuild called");
     setState(() => _working = _status.now.isWorking() || !_ready.now);
+  }
+
+  OverlayEntry? _overlayEntry;
+
+  overlay() {
+    final overlay = _decideOverlay(_modal.now);
+    if (overlay != null) {
+      _overlayEntry = OverlayEntry(builder: (context) => overlay);
+      Overlay.of(context).insert(_overlayEntry!);
+    } else {
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    }
+    rebuild();
   }
 
   @override
@@ -107,11 +124,24 @@ class HomeScreenState extends State<HomeScreen>
             ),
           ],
         ),
-        OverlayContainer(modal: _modal.now),
       ],
     ));
   }
 
+  Widget? _decideOverlay(StageModal? modal) {
+    switch (modal) {
+      case StageModal.crash:
+        return const CrashScreen();
+      case StageModal.lock:
+        return const LockScreen();
+      case StageModal.rate:
+        return const RateScreen();
+      case StageModal.onboardingFamily:
+        return const FamilyOnboardScreen();
+      default:
+        return null;
+    }
+  }
   // @override
   // Widget build(BuildContext context) {
   //   return Scaffold(

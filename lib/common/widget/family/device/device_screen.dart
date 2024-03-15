@@ -6,7 +6,6 @@ import 'package:vistraced/via.dart';
 
 import '../../../../mock/widget/edit_profile.dart';
 import '../../../../stage/channel.pg.dart';
-import '../../../../ui/overlay/overlay_container.dart';
 import '../../../model.dart';
 import '../stats/radial_segment.dart';
 import '../stats/stats_screen.dart';
@@ -205,7 +204,6 @@ class DeviceScreenState extends State<DeviceScreen>
                 SizedBox(height: 48),
               ],
             ),
-            OverlayContainer(modal: _modal.now),
           ],
         ),
       ),

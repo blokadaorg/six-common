@@ -5,7 +5,6 @@ import 'package:relative_scale/relative_scale.dart';
 import 'package:vistraced/via.dart';
 
 import '../../../../stage/channel.pg.dart';
-import '../../../../ui/overlay/overlay_container.dart';
 import '../../../../ui/stats/column_chart.dart';
 import '../../../model.dart';
 import '../../../widget.dart';
@@ -85,7 +84,6 @@ class StatsScreenState extends State<StatsScreen> with ViaTools<StatsScreen> {
                 ],
               );
             }),
-            OverlayContainer(modal: _modal.now),
           ],
         ),
       ),

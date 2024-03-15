@@ -95,7 +95,7 @@ class SmartHeaderState extends State<SmartHeader>
     if (!widget.phase.isLocked2() &&
         widget.phase != FamilyPhase.linkedUnlocked) {
       list.add(SmartHeaderButton(
-          icon: CupertinoIcons.lock,
+          icon: _lock.hasPin ? CupertinoIcons.lock : CupertinoIcons.lock_open,
           onTap: () {
             //_modal.set(StageModal.lock);
             traceAs("tappedLock", (trace) async {
