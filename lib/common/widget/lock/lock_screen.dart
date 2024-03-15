@@ -236,8 +236,8 @@ class _LockScreenState extends State<LockScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlurBackground(
+    return Material(
+      child: BlurBackground(
         key: bgStateKey,
         //canClose: () => !_isLocked,
         onClosed: _cancel,
@@ -378,22 +378,25 @@ class _LockScreenState extends State<LockScreen>
                                   ),
                                 ),
                               const Spacer(),
-                              GestureDetector(
-                                onTap: _handleCancelDelete,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 64),
-                                  child: Text(
-                                    (_digitsEntered > 0)
-                                        ? "universal action delete".i18n
-                                        : "universal action cancel".i18n,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                              )
+                              (_digitsEntered > 0)
+                                  ? GestureDetector(
+                                      onTap: _handleCancelDelete,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 64),
+                                        child: Text(
+                                          // (_digitsEntered > 0)
+                                          //     ? "universal action delete".i18n
+                                          //     : "universal action cancel".i18n,
+                                          "universal action delete".i18n,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
                             ],
                           ),
                   ),
