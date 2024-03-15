@@ -21,7 +21,7 @@ class AddDeviceSheet extends StatefulWidget {
 
 @Injected(onlyVia: true, immediate: true)
 class AddDeviceSheetState extends State<AddDeviceSheet> with TraceOrigin {
-  late final _modal = Via.as<StageModal?>();
+  late final _modal = Via.as<StageModal?>()..also(dismissOnClose);
   late final _family = dep<FamilyStore>();
 
   bool _showQr = false; // The widget would stutter animation, show async
@@ -36,6 +36,10 @@ class AddDeviceSheetState extends State<AddDeviceSheet> with TraceOrigin {
             _family.setWaitingForDevice(trace, _ctrl.text);
           });
         }));
+  }
+
+  dismissOnClose() {
+    if (_modal.now == null) Navigator.of(context).pop();
   }
 
   @override
