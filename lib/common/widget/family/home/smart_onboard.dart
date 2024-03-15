@@ -146,7 +146,7 @@ class SmartOnboardState extends State<SmartOnboard>
         backgroundColor: context.theme.bgColorCard,
         builder: (context) => PrivateDnsSheet(),
       );
-    } else if (p.isLocked2()) {
+    } else if (p.isLocked2() || p == FamilyPhase.linkedUnlocked) {
       _modal.set(StageModal.lock);
       // } else if (!_devices.now.hasThisDevice) {
       // await _modal.set(StageModal.onboardingAccountDecided);

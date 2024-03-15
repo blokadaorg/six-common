@@ -283,7 +283,7 @@ abstract class FamilyStoreBase
       // Locking means that this device is supposed to be active.
       // Pop up the perms modal if perms are not granted.
       if (!_perm.isPrivateDnsEnabled) {
-        await _stage.showModal(parentTrace, StageModal.perms);
+        //await _stage.showModal(parentTrace, StageModal.perms);
       }
 
       // Make sure cloud is enabled for this device
