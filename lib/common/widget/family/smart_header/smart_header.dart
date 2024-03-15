@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vistraced/via.dart';
 
+import '../../../../lock/lock.dart';
 import '../../../../stage/channel.pg.dart';
+import '../../../../util/di.dart';
+import '../../../../util/trace.dart';
 import '../../../model.dart';
 import 'smart_header_button.dart';
 
@@ -22,10 +25,11 @@ class SmartHeader extends StatefulWidget {
 
 @Injected(onlyVia: true, immediate: true)
 class SmartHeaderState extends State<SmartHeader>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, TraceOrigin {
   @MatcherSpec(of: "familyUnlink")
   late final _unlink = Via.call();
   late final _modal = Via.as<StageModal?>();
+  late final _lock = dep<LockStore>();
 
   // bool _opened = false;
 
@@ -93,7 +97,10 @@ class SmartHeaderState extends State<SmartHeader>
       list.add(SmartHeaderButton(
           icon: CupertinoIcons.lock,
           onTap: () {
-            _modal.set(StageModal.lock);
+            //_modal.set(StageModal.lock);
+            traceAs("tappedLock", (trace) async {
+              await _lock.autoLock(trace);
+            });
           }));
       list.add(SizedBox(width: 4));
       list.add(SmartHeaderButton(
@@ -101,7 +108,7 @@ class SmartHeaderState extends State<SmartHeader>
           onTap: () {
             Navigator.push(
               context,
-              StandardRoute(builder: (context) => const MockSettingsScreen()),
+              StandardRoute(builder: (context) => MockSettingsScreen()),
             );
           }));
     }

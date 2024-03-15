@@ -74,6 +74,7 @@ dependencies:
   animations: ^2.0.11
   flutter_settings_ui: ^3.0.0
   super_cupertino_navigation_bar: ^2.1.2
+  pinput: ^4.0.0
 
 dev_dependencies:
   flutter_test:

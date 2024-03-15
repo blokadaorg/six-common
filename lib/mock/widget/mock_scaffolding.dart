@@ -379,8 +379,7 @@ class MockScaffoldingWidget extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  StandardRoute(
-                      builder: (context) => const MockSettingsScreen()),
+                  StandardRoute(builder: (context) => MockSettingsScreen()),
                 );
               },
               child: const Text("Settings"),

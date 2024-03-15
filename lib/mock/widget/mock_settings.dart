@@ -4,12 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
+import 'package:pinput/pinput.dart';
 import 'package:super_cupertino_navigation_bar/super_cupertino_navigation_bar.dart';
 
+import '../../lock/lock.dart';
+import '../../util/di.dart';
+import '../../util/trace.dart';
 import 'mock_profiles.dart';
 
-class MockSettingsScreen extends StatelessWidget {
-  const MockSettingsScreen({super.key});
+class MockSettingsScreen extends StatelessWidget with TraceOrigin {
+  MockSettingsScreen({super.key});
+
+  late final _lock = dep<LockStore>();
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +99,24 @@ class MockSettingsScreen extends StatelessWidget {
                         title: Text('Blocking'),
                       ),
                       SettingsTile.navigation(
+                        onPressed: (context) {
+                          _showPinDialog(
+                            context,
+                            title: "Change pin",
+                            desc: "Enter your new pin",
+                            inputValue: "",
+                            onConfirm: (String value) {
+                              traceAs("tappedChangePin", (parentTrace) async {
+                                await _lock.lock(parentTrace, value);
+                              });
+                            },
+                            onRemove: () {
+                              traceAs("tappedRemovePin", (parentTrace) async {
+                                await _lock.removeLock(parentTrace);
+                              });
+                            },
+                          );
+                        },
                         leading: Icon(CupertinoIcons.ellipsis),
                         title: Text('Change pin'),
                       ),
@@ -124,4 +148,58 @@ class MockSettingsScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showPinDialog(
+  BuildContext context, {
+  required String title,
+  required String desc,
+  required String inputValue,
+  required Function(String) onConfirm,
+  required Function() onRemove,
+}) {
+  final pinTheme = PinTheme(
+    width: 56,
+    height: 56,
+    textStyle: TextStyle(
+        fontSize: 22, color: context.theme.family, fontWeight: FontWeight.w500),
+    decoration: BoxDecoration(
+      border: Border.all(color: context.theme.divider),
+      borderRadius: BorderRadius.circular(16),
+    ),
+  );
+
+  showDefaultDialog(
+    context,
+    title: Text(title),
+    content: Column(
+      children: [
+        Text(desc),
+        const SizedBox(height: 16),
+        Material(
+          color: Colors.transparent,
+          child: Pinput(
+            defaultPinTheme: pinTheme,
+            onCompleted: (pin) {
+              Navigator.of(context).pop();
+              onConfirm(pin);
+            },
+          ),
+        ),
+      ],
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Text("Cancel"),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          onRemove();
+        },
+        child: const Text("Remove pin", style: TextStyle(color: Colors.red)),
+      ),
+    ],
+  );
 }
