@@ -107,6 +107,7 @@ class MockSettingsScreen extends StatelessWidget with TraceOrigin {
                             inputValue: "",
                             onConfirm: (String value) {
                               traceAs("tappedChangePin", (parentTrace) async {
+                                Navigator.of(context).pop();
                                 await _lock.lock(parentTrace, value);
                               });
                             },
