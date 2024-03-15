@@ -41,7 +41,11 @@ class HomeScreen extends StatefulWidget {
 
 @Injected(onlyVia: true, immediate: true)
 class HomeScreenState extends State<HomeScreen>
-    with TickerProviderStateMixin, Traceable, TraceOrigin {
+    with
+        TickerProviderStateMixin,
+        Traceable,
+        TraceOrigin,
+        WidgetsBindingObserver {
   late final _status = Via.as<AppStatus>()..also(rebuild);
   late final _phase = Via.as<FamilyPhase>()..also(rebuild);
   late final _devices = Via.as<FamilyDevices>()..also(rebuild);
@@ -69,6 +73,22 @@ class HomeScreenState extends State<HomeScreen>
         });
       }
     });
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      _overlayForModal = null;
+      overlay();
+    }
   }
 
   rebuild() {

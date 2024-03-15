@@ -236,11 +236,11 @@ class _LockScreenState extends State<LockScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: BlurBackground(
-        key: bgStateKey,
-        //canClose: () => !_isLocked,
-        onClosed: _cancel,
+    return BlurBackground(
+      key: bgStateKey,
+      //canClose: () => !_isLocked,
+      onClosed: _cancel,
+      child: Material(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 500),
           child: Column(
