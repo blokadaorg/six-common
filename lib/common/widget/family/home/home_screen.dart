@@ -86,7 +86,7 @@ class HomeScreenState extends State<HomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      _overlayForModal = null;
+      //_overlayForModal = null;
       overlay();
     }
   }
