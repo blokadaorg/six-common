@@ -77,8 +77,12 @@ class HomeScreenState extends State<HomeScreen>
   }
 
   OverlayEntry? _overlayEntry;
+  StageModal? _overlayForModal;
 
   overlay() {
+    if (_overlayForModal == _modal.now) return;
+    _overlayForModal = _modal.now;
+
     final overlay = _decideOverlay(_modal.now);
     if (overlay != null) {
       _overlayEntry = OverlayEntry(builder: (context) => overlay);
