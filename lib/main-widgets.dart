@@ -6,9 +6,9 @@ import 'package:vistraced/via.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'command/command.dart';
+import 'common/widget/app.dart';
 import 'entrypoint.dart';
 import 'service/I18nService.dart';
-import 'common/widget/root.dart';
 import 'util/act.dart';
 import 'util/di.dart';
 
@@ -36,12 +36,12 @@ void main() async {
   depend(ws);
   ws.handle();
 
-  runApp(Root(content: MockScaffoldingWidget()));
+  runApp(BlokadaApp(content: MockScaffoldingWidget()));
 }
 
 class DevWebsocket with TraceOrigin {
-  //var ip = "192.168.1.177";
-  var ip = "192.168.234.104";
+  var ip = "192.168.1.177";
+  //var ip = "192.168.234.104";
 
   late final command = dep<CommandStore>();
   WebSocketChannel? channel;

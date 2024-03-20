@@ -43,9 +43,10 @@ class HomeDeviceState extends State<HomeDevice>
     if (widget.device.deviceName.isEmpty) return;
     await _selectedDevice.set(widget.device.deviceName);
 
-    Navigator.push(
+    Navigator.pushNamed(
       context,
-      StandardRoute(builder: (context) => DeviceScreen(device: widget.device)),
+      "/device",
+      arguments: widget.device,
     );
   }
 

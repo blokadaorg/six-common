@@ -44,12 +44,15 @@ class FamilyOnboardScreenState extends State<FamilyOnboardScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BlurBackground(
-      key: bgStateKey,
-      onClosed: _close,
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 500),
-        child: _getFirstTimeScreen(context),
+    return Material(
+      type: MaterialType.transparency,
+      child: BlurBackground(
+        key: bgStateKey,
+        onClosed: _close,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: _getFirstTimeScreen(context),
+        ),
       ),
     );
   }

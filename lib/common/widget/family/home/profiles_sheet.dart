@@ -1,21 +1,29 @@
-import 'package:common/common/widget.dart';
-import 'package:common/common/widget/family/home/bg.dart';
-import 'package:common/mock/widget/add_profile_sheet.dart';
-import 'package:common/mock/widget/edit_profile.dart';
+import 'package:common/family/family.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:super_cupertino_navigation_bar/super_cupertino_navigation_bar.dart';
+import 'package:vistraced/via.dart';
+import 'package:unique_names_generator/unique_names_generator.dart' as names;
 
-import '../../common/widget/family/home/animated_bg.dart';
-import '../../common/widget/family/home/big_icon.dart';
-import 'profile_button.dart';
+import '../../../../journal/journal.dart';
+import '../../../../mock/widget/add_profile_sheet.dart';
+import '../../../../mock/widget/nav_close_button.dart';
+import '../../../../stage/channel.pg.dart';
+import '../../../../util/di.dart';
+import '../../../../util/trace.dart';
+import '../../../widget.dart';
 
-class MockProfilesScreen extends StatelessWidget {
-  const MockProfilesScreen({super.key});
+class ProfilesSheet extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => ProfilesSheetState();
+}
 
+class ProfilesSheetState extends State<ProfilesSheet> with TraceOrigin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,8 +32,8 @@ class MockProfilesScreen extends StatelessWidget {
         appBar: SuperAppBar(
           searchBar: SuperSearchBar(enabled: false),
           backgroundColor: context.theme.panelBackground.withOpacity(0.5),
+          automaticallyImplyLeading: false,
           largeTitle: SuperLargeTitle(largeTitle: "Profiles"),
-          previousPageTitle: "Settings",
           actions: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -63,6 +71,18 @@ class MockProfilesScreen extends StatelessWidget {
                     tiles: [
                       SettingsTile.navigation(
                         onPressed: (context) => _next(context, "Parent"),
+                        leading: Icon(CupertinoIcons.person_crop_circle,
+                            color: Colors.yellow),
+                        title: Text('My custom profile'),
+                      ),
+                      SettingsTile.navigation(
+                        onPressed: (context) => _next(context, "Parent"),
+                        leading: Icon(CupertinoIcons.person_crop_circle,
+                            color: Colors.pink),
+                        title: Text('My second profile'),
+                      ),
+                      SettingsTile.navigation(
+                        onPressed: (context) => _next(context, "Parent"),
                         leading: Icon(CupertinoIcons.person_2_alt,
                             color: Colors.blue),
                         title: Text('Parent'),
@@ -86,10 +106,7 @@ class MockProfilesScreen extends StatelessWidget {
     );
   }
 
-  _next(BuildContext context, String name) {
-    Navigator.of(context).push(StandardRoute(
-        builder: (context) => EditProfileSheet(
-              profile: name,
-            )));
+  _next(BuildContext context, String profile) {
+    Navigator.of(context).pop();
   }
 }

@@ -7,13 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:vistraced/via.dart';
 
+import 'common/widget/app.dart';
 import 'entrypoint.dart';
 import 'main-widgets.dart';
 import 'mock/via/mock_family.dart';
 import 'mock/via/temp_family.dart';
 import 'mock/widget/mock_scaffolding.dart';
 import 'service/I18nService.dart';
-import 'common/widget/root.dart';
 import 'ui/notfamily/scaffolding.dart';
 import 'util/act.dart';
 import 'util/di.dart';
@@ -55,7 +55,7 @@ void main() async {
   depend(ws);
   ws.handle();
 
-  runApp(Root(
+  runApp(BlokadaApp(
     content: (flavor == Flavor.family)
         ? const HomeScreen()
         : const Scaffolding(title: 'Blokada'),

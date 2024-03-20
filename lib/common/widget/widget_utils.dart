@@ -33,8 +33,40 @@ extension ThemeOnWidget on BuildContext {
 class StandardRoute extends MaterialWithModalsPageRoute {
   StandardRoute({required WidgetBuilder builder}) : super(builder: builder);
 
+  late TopBarController ctrl;
+
   @override
   Duration get transitionDuration => const Duration(milliseconds: 500);
+
+  void _updateTopBar() {
+    final v = animation?.value;
+    if (v == null) return;
+    ctrl.updateNavPos(v);
+  }
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    ctrl = Provider.of<TopBarController>(context, listen: false);
+
+    animation.addListener(_updateTopBar);
+
+    // Use a builder that removes the listener when the animation widget disposes
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, c) {
+        return super
+            .buildTransitions(context, animation, secondaryAnimation, child);
+      },
+      child: child,
+    );
+  }
+
+  @override
+  bool didPop(dynamic result) {
+    animation?.removeListener(_updateTopBar);
+    return super.didPop(result);
+  }
 }
 
 void showInputDialog(

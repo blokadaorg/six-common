@@ -77,7 +77,8 @@ class MockStageRoute extends MockCommandHandler<String> {
 
 @Injected()
 class MockFamilyPhase extends MockCommandHandler<FamilyPhase> {
-  MockFamilyPhase() : super("phase", FamilyPhase.starting);
+  //MockFamilyPhase() : super("phase", FamilyPhase.starting);
+  MockFamilyPhase() : super("phase", FamilyPhase.parentHasDevices);
 
   @override
   FamilyPhase valueFromCommand(String cmd) =>

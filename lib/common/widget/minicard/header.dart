@@ -41,13 +41,14 @@ class MiniCardHeader extends StatelessWidget {
             ],
           ),
         ),
-        if (chevronIcon != null)
+        if (chevronText != null)
           Row(
             children: [
               if (chevronText != null)
                 Text(chevronText!,
                     style: TextStyle(color: context.theme.textSecondary)),
-              Icon(chevronIcon, color: context.theme.textSecondary),
+              if (chevronIcon != null)
+                Icon(chevronIcon, color: context.theme.textSecondary),
             ],
           )
       ],

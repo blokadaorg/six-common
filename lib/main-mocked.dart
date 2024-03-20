@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'command/channel.pg.dart';
 import 'command/command.dart';
+import 'common/widget/app.dart';
 import 'entrypoint.dart';
 import 'service/I18nService.dart';
-import 'common/widget/root.dart';
 import 'ui/family/family_scaffolding.dart';
 import 'ui/notfamily/scaffolding.dart';
 import 'util/act.dart';
@@ -27,7 +27,7 @@ void main() async {
   final CommandStore command = dep<CommandStore>();
   command.onCommandWithParam(CommandName.route.name, "home");
 
-  runApp(const Root(
+  runApp(const BlokadaApp(
     content: (flavor == Flavor.family)
         ? FamilyScaffolding(title: 'Blokada')
         : Scaffolding(title: 'Blokada'),

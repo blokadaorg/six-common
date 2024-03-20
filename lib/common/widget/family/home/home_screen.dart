@@ -1,7 +1,6 @@
 import 'package:common/app/app.dart';
 import 'package:common/common/widget/family/home/animated_bg.dart';
 import 'package:common/common/widget/family/home/this_device_onboard.dart';
-import 'package:common/mock/widget/mock_family_device_detail.dart';
 import 'package:common/service/I18nService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

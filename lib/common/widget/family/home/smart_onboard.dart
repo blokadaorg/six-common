@@ -182,7 +182,7 @@ class SmartOnboardState extends State<SmartOnboard>
       case FamilyPhase.linkedUnlocked:
         return [
           "family status linked header".i18n,
-          "Use the parent device to manage your family\n\n",
+          "Use the parent device to manage this device\n\n",
         ];
       case FamilyPhase.linkedNoPerms ||
             FamilyPhase.lockedNoPerms ||

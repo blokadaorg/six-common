@@ -56,11 +56,16 @@ class AddDeviceSheetState extends State<AddDeviceSheet> with TraceOrigin {
       _journal.setFrequentRefresh(trace, true);
     });
     _family.deviceFound = () {
-      traceAs("deviceFound", (trace) async {
-        Navigator.of(context).pop();
-        _journal.setFrequentRefresh(trace, false);
-      });
+      // bug: will not stop refreshing often when dismissed sheet
+      close();
     };
+  }
+
+  close() {
+    traceAs("closeAddDevice", (trace) async {
+      Navigator.of(context).pop();
+      _journal.setFrequentRefresh(trace, false);
+    });
   }
 
   dismissOnClose() {
@@ -82,7 +87,7 @@ class AddDeviceSheetState extends State<AddDeviceSheet> with TraceOrigin {
           backgroundColor: context.theme.shadow.withOpacity(0.4),
           automaticallyImplyLeading: false,
           middle: const Text('Add a device'),
-          trailing: NavCloseButton(onTap: () => Navigator.of(context).pop()),
+          trailing: NavCloseButton(onTap: () => close()),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),

@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:common/common/widget/family/home/profiles_sheet.dart';
 import 'package:common/service/I18nService.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
@@ -177,7 +178,7 @@ class DevicesState extends State<Devices>
         extentRatio: 0.3,
         children: [
           SlidableAction(
-            onPressed: (context) => _selectProfile(displayName),
+            onPressed: (context) => _selectProfile(context, displayName),
             backgroundColor: context.theme.textPrimary.withOpacity(0.15),
             foregroundColor: Colors.white,
             icon: CupertinoIcons.profile_circled,
@@ -190,12 +191,19 @@ class DevicesState extends State<Devices>
     );
   }
 
-  void _selectProfile(String deviceName) {
+  void _selectProfile(BuildContext context, String deviceName) {
     // traceAs("tappedDeleteDevice", (trace) async {
     //   //_devices.now.deleteDevice(deviceName);
     //   _family.deleteDevice(trace, deviceName);
     // });
-    _showSelectProfileDialog(context, deviceName: deviceName);
+    //showSelectProfileDialog(context, deviceName: deviceName);
+    showCupertinoModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      duration: const Duration(milliseconds: 300),
+      backgroundColor: context.theme.bgColorCard,
+      builder: (context) => ProfilesSheet(),
+    );
   }
 
   Widget _buildAddDeviceButton(BuildContext context) {
@@ -267,7 +275,7 @@ class DevicesState extends State<Devices>
   }
 }
 
-void _showSelectProfileDialog(BuildContext context,
+void showSelectProfileDialog(BuildContext context,
     {required String deviceName}) {
   showDefaultDialog(
     context,
