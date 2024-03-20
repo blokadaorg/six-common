@@ -40,7 +40,7 @@ class StandardRoute extends MaterialWithModalsPageRoute {
 
   void _updateTopBar() {
     final v = animation?.value;
-    if (v == null) return;
+    if (v == null || v > 1.0 || v < 0.0) return;
     ctrl.updateNavPos(v);
   }
 

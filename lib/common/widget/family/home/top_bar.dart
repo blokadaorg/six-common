@@ -19,6 +19,7 @@ class TopBar extends StatefulWidget {
 
 class TopBarState extends State<TopBar> with TickerProviderStateMixin {
   double _show = 0.0;
+  bool _transitioning = false;
   bool _blurBackground = false;
 
   bool _showTitle = false;
@@ -29,6 +30,17 @@ class TopBarState extends State<TopBar> with TickerProviderStateMixin {
   String _waitingBack = "";
 
   bool? _playForward;
+
+  late final _ctrlShow = AnimationController(
+    duration: const Duration(milliseconds: 400),
+    vsync: this,
+  );
+
+  late final _showOffset =
+      Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+    parent: _ctrlShow,
+    curve: Curves.linear,
+  ));
 
   late final _ctrlBgOpacity = AnimationController(
     duration: const Duration(milliseconds: 50),
@@ -84,6 +96,16 @@ class TopBarState extends State<TopBar> with TickerProviderStateMixin {
         //_ctrlTextOffset.reset();
       }
     });
+
+    _ctrlShow.addStatusListener((status) {
+      if (status == AnimationStatus.completed ||
+          status == AnimationStatus.dismissed) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (_ctrlShow.isAnimating) return;
+          _transitioning = false;
+        });
+      }
+    });
   }
 
   @override
@@ -99,6 +121,15 @@ class TopBarState extends State<TopBar> with TickerProviderStateMixin {
     return Consumer<TopBarController>(
       builder: (context, controller, child) {
         _show = controller.show;
+        if (_show == 1.0 && _ctrlShow.value == 0.0) {
+          _ctrlShow.forward();
+          _transitioning = true;
+        } else if (_show == 0.0 && _ctrlShow.value == 1.0) {
+          _ctrlShow.reverse();
+          _transitioning = true;
+        } else if (!_transitioning) {
+          _ctrlShow.value = _show;
+        }
 
         if (controller.blurBackground != _blurBackground) {
           _blurBackground = controller.blurBackground;
@@ -127,6 +158,7 @@ class TopBarState extends State<TopBar> with TickerProviderStateMixin {
           if (_playForward == true) {
             _ctrlTextOpacity.reverse();
             _ctrlTextOffset.forward(from: 0.0);
+            _ctrlShow.forward();
           } else if (_playForward == false) {
             _ctrlTextOpacity.reverse();
             _ctrlTextOffset.value = 1.0;
@@ -135,105 +167,117 @@ class TopBarState extends State<TopBar> with TickerProviderStateMixin {
         }
 
         final width = MediaQuery.of(context).size.width;
-        return Transform.translate(
-          offset: Offset(width - width * _show, 0),
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              AnimatedBuilder(
-                  animation: _bgOpacity,
-                  builder: (context, child) {
-                    return Stack(
-                      children: [
-                        Container(
-                          height: 100,
-                          color: _bgOpacity.value == 1 && _show == 1.0
-                              ? Colors.transparent
-                              : controller.backgroundColor,
-                        ),
-                        Opacity(
-                          opacity: _show == 1.0 ? _bgOpacity.value : 0.0,
-                          child: Column(
+        return AnimatedBuilder(
+            animation: _showOffset,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: Offset(width - width * _showOffset.value, 0),
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    AnimatedBuilder(
+                        animation: _bgOpacity,
+                        builder: (context, child) {
+                          return Stack(
                             children: [
-                              ClipRect(
-                                child: SizedBox(
-                                  height: 100,
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                      sigmaX: 25,
-                                      sigmaY: 25,
+                              Container(
+                                height: 100,
+                                color: _bgOpacity.value == 1 &&
+                                        _showOffset.value == 1.0
+                                    ? Colors.transparent
+                                    : controller.backgroundColor,
+                              ),
+                              Opacity(
+                                opacity: _showOffset.value == 1.0
+                                    ? _bgOpacity.value
+                                    : 0.0,
+                                child: Column(
+                                  children: [
+                                    ClipRect(
+                                      child: SizedBox(
+                                        height: 100,
+                                        child: BackdropFilter(
+                                          filter: ImageFilter.blur(
+                                            sigmaX: 25,
+                                            sigmaY: 25,
+                                          ),
+                                          child: Container(
+                                            color: context.theme.shadow
+                                                .withOpacity(0.2),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    child: Container(
-                                      color:
-                                          context.theme.shadow.withOpacity(0.2),
+                                    Container(
+                                      height: 1,
+                                      color: context.theme.divider
+                                          .withOpacity(0.08),
                                     ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: AnimatedBuilder(
+                          animation: Listenable.merge([
+                            _textOpacity,
+                            _textOffset,
+                          ]),
+                          builder: (context, child) {
+                            return Stack(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Transform.translate(
+                                      offset:
+                                          Offset(_textOffset.value * 100, 0),
+                                      child: Opacity(
+                                        opacity: _textOpacity.value *
+                                            (_showTitle ? 1.0 : 0.0),
+                                        child: Text(_title,
+                                            style: TextStyle(
+                                                color:
+                                                    context.theme.textPrimary,
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.w600)),
+                                      ),
+                                    ),
+                                    // Other elements...
+                                  ],
+                                ),
+                                Opacity(
+                                  opacity: _textOpacity.value *
+                                      (_showTitle && _back.isNotBlank
+                                          ? 1.0
+                                          : 0.0),
+                                  child: Icon(Icons.arrow_back_ios,
+                                      color: context.theme.family),
+                                ),
+                                Transform.translate(
+                                  offset: Offset(
+                                      20 + _textOffset.value * 100 * 0.3, 0),
+                                  child: Opacity(
+                                    opacity: _textOpacity.value *
+                                        (_showTitle ? 1.0 : 0.0),
+                                    child: Text(_back,
+                                        style: TextStyle(
+                                            color: context.theme.family,
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w400)),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                height: 1,
-                                color: context.theme.divider.withOpacity(0.08),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: AnimatedBuilder(
-                    animation: Listenable.merge([
-                      _textOpacity,
-                      _textOffset,
-                    ]),
-                    builder: (context, child) {
-                      return Stack(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Transform.translate(
-                                offset: Offset(_textOffset.value * 100, 0),
-                                child: Opacity(
-                                  opacity: _textOpacity.value *
-                                      (_showTitle ? 1.0 : 0.0),
-                                  child: Text(_title,
-                                      style: TextStyle(
-                                          color: context.theme.textPrimary,
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w600)),
-                                ),
-                              ),
-                              // Other elements...
-                            ],
-                          ),
-                          Opacity(
-                            opacity: _textOpacity.value *
-                                (_showTitle && _back.isNotBlank ? 1.0 : 0.0),
-                            child: Icon(Icons.arrow_back_ios,
-                                color: context.theme.family),
-                          ),
-                          Transform.translate(
-                            offset:
-                                Offset(20 + _textOffset.value * 100 * 0.3, 0),
-                            child: Opacity(
-                              opacity:
-                                  _textOpacity.value * (_showTitle ? 1.0 : 0.0),
-                              child: Text(_back,
-                                  style: TextStyle(
-                                      color: context.theme.family,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w400)),
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
-              ),
-            ],
-          ),
-        );
+                              ],
+                            );
+                          }),
+                    ),
+                  ],
+                ),
+              );
+            });
       },
     );
   }
@@ -245,9 +289,9 @@ class TopBarController with ChangeNotifier {
   double show = 0.0;
 
   bool showTitle = false;
-  String title = "BB";
+  String title = "Home";
 
-  List<String> back = ["AA"];
+  List<String> back = [];
 
   Color backgroundColor = const Color(0xFFF2F1F6);
   bool blurBackground = false;
@@ -286,6 +330,7 @@ class TopBarController with ChangeNotifier {
     back.add(this.title);
     this.title = title;
     playForward = true;
+    show = 1.0;
     notifyListeners();
   }
 
