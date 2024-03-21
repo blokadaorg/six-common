@@ -81,7 +81,7 @@ void showInputDialog(
   showDefaultDialog(
     context,
     title: Text(title),
-    content: Column(
+    content: (context) => Column(
       children: [
         Text(desc),
         const SizedBox(height: 16),
@@ -110,7 +110,7 @@ void showInputDialog(
         ),
       ],
     ),
-    actions: [
+    actions: (context) => [
       TextButton(
         onPressed: () => Navigator.of(context).pop(),
         child: const Text("Cancel"),
@@ -129,8 +129,8 @@ void showInputDialog(
 void showDefaultDialog(
   context, {
   required Text title,
-  required Widget content,
-  required List<Widget> actions,
+  required Widget Function(BuildContext) content,
+  required List<Widget> Function(BuildContext) actions,
 }) {
   Platform.isIOS || Platform.isMacOS
       ? showCupertinoDialog<String>(
@@ -138,8 +138,8 @@ void showDefaultDialog(
           barrierDismissible: true,
           builder: (BuildContext context) => CupertinoAlertDialog(
             title: title,
-            content: content,
-            actions: actions,
+            content: content(context),
+            actions: actions(context),
           ),
         )
       : showDialog(
@@ -147,8 +147,8 @@ void showDefaultDialog(
           barrierDismissible: true,
           builder: (BuildContext context) => AlertDialog(
             title: title,
-            content: content,
-            actions: actions,
+            content: content(context),
+            actions: actions(context),
           ),
         );
 }

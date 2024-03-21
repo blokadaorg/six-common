@@ -106,10 +106,7 @@ class SmartHeaderState extends State<SmartHeader>
       list.add(SmartHeaderButton(
           icon: CupertinoIcons.settings,
           onTap: () {
-            Navigator.push(
-              context,
-              StandardRoute(builder: (context) => MockSettingsScreen()),
-            );
+            Navigator.pushNamed(context, "/settings");
           }));
     }
 

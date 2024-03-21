@@ -7,9 +7,11 @@ import 'package:super_cupertino_navigation_bar/super_cupertino_navigation_bar.da
 
 import '../../common/defaults/filter_decor_defaults.dart';
 import '../../common/model.dart';
+import '../../common/widget/avatar_icon.dart';
 import '../../common/widget/family/home/top_bar.dart';
 import '../../util/config.dart';
 import '../../util/di.dart';
+import 'add_profile_sheet.dart';
 
 class EditProfileSheet extends StatefulWidget {
   final String profile;
@@ -26,22 +28,21 @@ class EditProfileSheetState extends State<EditProfileSheet> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
+    _scrollController.addListener(_updateTopBar);
+    _updateTopBar();
   }
 
-  void _scrollListener() {
+  void _updateTopBar() {
     Provider.of<TopBarController>(context, listen: false)
         .updateScrollPos(_scrollController.offset);
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_scrollListener);
+    _scrollController.removeListener(_updateTopBar);
     _scrollController.dispose();
     super.dispose();
   }
-
-  int counter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -56,26 +57,38 @@ class EditProfileSheetState extends State<EditProfileSheet> {
               SizedBox(height: 100),
               Column(
                 children: [
-                  Text("Parent",
+                  SizedBox(height: 12),
+                  // AvatarIconWidget(
+                  //     icon: widget.profile == "Parent"
+                  //         ? CupertinoIcons.person_2_alt
+                  //         : CupertinoIcons.person_solid,
+                  //     color: widget.profile == "Parent"
+                  //         ? Colors.blue
+                  //         : Colors.green),
+                  Icon(
+                    widget.profile == "Parent"
+                        ? CupertinoIcons.person_2_alt
+                        : CupertinoIcons.person_solid,
+                    size: 48,
+                    color: Colors.blue,
+                  ),
+                  SizedBox(height: 8),
+                  Text(widget.profile + " profile",
                       style:
                           TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
-                  Text("Edit name",
-                      style: TextStyle(color: context.theme.family)),
+
+                  GestureDetector(
+                    onTap: () {
+                      showRenameDialog(context, "profile", widget.profile);
+                    },
+                    child: Text("Edit",
+                        style: TextStyle(color: context.theme.family)),
+                  ),
                 ],
               ),
-              GestureDetector(
-                  onTap: () {
-                    Provider.of<TopBarController>(context, listen: false)
-                        .goNext("Profiles ${++counter}");
-                  },
-                  child:
-                      _buildFilter(context, 0, color: const Color(0xFFA9CCFE))),
-              GestureDetector(
-                  onTap: () {
-                    Provider.of<TopBarController>(context, listen: false)
-                        .goBack();
-                  },
-                  child: _buildFilter(context, 1)),
+              SizedBox(height: 40),
+              _buildFilter(context, 0, color: const Color(0xFFA9CCFE)),
+              _buildFilter(context, 1),
               _buildFilter(context, 2, color: const Color(0xFFF4B1C6)),
               _buildFilter(context, 3, color: const Color(0XFFFDB39C)),
               _buildFilter(context, 4),

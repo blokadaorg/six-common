@@ -100,7 +100,7 @@ class FilterScreenState extends State<FilterScreen>
     showDefaultDialog(
       context,
       title: const Text("Profile"),
-      content: Column(
+      content: (context) => Column(
         children: [
               const Text("Choose a profile to use for Alva."),
               SizedBox(height: 16),
@@ -111,7 +111,7 @@ class FilterScreenState extends State<FilterScreen>
                 .toList()
                 .dropLast(1),
       ),
-      actions: [
+      actions: (context) => [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text("Cancel"),
@@ -186,7 +186,7 @@ class FilterScreenState extends State<FilterScreen>
     showDefaultDialog(
       context,
       title: Text(name == null ? "New Profile" : "Rename Profile"),
-      content: Column(
+      content: (context) => Column(
         children: [
           const Text("Enter a name for your profile."),
           const SizedBox(height: 16),
@@ -215,7 +215,7 @@ class FilterScreenState extends State<FilterScreen>
           ),
         ],
       ),
-      actions: [
+      actions: (context) => [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text("Cancel"),

@@ -1,13 +1,14 @@
 import 'package:common/common/widget.dart';
+import 'package:common/common/widget/family/home/devices.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:vistraced/via.dart';
 
+import '../../../../mock/widget/add_profile_sheet.dart';
 import '../../../../stage/channel.pg.dart';
 import '../../../model.dart';
-import '../home/profiles_sheet.dart';
+import '../../avatar_icon.dart';
 import '../home/top_bar.dart';
 import '../stats/radial_segment.dart';
 
@@ -32,17 +33,18 @@ class DeviceScreenState extends State<DeviceScreen>
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(scrollListener);
+    _scrollController.addListener(_updateTopBar);
+    _updateTopBar();
   }
 
-  void scrollListener() {
+  void _updateTopBar() {
     Provider.of<TopBarController>(context, listen: false)
         .updateScrollPos(_scrollController.offset);
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(scrollListener);
+    _scrollController.removeListener(_updateTopBar);
     _scrollController.dispose();
     super.dispose();
   }
@@ -59,12 +61,36 @@ class DeviceScreenState extends State<DeviceScreen>
             padding: EdgeInsets.zero,
             children: [
               SizedBox(height: 100),
-              Center(
-                child: Text(widget.device.deviceDisplayName,
-                    style:
-                        TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
+              Column(
+                children: [
+                  SizedBox(height: 12),
+                  AvatarIconWidget(
+                      name: widget.device.thisDevice
+                          ? null
+                          : widget.device.deviceDisplayName,
+                      color: widget.device.thisDevice
+                          ? context.theme.family
+                          : Color(0xff3c8cff)),
+                  SizedBox(height: 8),
+                  Text(
+                      widget.device.thisDevice
+                          ? widget.device.deviceDisplayName
+                          : widget.device.deviceDisplayName + " device",
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
+                  widget.device.thisDevice
+                      ? Container()
+                      : GestureDetector(
+                          onTap: () {
+                            showRenameDialog(
+                                context, "device", widget.device.deviceName);
+                          },
+                          child: Text("Edit",
+                              style: TextStyle(color: context.theme.family)),
+                        ),
+                ],
               ),
-              SizedBox(height: 32),
+              SizedBox(height: 40),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text("STATISTICS",
@@ -135,15 +161,24 @@ class DeviceScreenState extends State<DeviceScreen>
                           children: [
                             Row(
                               children: [
-                                Icon(CupertinoIcons.person_crop_circle,
-                                    color: context.theme.textSecondary,
+                                Icon(
+                                    widget.device.thisDevice
+                                        ? CupertinoIcons.person_2_alt
+                                        : CupertinoIcons.person_solid,
+                                    color: widget.device.thisDevice
+                                        ? Colors.blue
+                                        : Colors.green,
                                     size: 18),
                                 const SizedBox(width: 4),
                                 Expanded(
                                   child: Text(
-                                    "Profile",
+                                    widget.device.thisDevice
+                                        ? "Parent"
+                                        : "Child",
                                     style: TextStyle(
-                                      color: context.theme.textSecondary,
+                                      color: widget.device.thisDevice
+                                          ? Colors.blue
+                                          : Colors.green,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -153,16 +188,19 @@ class DeviceScreenState extends State<DeviceScreen>
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    showCupertinoModalBottomSheet(
-                                      context: context,
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      backgroundColor:
-                                          context.theme.bgColorCard,
-                                      builder: (context) => ProfilesSheet(),
-                                    );
+                                    // showCupertinoModalBottomSheet(
+                                    //   context: context,
+                                    //   duration:
+                                    //       const Duration(milliseconds: 300),
+                                    //   backgroundColor:
+                                    //       context.theme.bgColorCard,
+                                    //   builder: (context) => ProfilesSheet(),
+                                    // );
+                                    showSelectProfileDialog(context,
+                                        deviceName:
+                                            widget.device.deviceDisplayName);
                                   },
-                                  child: Text("Select",
+                                  child: Text("Select profile",
                                       style: TextStyle(
                                           color: context.theme.family)),
                                 ),
@@ -174,19 +212,14 @@ class DeviceScreenState extends State<DeviceScreen>
                               textBaseline: TextBaseline.alphabetic,
                               crossAxisAlignment: CrossAxisAlignment.baseline,
                               children: [
-                                Text(
-                                    widget.device.thisDevice
-                                        ? "Parent"
-                                        : "Child",
-                                    style: TextStyle(
-                                        fontSize: 32,
-                                        fontWeight: FontWeight.w500,
-                                        color: context.theme.textPrimary)),
-                                Spacer(),
                                 Text("2 blocklists",
                                     style: TextStyle(
-                                        fontSize: 18,
-                                        color: context.theme.textPrimary)),
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w400)),
+                                Spacer(),
+                                Text("Modify",
+                                    style: TextStyle(
+                                        color: context.theme.textSecondary)),
                                 const SizedBox(width: 4),
                                 Transform.translate(
                                   offset: const Offset(0, 6),

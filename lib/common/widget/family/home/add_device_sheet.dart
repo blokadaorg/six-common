@@ -3,16 +3,21 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:vistraced/via.dart';
 import 'package:unique_names_generator/unique_names_generator.dart' as names;
 
 import '../../../../journal/journal.dart';
+import '../../../../mock/widget/add_profile_sheet.dart';
 import '../../../../mock/widget/nav_close_button.dart';
 import '../../../../stage/channel.pg.dart';
 import '../../../../util/di.dart';
 import '../../../../util/trace.dart';
 import '../../../widget.dart';
+import '../../avatar_icon.dart';
+import 'devices.dart';
+import 'top_bar.dart';
 
 part 'add_device_sheet.g.dart';
 
@@ -37,28 +42,43 @@ class AddDeviceSheetState extends State<AddDeviceSheet> with TraceOrigin {
   late final _journal = dep<JournalStore>();
 
   bool _showQr = false; // The widget would stutter animation, show async
+  String _name = "";
 
-  late TextEditingController _ctrl;
+  final _topBarController = TopBarController();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _ctrl = TextEditingController(text: _generator.generate());
-
-    _ctrl.addListener(() => setState(() {
-          traceAs("mockedStart", (trace) async {
-            _family.setWaitingForDevice(trace, _ctrl.text);
-          });
-        }));
+    _name = _generator.generate();
 
     traceAs("addDevice", (trace) async {
-      _family.setWaitingForDevice(trace, _ctrl.text);
+      _family.setWaitingForDevice(trace, _name);
       _journal.setFrequentRefresh(trace, true);
     });
     _family.deviceFound = () {
       // bug: will not stop refreshing often when dismissed sheet
       close();
     };
+    //_topBarController.blurBackground = true;
+    _topBarController.set("Add a device");
+    _scrollController.addListener(_updateTopBar);
+  }
+
+  _updateTopBar() {
+    _topBarController.updateScrollPos(_scrollController.offset);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _topBarController.backgroundColor = context.theme.bgColorCard;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.removeListener(_updateTopBar);
   }
 
   close() {
@@ -82,132 +102,176 @@ class AddDeviceSheetState extends State<AddDeviceSheet> with TraceOrigin {
 
     return Scaffold(
       backgroundColor: context.theme.bgColorCard,
-      body: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          backgroundColor: context.theme.shadow.withOpacity(0.4),
-          automaticallyImplyLeading: false,
-          middle: const Text('Add a device'),
-          trailing: NavCloseButton(onTap: () => close()),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ListView(children: [
-            const SizedBox(height: 32),
+      body: ChangeNotifierProvider(
+        create: (context) => _topBarController,
+        child: Stack(
+          children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Column(
-                children: [
-                  Text(
-                      "Scan the QR code below with the device you want to add to your family. This screen will close once the device is detected.",
-                      softWrap: true,
-                      textAlign: TextAlign.justify,
-                      style: TextStyle(color: context.theme.textSecondary)),
-                  const SizedBox(height: 32),
-                  Row(
-                    children: [
-                      // Icon(CupertinoIcons.device_phone_portrait,
-                      //     color: context.theme.family),
-                      // const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Set device name",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600)),
-                            const SizedBox(height: 8),
-                            Material(
-                              child: TextField(
-                                controller: _ctrl,
-                                style: TextStyle(
-                                    color: context.theme.textPrimary,
-                                    fontSize: 16),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  filled: true,
-                                  fillColor: context.theme.bgColorCard,
-                                  focusColor: context.theme.bgColorCard,
-                                  hoverColor: context.theme.bgColorCard,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: context.theme.divider
-                                            .withOpacity(0.05),
-                                        width: 2.0),
-                                    borderRadius: BorderRadius.circular(8.0),
+              padding: const EdgeInsets.all(16.0),
+              child: PrimaryScrollController(
+                controller: _scrollController,
+                child: ListView(
+                  children: [
+                    const SizedBox(height: 60),
+                    Column(
+                      children: [
+                        SizedBox(height: 20),
+                        AvatarIconWidget(
+                            icon: CupertinoIcons.device_phone_portrait,
+                            color: Colors.blue),
+                        SizedBox(height: 8),
+                        Text(_name,
+                            style: TextStyle(
+                                fontSize: 28, fontWeight: FontWeight.w600)),
+                        GestureDetector(
+                          onTap: () {
+                            showRenameDialog(context, "device", _name);
+                          },
+                          child: Text("Edit",
+                              style: TextStyle(color: context.theme.family)),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 40),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text("BLOCKING",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: context.theme.textSecondary)),
+                    ),
+                    Container(
+                      constraints: const BoxConstraints(maxWidth: 500),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        child: MiniCard(
+                          onTap: () {
+                            showSelectProfileDialog(context, deviceName: _name);
+                          },
+                          color: context.theme.panelBackground,
+                          child: Column(
+                            children: [
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(CupertinoIcons.person_solid,
+                                          color: Colors.green, size: 18),
+                                      const SizedBox(width: 4),
+                                      Expanded(
+                                        child: Text(
+                                          "Child",
+                                          style: TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                      ),
+                                      Text("Select profile",
+                                          style: TextStyle(
+                                              color:
+                                                  context.theme.textSecondary)),
+                                      Icon(Icons.chevron_right,
+                                          color: context.theme.textSecondary),
+                                      //const SizedBox(width: 4),
+                                    ],
                                   ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: context.theme.divider
-                                            .withOpacity(0.05),
-                                        width: 2.0),
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Column(
+                        children: [
+                          Text(
+                              "Scan the QR code below with the device you want to add to your family. This screen will close once the device is detected.",
+                              softWrap: true,
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                  color: context.theme.textSecondary)),
+                          // Text("- or -",
+                          //     style: TextStyle(
+                          //         color: context.theme.textSecondary, fontSize: 16)),
+                          // const SizedBox(height: 12),
+                          // Row(
+                          //   children: [
+                          //     // Icon(CupertinoIcons.lock_open,
+                          //     //     color: context.theme.family),
+                          //     // const SizedBox(width: 12),
+                          //     Expanded(
+                          //       child: MiniCard(
+                          //         //onTap: _handleCtaTap(),
+                          //         color: context.theme.family,
+                          //         child: SizedBox(
+                          //           height: 32,
+                          //           child: Center(
+                          //             child: Text(
+                          //               "Use this device",
+                          //               style: const TextStyle(
+                          //                   color: Colors.white,
+                          //                   fontWeight: FontWeight.w600),
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _showQr
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: context.theme.divider
+                                          .withOpacity(0.05),
+                                      width: 2,
+                                    )),
+                                child: QrImageView(
+                                  data: _generateLink(_name),
+                                  version: QrVersions.auto,
+                                  size: 200.0,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  // Text("- or -",
-                  //     style: TextStyle(
-                  //         color: context.theme.textSecondary, fontSize: 16)),
-                  // const SizedBox(height: 12),
-                  // Row(
-                  //   children: [
-                  //     // Icon(CupertinoIcons.lock_open,
-                  //     //     color: context.theme.family),
-                  //     // const SizedBox(width: 12),
-                  //     Expanded(
-                  //       child: MiniCard(
-                  //         //onTap: _handleCtaTap(),
-                  //         color: context.theme.family,
-                  //         child: SizedBox(
-                  //           height: 32,
-                  //           child: Center(
-                  //             child: Text(
-                  //               "Use this device",
-                  //               style: const TextStyle(
-                  //                   color: Colors.white,
-                  //                   fontWeight: FontWeight.w600),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                ],
+                            ],
+                          )
+                        : const SizedBox(height: 200),
+                    const SizedBox(height: 32),
+                    const CupertinoActivityIndicator(),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 60),
-            _showQr
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: context.theme.divider.withOpacity(0.05),
-                              width: 2,
-                            )),
-                        child: QrImageView(
-                          data: _generateLink(_ctrl.text),
-                          version: QrVersions.auto,
-                          size: 200.0,
-                        ),
-                      ),
-                    ],
-                  )
-                : const SizedBox(height: 200),
-            const SizedBox(height: 80),
-            const CupertinoActivityIndicator(),
-          ]),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: TopBar(
+                  alwaysShowTitle: true,
+                  sliding: false,
+                  height: 60,
+                  trailing: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Text("Cancel",
+                        style: TextStyle(color: context.theme.family)),
+                  )),
+            ),
+          ],
         ),
       ),
     );

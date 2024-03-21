@@ -4,11 +4,13 @@ import 'package:common/service/I18nService.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:vistraced/via.dart';
 
 import '../../../../family/family.dart';
+import '../../../../mock/widget/add_profile_sheet.dart';
 import '../../../../util/di.dart';
 import '../../../widget.dart';
 import '../../../../family/devices.dart';
@@ -54,7 +56,7 @@ class DevicesState extends State<Devices>
 
   @override
   Widget build(BuildContext context) {
-    final devices = _getDevices();
+    final devices = _getDevices(context);
 
     if (devices.length <= 2) {
       return Column(
@@ -149,7 +151,7 @@ class DevicesState extends State<Devices>
     );
   }
 
-  List<Widget> _getDevices() {
+  List<Widget> _getDevices(BuildContext context) {
     if (_devices.dirty) return [];
     return _devices.now.entries
         //.filter((e) => !e.thisDevice)
@@ -157,6 +159,7 @@ class DevicesState extends State<Devices>
         .map((e) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
             child: _wrapInDismissible(
+              context,
               e.thisDevice,
               e.deviceName,
               e.deviceDisplayName,
@@ -169,8 +172,8 @@ class DevicesState extends State<Devices>
         .toList();
   }
 
-  Widget _wrapInDismissible(
-      bool thisDevice, String deviceName, String displayName, Widget child) {
+  Widget _wrapInDismissible(BuildContext context, bool thisDevice,
+      String deviceName, String displayName, Widget child) {
     return Slidable(
       key: Key(deviceName),
       endActionPane: ActionPane(
@@ -178,7 +181,8 @@ class DevicesState extends State<Devices>
         extentRatio: 0.3,
         children: [
           SlidableAction(
-            onPressed: (context) => _selectProfile(context, displayName),
+            onPressed: (c) =>
+                showSelectProfileDialog(context, deviceName: displayName),
             backgroundColor: context.theme.textPrimary.withOpacity(0.15),
             foregroundColor: Colors.white,
             icon: CupertinoIcons.profile_circled,
@@ -188,21 +192,6 @@ class DevicesState extends State<Devices>
         ],
       ),
       child: child,
-    );
-  }
-
-  void _selectProfile(BuildContext context, String deviceName) {
-    // traceAs("tappedDeleteDevice", (trace) async {
-    //   //_devices.now.deleteDevice(deviceName);
-    //   _family.deleteDevice(trace, deviceName);
-    // });
-    //showSelectProfileDialog(context, deviceName: deviceName);
-    showCupertinoModalBottomSheet(
-      context: context,
-      useRootNavigator: true,
-      duration: const Duration(milliseconds: 300),
-      backgroundColor: context.theme.bgColorCard,
-      builder: (context) => ProfilesSheet(),
     );
   }
 
@@ -280,18 +269,47 @@ void showSelectProfileDialog(BuildContext context,
   showDefaultDialog(
     context,
     title: Text("Select profile"),
-    content: Column(
-      children: [
-            Text("Choose a profile to use for $deviceName."),
-            SizedBox(height: 32),
-          ] +
-          ["Parent", "Child", "Custom 1"]
-              .map((it) => _buildProfileItem(context, it))
-              .flatten()
-              .toList()
-              .dropLast(1),
-    ),
-    actions: [],
+    content: (context) => Column(
+        children: [
+              Text("Choose a profile to use for $deviceName."),
+              SizedBox(height: 32),
+            ] +
+            ["Parent", "Child", "Custom 1"]
+                .map((it) => _buildProfileItem(context, it))
+                .flatten()
+                .toList()
+                .dropLast(1) +
+            [
+              SizedBox(height: 40),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  showCupertinoModalBottomSheet(
+                    context: context,
+                    duration: const Duration(milliseconds: 300),
+                    backgroundColor: context.theme.bgColorCard,
+                    builder: (context) => AddProfileSheet(),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: context.theme.divider.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Icon(
+                      CupertinoIcons.plus,
+                      size: 16,
+                      color: context.theme.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 4),
+              Text("Add new profile", style: TextStyle(fontSize: 12)),
+            ]),
+    actions: (context) => [],
   );
 }
 
@@ -315,9 +333,11 @@ List<Widget> _buildProfileItem(BuildContext context, String name) {
                     name == "Parent"
                         ? CupertinoIcons.person_2_alt
                         : (name == "Child"
-                            ? CupertinoIcons.person_crop_circle
-                            : CupertinoIcons.person_3),
-                    color: context.theme.textSecondary,
+                            ? CupertinoIcons.person_solid
+                            : CupertinoIcons.person_crop_circle),
+                    color: name == "Parent"
+                        ? Colors.blue
+                        : (name == "Child" ? Colors.green : Colors.pink),
                     size: 18),
                 SizedBox(width: 8),
                 Text(name,

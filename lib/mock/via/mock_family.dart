@@ -150,14 +150,14 @@ class EmptyCall<T> extends HandleVia<T> {
 class MockDevices extends HandleVia<FamilyDevices> {
   @override
   FamilyDevices defaults() => FamilyDevices([
-        // FamilyDevice(
-        //   deviceName: "Alva",
-        //   deviceDisplayName: "Alva",
-        //   stats: MockUiStats().defaults(),
-        //   thisDevice: false,
-        //   enabled: true,
-        //   configured: true,
-        // ),
+        FamilyDevice(
+          deviceName: "Alva",
+          deviceDisplayName: "Alva",
+          stats: MockUiStats().defaults(),
+          thisDevice: false,
+          enabled: true,
+          configured: true,
+        ),
         FamilyDevice(
           deviceName: "Bobby",
           deviceDisplayName: "This device",
