@@ -29,7 +29,6 @@ class EditProfileSheetState extends State<EditProfileSheet> {
   void initState() {
     super.initState();
     _scrollController.addListener(_updateTopBar);
-    _updateTopBar();
   }
 
   void _updateTopBar() {
@@ -47,68 +46,65 @@ class EditProfileSheetState extends State<EditProfileSheet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.theme.bgColorCard,
-      body: Container(
-        color: context.theme.bgColor,
-        child: ListView(
-            controller: _scrollController,
-            padding: EdgeInsets.zero,
-            children: [
-              SizedBox(height: 100),
-              Column(
-                children: [
-                  SizedBox(height: 12),
-                  // AvatarIconWidget(
-                  //     icon: widget.profile == "Parent"
-                  //         ? CupertinoIcons.person_2_alt
-                  //         : CupertinoIcons.person_solid,
-                  //     color: widget.profile == "Parent"
-                  //         ? Colors.blue
-                  //         : Colors.green),
-                  Icon(
-                    widget.profile == "Parent"
-                        ? CupertinoIcons.person_2_alt
-                        : CupertinoIcons.person_solid,
-                    size: 48,
-                    color: Colors.blue,
-                  ),
-                  SizedBox(height: 8),
-                  Text(widget.profile + " profile",
-                      style:
-                          TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
-
-                  GestureDetector(
-                    onTap: () {
-                      showRenameDialog(context, "profile", widget.profile);
-                    },
-                    child: Text("Edit",
-                        style: TextStyle(color: context.theme.family)),
-                  ),
-                ],
-              ),
-              SizedBox(height: 40),
-              _buildFilter(context, 0, color: const Color(0xFFA9CCFE)),
-              _buildFilter(context, 1),
-              _buildFilter(context, 2, color: const Color(0xFFF4B1C6)),
-              _buildFilter(context, 3, color: const Color(0XFFFDB39C)),
-              _buildFilter(context, 4),
-              _buildFilter(context, 5),
-              _buildFilter(context, 6),
-              const SizedBox(height: 16),
-              Container(
-                constraints: const BoxConstraints(maxWidth: 500),
-                child: const Padding(
-                  padding: EdgeInsets.all(18.0),
-                  child: Text("Delete this profile",
-                      style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500)),
+      backgroundColor: context.theme.bgColor,
+      body: ListView(
+          controller: _scrollController,
+          padding: EdgeInsets.zero,
+          children: [
+            SizedBox(height: 100),
+            Column(
+              children: [
+                SizedBox(height: 12),
+                // AvatarIconWidget(
+                //     icon: widget.profile == "Parent"
+                //         ? CupertinoIcons.person_2_alt
+                //         : CupertinoIcons.person_solid,
+                //     color: widget.profile == "Parent"
+                //         ? Colors.blue
+                //         : Colors.green),
+                Icon(
+                  widget.profile == "Parent"
+                      ? CupertinoIcons.person_2_alt
+                      : CupertinoIcons.person_solid,
+                  size: 48,
+                  color: Colors.blue,
                 ),
+                SizedBox(height: 8),
+                Text(widget.profile + " profile",
+                    style:
+                        TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
+
+                GestureDetector(
+                  onTap: () {
+                    showRenameDialog(context, "profile", widget.profile);
+                  },
+                  child: Text("Edit",
+                      style: TextStyle(color: context.theme.family)),
+                ),
+              ],
+            ),
+            SizedBox(height: 40),
+            _buildFilter(context, 0, color: const Color(0xFFA9CCFE)),
+            _buildFilter(context, 1),
+            _buildFilter(context, 2, color: const Color(0xFFF4B1C6)),
+            _buildFilter(context, 3, color: const Color(0XFFFDB39C)),
+            _buildFilter(context, 4),
+            _buildFilter(context, 5),
+            _buildFilter(context, 6),
+            const SizedBox(height: 16),
+            Container(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: const Padding(
+                padding: EdgeInsets.all(18.0),
+                child: Text("Delete this profile",
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500)),
               ),
-              SizedBox(height: 48),
-            ]),
-      ),
+            ),
+            SizedBox(height: 48),
+          ]),
       //),
     );
   }

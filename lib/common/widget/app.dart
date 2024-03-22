@@ -1,3 +1,4 @@
+import 'package:common/common/widget/family/stats/stats_detail_screen.dart';
 import 'package:common/mock/widget/mock_settings.dart';
 import 'package:common/util/di.dart';
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../journal/channel.pg.dart';
 import '../../mock/widget/edit_profile.dart';
 import '../../util/config.dart';
 import '../../ui/theme.dart';
@@ -20,9 +22,9 @@ import 'family/home/top_bar.dart';
 import 'family/stats/stats_screen.dart';
 
 class BlokadaApp extends StatelessWidget {
-  final Widget content;
+  final Widget? content;
 
-  const BlokadaApp({Key? key, required this.content}) : super(key: key);
+  const BlokadaApp({Key? key, this.content}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +140,7 @@ class BlokadaApp extends StatelessWidget {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
           //child: I18n(child: content),
-          child: I18n(child: MainScreen()),
+          child: I18n(child: MainScreen(content: content)),
         );
       }),
     );
@@ -146,6 +148,10 @@ class BlokadaApp extends StatelessWidget {
 }
 
 class MainScreen extends StatelessWidget {
+  final Widget? content;
+
+  const MainScreen({super.key, this.content});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -183,13 +189,19 @@ class MainScreen extends StatelessWidget {
                           return StandardRoute(
                               builder: (context) =>
                                   StatsScreen(device: device));
+                        case "/device/stats/detail":
+                          final entry = settings.arguments as JournalEntry;
+                          ctrl.goNext("Details");
+                          return StandardRoute(
+                              builder: (context) =>
+                                  StatsDetailScreen(entry: entry));
                         case "/settings":
                           ctrl.goNext("Settings");
                           return StandardRoute(
                               builder: (context) => MockSettingsScreen());
                         default:
                           return StandardRoute(
-                              builder: (context) => HomeScreen());
+                              builder: (context) => content ?? HomeScreen());
                       }
                     },
                   );

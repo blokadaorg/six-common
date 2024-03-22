@@ -1,13 +1,19 @@
+import 'package:common/mock/widget/SettingsDivider.dart';
 import 'package:common/service/I18nService.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:relative_scale/relative_scale.dart';
 import 'package:vistraced/via.dart';
 
+import '../../../../journal/channel.pg.dart';
 import '../../../../stage/channel.pg.dart';
 import '../../../../ui/stats/column_chart.dart';
 import '../../../model.dart';
 import '../../../widget.dart';
+import '../home/top_bar.dart';
+import 'activity_item.dart';
 import 'radial_segment.dart';
 import 'totalcounter.dart';
 
@@ -27,66 +33,99 @@ class StatsScreenState extends State<StatsScreen> with ViaTools<StatsScreen> {
   late final _stats = Via.as<UiStats>()..also(rebuild);
   late final _modal = Via.as<StageModal?>()..also(rebuild);
 
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_updateTopBar);
+  }
+
+  void _updateTopBar() {
+    Provider.of<TopBarController>(context, listen: false)
+        .updateScrollPos(_scrollController.offset);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_updateTopBar);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         color: context.theme.bgColor,
-        child: Stack(
-          children: [
-            RelativeBuilder(builder: (context, height, width, sy, sx) {
-              return Column(
-                children: [
-                  const SizedBox(height: 42),
-                  BackEditHeaderWidget(
-                    name: widget.device.deviceDisplayName,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12, left: 16, right: 8),
-                    child: Row(
-                      children: [
-                        Text("Activity",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                )),
-                      ],
+        child: PrimaryScrollController(
+          controller: _scrollController,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ListView(
+              primary: true,
+              children: [
+                    SizedBox(height: 60),
+                    Text("Activity",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              fontWeight: FontWeight.bold,
+                            )),
+                    SizedBox(height: 24),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: context.theme.bgMiniCard,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            topRight: Radius.circular(12)),
+                      ),
+                      height: 12,
                     ),
-                  ),
-                  Text("Activity screen TBD")
-                  // Padding(
-                  //   padding: const EdgeInsets.all(12.0),
-                  //   child: MiniCard(
-                  //     child: Column(
-                  //       children: [
-                  //         MiniCardHeader(
-                  //           text: "stats header day".i18n,
-                  //           icon: Icons.timelapse,
-                  //           color: context.theme.textSecondary,
-                  //         ),
-                  //         const SizedBox(height: 4),
-                  //         RadialSegment(stats: _stats.now),
-                  //         const SizedBox(height: 16),
-                  //         const Divider(),
-                  //         ColumnChart(stats: _stats.now),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // Padding(
-                  //   padding: const EdgeInsets.all(12.0),
-                  //   child: TotalCounter(stats: _stats.now),
-                  // ),
-                  // const Spacer(),
-                  // SizedBox(height: sy(60)),
-                ],
-              );
-            }),
-          ],
+                  ] +
+                  _buildItems(context) +
+                  [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: context.theme.bgMiniCard,
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(12),
+                            bottomRight: Radius.circular(12)),
+                      ),
+                      height: 12,
+                    ),
+                  ],
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildItems(BuildContext context) {
+    return List.generate(100, (index) {
+      return Container(
+        color: context.theme.bgMiniCard,
+        child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ActivityItem(
+                entry: JournalEntry(
+              domainName: index % 14 == 0
+                  ? "time.apple.com.sandbox.cdn.various.nice.domains.com"
+                  : "cdn$index.all.cdns.com",
+              deviceName: "Alva",
+              time: "${(index / 4).toInt()} minutes ago",
+              requests: (index * 73) % 102,
+              type: index % 4 == 0
+                  ? JournalEntryType.blocked
+                  : JournalEntryType.passedAllowed,
+            )),
+          ),
+          index < 100 ? SettingsDivider() : Container(),
+        ]),
+      );
+    });
   }
 }

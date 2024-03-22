@@ -34,7 +34,6 @@ class DeviceScreenState extends State<DeviceScreen>
   void initState() {
     super.initState();
     _scrollController.addListener(_updateTopBar);
-    _updateTopBar();
   }
 
   void _updateTopBar() {

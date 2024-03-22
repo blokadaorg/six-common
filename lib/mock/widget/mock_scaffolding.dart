@@ -4,6 +4,7 @@ import 'package:common/common/widget/family/home/devices.dart';
 import 'package:common/common/widget/family/home/private_dns_setting_guide.dart';
 import 'package:common/common/widget/family/home/smart_onboard.dart';
 import 'package:common/common/widget/family/smart_header/smart_header.dart';
+import 'package:common/journal/channel.pg.dart';
 import 'package:common/mock/widget/mock_settings.dart';
 import 'package:common/util/config.dart';
 import 'package:dartx/dartx.dart';
@@ -18,6 +19,7 @@ import '../../common/widget/family/home/big_logo.dart';
 import '../../common/widget/family/home/cta_buttons.dart';
 import '../../common/widget/family/home/home_screen.dart';
 import '../../common/widget/family/home/totalcounter.dart';
+import '../../common/widget/family/stats/activity_item.dart';
 
 class MockScaffoldingWidget extends StatelessWidget {
   MockScaffoldingWidget({Key? key}) : super(key: key);
@@ -333,26 +335,47 @@ class MockScaffoldingWidget extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         BigLogo(),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+        ListView(
           children: [
-            PrivateDnsSettingGuideWidget(
-                title: "General", icon: Icons.settings),
-            PrivateDnsSettingGuideWidget(title: "VPN & Device Management"),
-            PrivateDnsSettingGuideWidget(
-                title: "DNS",
-                icon: CupertinoIcons.ellipsis,
-                edgeText: "Automatic"),
-            PrivateDnsSettingGuideWidget(
-              title: "Blokada Family",
-              subtitle: "Blokada Family",
-              icon: CupertinoIcons.shield_fill,
-              chevron: false,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(height: 150),
+                PrivateDnsSettingGuideWidget(
+                    title: "General", icon: Icons.settings),
+                PrivateDnsSettingGuideWidget(title: "VPN & Device Management"),
+                PrivateDnsSettingGuideWidget(
+                    title: "DNS",
+                    icon: CupertinoIcons.ellipsis,
+                    edgeText: "Automatic"),
+                PrivateDnsSettingGuideWidget(
+                  title: "Blokada Family",
+                  subtitle: "Blokada Family",
+                  icon: CupertinoIcons.shield_fill,
+                  chevron: false,
+                ),
+                SizedBox(height: 28),
+                FamilyTotalCounter(autoRefresh: true),
+                CtaButtons(),
+                SizedBox(height: 48),
+              ],
             ),
-            SizedBox(height: 28),
-            FamilyTotalCounter(autoRefresh: true),
-            CtaButtons(),
-            SizedBox(height: 48),
+            ActivityItem(
+                entry: JournalEntry(
+              domainName: "time.apple.com.sandbox.cdn.various.nice.domains.com",
+              deviceName: "Alva",
+              time: "3 minutes ago",
+              requests: 37,
+              type: JournalEntryType.blocked,
+            )),
+            ActivityItem(
+                entry: JournalEntry(
+              domainName: "tim.cooks.com",
+              deviceName: "Alva",
+              time: "4 minutes ago",
+              requests: 2,
+              type: JournalEntryType.passedAllowed,
+            )),
           ],
         )
       ],

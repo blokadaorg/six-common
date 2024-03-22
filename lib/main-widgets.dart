@@ -36,7 +36,8 @@ void main() async {
   depend(ws);
   ws.handle();
 
-  runApp(BlokadaApp(content: MockScaffoldingWidget()));
+  // runApp(BlokadaApp(content: MockScaffoldingWidget()));
+  runApp(BlokadaApp(content: null));
 }
 
 class DevWebsocket with TraceOrigin {
