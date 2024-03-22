@@ -1,4 +1,5 @@
 import 'package:common/journal/channel.pg.dart';
+import 'package:common/journal/journal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
