@@ -18,6 +18,13 @@ part 'journal.g.dart';
 
 const _timerKey = "journalRefresh";
 
+extension JournalEntryExtension on JournalEntry {
+  bool isBlocked() {
+    return type == JournalEntryType.blocked ||
+        type == JournalEntryType.blockedDenied;
+  }
+}
+
 extension JournalFilterExt on JournalFilter {
   // Providing null means "no change" (existing filter is used)
   // To reset a query/device, provide an empty string.
