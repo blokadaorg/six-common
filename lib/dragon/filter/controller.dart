@@ -35,7 +35,7 @@ class FilterController {
     }
   }
 
-  getListsToTags() => _listsToTags;
+  Map<ListHashId, ListTag> getListsToTags() => _listsToTags;
 
   reload() async {
     print("reloading filter controller");
