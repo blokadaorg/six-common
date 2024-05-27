@@ -1,5 +1,6 @@
 import 'package:common/deck/deck.dart';
 import 'package:common/dragon/dragon_deps.dart';
+import 'package:common/dragon/filter/FilterLegacy.dart';
 
 import 'account/account.dart';
 import 'account/payment/payment.dart';
@@ -74,6 +75,11 @@ class Entrypoint with Dependable, TraceOrigin, Traceable {
     AccountPaymentStore().attachAndSaveAct(act);
     AccountRefreshStore().attachAndSaveAct(act);
     DeviceStore().attachAndSaveAct(act);
+
+    // Compatibility layer for v6 (temporary
+    if (!act.isFamily()) {
+      depend<FilterLegacy>(FilterLegacy());
+    }
 
     AppStore().attachAndSaveAct(act);
     AppStartStore().attachAndSaveAct(act);

@@ -17,7 +17,6 @@ import 'package:common/dragon/device/open_perms.dart';
 import 'package:common/dragon/device/selected_device.dart';
 import 'package:common/dragon/device/slidable_onboarding.dart';
 import 'package:common/dragon/device/this_device.dart';
-import 'package:common/dragon/filter/FilterLegacy.dart';
 import 'package:common/dragon/filter/controller.dart';
 import 'package:common/dragon/filter/selected_filters.dart';
 import 'package:common/dragon/journal/api.dart';
@@ -60,11 +59,6 @@ class DragonDeps {
     depend<SelectedFilters>(SelectedFilters());
     depend<CurrentConfig>(CurrentConfig());
     depend<FilterController>(FilterController());
-
-    // Compatibility layer for v6 (temporary
-    if (!act.isFamily()) {
-      depend<FilterLegacy>(FilterLegacy());
-    }
 
     // Then family-only deps (for now at least)
     if (act.isFamily()) {
