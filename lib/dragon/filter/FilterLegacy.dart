@@ -37,7 +37,7 @@ class FilterLegacy with Traceable {
     return await traceWith(parentTrace, "onDeviceChangedLegacy", (trace) async {
       final lists = _device.lists;
       if (lists != null) {
-        _acc.start();
+        await _acc.start();
         // Read user config from device v2 when it is ready
         // Set it and it will reload FilterController
         // That one will update SelectedFilters
