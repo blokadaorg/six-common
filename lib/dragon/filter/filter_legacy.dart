@@ -103,9 +103,65 @@ class FilterLegacy with Traceable, TraceOrigin {
     }
   }
 
-  disableFilter(String filterName) async {}
+  disableFilter(String filterName) async {
+    print("disabling filter $filterName");
 
-  toggleFilterOption(String filterName, String option) async {}
+    final was = _selectedFilters.now;
+    final selected = was.toList();
+    selected.removeWhere((it) => it.filterName == filterName);
+    _selectedFilters.now = selected;
+
+    try {
+      final config = await _controller.getConfig(_selectedFilters.now);
+      await traceAs("disableFilterLegacy", (trace) async {
+        trace.addAttribute("lists", config.lists);
+        _userConfig.now = config;
+        // v2 api will be updated by the callback below
+      });
+    } catch (e) {
+      _selectedFilters.now = was;
+    }
+  }
+
+  toggleFilterOption(String filterName, String option) async {
+    print("toggling filter $filterName option $option");
+
+    final known = _knownFilters
+        .get()
+        .firstOrNullWhere((it) => it.filterName == filterName);
+    if (known == null) {
+      print("filter $filterName not found");
+      return;
+    }
+
+    final newFilter = FilterSelection(filterName, [option]);
+
+    final was = _selectedFilters.now;
+    final selected = was.toList();
+    final index = selected.indexWhere((it) => it.filterName == filterName);
+    if (index != -1) {
+      final old = selected[index];
+      if (old.options.contains(option)) {
+        selected[index] = FilterSelection(filterName, old.options - [option]);
+      } else {
+        selected[index] = FilterSelection(filterName, old.options + [option]);
+      }
+    } else {
+      selected.add(newFilter);
+    }
+    _selectedFilters.now = selected;
+
+    try {
+      final config = await _controller.getConfig(_selectedFilters.now);
+      await traceAs("toggleFilterOptionLegacy", (trace) async {
+        trace.addAttribute("lists", config.lists);
+        _userConfig.now = config;
+        // v2 api will be updated by the callback below
+      });
+    } catch (e) {
+      _selectedFilters.now = was;
+    }
+  }
 
   onUserConfigChanged(UserFilterConfig? config) {
     if (config == null) return;
