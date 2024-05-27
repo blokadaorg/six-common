@@ -147,7 +147,6 @@ class CommandStore
       case CommandName.enableDeck:
         _ensureParam(p1);
         return await _filterLegacy.enableFilter(p1!);
-        throw Exception("Not implemented WIP");
       case CommandName.disableDeck:
         _ensureParam(p1);
         return await _filterLegacy.disableFilter(p1!);

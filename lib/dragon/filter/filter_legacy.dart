@@ -8,6 +8,7 @@ import 'package:common/filter/channel.act.dart';
 import 'package:common/filter/channel.pg.dart' as channel;
 import 'package:common/util/di.dart';
 import 'package:common/util/trace.dart';
+import 'package:dartx/dartx.dart';
 
 // This is a legacy layer that brings the new Filter concept
 // to the existing platform code that used Decks/Packs.
@@ -72,17 +73,33 @@ class FilterLegacy with Traceable, TraceOrigin {
   }
 
   enableFilter(String filterName) async {
-    final selected = _selectedFilters.now;
-    if (selected.any((it) => it.filterName == filterName)) return;
-    _selectedFilters.now = selected..add(FilterSelection(filterName, []));
+    print("enabling filter $filterName");
+
+    final known = _knownFilters
+        .get()
+        .firstOrNullWhere((it) => it.filterName == filterName);
+    final newFilter =
+        FilterSelection(filterName, [known!.options.first.optionName]);
+
+    final was = _selectedFilters.now;
+    final selected = was.toList();
+    final index = selected.indexWhere((it) => it.filterName == filterName);
+    if (index != -1) {
+      selected[index] = newFilter;
+    } else {
+      selected.add(newFilter);
+    }
+    _selectedFilters.now = selected;
+
     try {
       final config = await _controller.getConfig(_selectedFilters.now);
       await traceAs("enableFilterLegacy", (trace) async {
+        trace.addAttribute("lists", config.lists);
         _userConfig.now = config;
         // v2 api will be updated by the callback below
       });
     } catch (e) {
-      _selectedFilters.now = selected;
+      _selectedFilters.now = was;
     }
   }
 
