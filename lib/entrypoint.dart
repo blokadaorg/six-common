@@ -1,4 +1,3 @@
-import 'package:common/deck/deck.dart';
 import 'package:common/dragon/dragon_deps.dart';
 import 'package:common/dragon/filter/FilterLegacy.dart';
 
@@ -78,7 +77,7 @@ class Entrypoint with Dependable, TraceOrigin, Traceable {
 
     // Compatibility layer for v6 (temporary
     if (!act.isFamily()) {
-      depend<FilterLegacy>(FilterLegacy());
+      depend<FilterLegacy>(FilterLegacy(act));
     }
 
     AppStore().attachAndSaveAct(act);
@@ -88,7 +87,6 @@ class Entrypoint with Dependable, TraceOrigin, Traceable {
     CustomStore().attachAndSaveAct(act);
 
     if (!act.isFamily()) {
-      DeckStore().attachAndSaveAct(act);
       JournalStore().attachAndSaveAct(act);
       PlusStore().attachAndSaveAct(act);
       PlusKeypairStore().attachAndSaveAct(act);

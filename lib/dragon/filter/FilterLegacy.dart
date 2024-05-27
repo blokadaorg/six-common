@@ -4,6 +4,7 @@ import 'package:common/dragon/account/controller.dart';
 import 'package:common/dragon/device/current_config.dart';
 import 'package:common/dragon/filter/controller.dart';
 import 'package:common/dragon/filter/selected_filters.dart';
+import 'package:common/filter/channel.act.dart';
 import 'package:common/filter/channel.pg.dart' as channel;
 import 'package:common/util/di.dart';
 import 'package:common/util/trace.dart';
@@ -26,7 +27,8 @@ class FilterLegacy with Traceable {
   late final _ops = dep<channel.FilterOps>();
   late final _acc = dep<AccountController>();
 
-  FilterLegacy() {
+  FilterLegacy(Act act) {
+    depend<channel.FilterOps>(getOps(act));
     _device.addOn(deviceChanged, onDeviceChanged);
     _selectedFilters.onChange.listen((it) => onSelectedFiltersChanged(it));
     // todo: handling commands
