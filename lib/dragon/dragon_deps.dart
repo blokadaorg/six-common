@@ -17,6 +17,7 @@ import 'package:common/dragon/device/open_perms.dart';
 import 'package:common/dragon/device/selected_device.dart';
 import 'package:common/dragon/device/slidable_onboarding.dart';
 import 'package:common/dragon/device/this_device.dart';
+import 'package:common/dragon/filter/FilterLegacy.dart';
 import 'package:common/dragon/filter/controller.dart';
 import 'package:common/dragon/filter/selected_filters.dart';
 import 'package:common/dragon/journal/api.dart';
@@ -34,6 +35,10 @@ import 'package:common/util/di.dart';
 
 class DragonDeps {
   register(Act act) {
+    // First, deps that are also used in v6
+    // currently only for backwards-migrating the new Filters
+    // that replace the old Decks/Packs concept
+
     depend<Act>(act);
 
     depend<BaseUrl>(BaseUrl(act));
@@ -46,7 +51,6 @@ class DragonDeps {
 
     depend<Api>(Api());
     depend<ListApi>(ListApi());
-    depend<DeviceApi>(DeviceApi());
 
     depend<KnownFilters>(KnownFilters(
       isFamily: act.isFamily(),
@@ -57,31 +61,41 @@ class DragonDeps {
     depend<CurrentConfig>(CurrentConfig());
     depend<FilterController>(FilterController());
 
-    depend<Persistence>(Persistence(isSecure: false));
+    // Compatibility layer for v6 (temporary
+    if (!act.isFamily()) {
+      depend<FilterLegacy>(FilterLegacy());
+    }
 
-    depend<ProfileApi>(ProfileApi());
-    depend<ProfileController>(ProfileController());
+    // Then family-only deps (for now at least)
+    if (act.isFamily()) {
+      depend<Persistence>(Persistence(isSecure: false));
 
-    depend<NameGenerator>(NameGenerator());
-    depend<OpenPerms>(OpenPerms());
-    depend<ThisDevice>(ThisDevice());
-    depend<SelectedDeviceTag>(SelectedDeviceTag());
-    depend<SlidableOnboarding>(SlidableOnboarding());
+      depend<DeviceApi>(DeviceApi());
 
-    depend<AuthApi>(AuthApi());
-    depend<CurrentToken>(CurrentToken());
-    depend<DeviceController>(DeviceController());
-    depend<AuthController>(AuthController());
+      depend<ProfileApi>(ProfileApi());
+      depend<ProfileController>(ProfileController());
 
-    depend<StatsApi>(StatsApi());
-    depend<StatsController>(StatsController());
+      depend<NameGenerator>(NameGenerator());
+      depend<OpenPerms>(OpenPerms());
+      depend<ThisDevice>(ThisDevice());
+      depend<SelectedDeviceTag>(SelectedDeviceTag());
+      depend<SlidableOnboarding>(SlidableOnboarding());
 
-    depend<JournalApi>(JournalApi());
-    depend<JournalController>(JournalController());
+      depend<AuthApi>(AuthApi());
+      depend<CurrentToken>(CurrentToken());
+      depend<DeviceController>(DeviceController());
+      depend<AuthController>(AuthController());
 
-    depend<DnsPerm>(DnsPerm());
-    depend<PermController>(PermController());
+      depend<StatsApi>(StatsApi());
+      depend<StatsController>(StatsController());
 
-    depend<Scheduler>(Scheduler(timer: SchedulerTimer()));
+      depend<JournalApi>(JournalApi());
+      depend<JournalController>(JournalController());
+
+      depend<DnsPerm>(DnsPerm());
+      depend<PermController>(PermController());
+
+      depend<Scheduler>(Scheduler(timer: SchedulerTimer()));
+    }
   }
 }

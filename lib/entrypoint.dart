@@ -44,9 +44,9 @@ class Entrypoint with Dependable, TraceOrigin, Traceable {
     Tracer().attachAndSaveAct(act);
     DefaultTimer().attachAndSaveAct(act);
 
-    if (act.isFamily()) {
-      DragonDeps().register(act);
-    }
+    // Newer deps of the new code - temporary, this will eventually
+    // replace the legacy code. Hopefully, you know how it goes :D
+    DragonDeps().register(act);
 
     PlatformPersistence(isSecure: false).attachAndSaveAct(act);
     final secure = PlatformPersistence(isSecure: true);
