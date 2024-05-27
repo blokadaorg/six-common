@@ -1,5 +1,6 @@
 import 'package:common/common/model.dart';
 import 'package:common/device/device.dart';
+import 'package:common/dragon/account/controller.dart';
 import 'package:common/dragon/device/current_config.dart';
 import 'package:common/dragon/filter/controller.dart';
 import 'package:common/dragon/filter/selected_filters.dart';
@@ -23,6 +24,7 @@ class FilterLegacy with Traceable {
   late final _selectedFilters = dep<SelectedFilters>();
   late final _knownFilters = dep<KnownFilters>();
   late final _ops = dep<channel.FilterOps>();
+  late final _acc = dep<AccountController>();
 
   FilterLegacy() {
     _device.addOn(deviceChanged, onDeviceChanged);
@@ -35,6 +37,7 @@ class FilterLegacy with Traceable {
     return await traceWith(parentTrace, "onDeviceChangedLegacy", (trace) async {
       final lists = _device.lists;
       if (lists != null) {
+        _acc.start();
         // Read user config from device v2 when it is ready
         // Set it and it will reload FilterController
         // That one will update SelectedFilters
