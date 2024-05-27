@@ -18,7 +18,7 @@ import 'package:common/util/trace.dart';
 
 // However, we wanted the new Filters faster since the old concept
 // was problematic and buggy. So this class exposes it to for old code.
-class FilterLegacy with Traceable {
+class FilterLegacy with Traceable, TraceOrigin {
   late final _controller = dep<FilterController>();
   late final _device = dep<DeviceStore>();
   late final _userConfig = dep<CurrentConfig>();
@@ -31,7 +31,7 @@ class FilterLegacy with Traceable {
     depend<channel.FilterOps>(getOps(act));
     _device.addOn(deviceChanged, onDeviceChanged);
     _selectedFilters.onChange.listen((it) => onSelectedFiltersChanged(it));
-    // todo: handling commands
+    _userConfig.onChange.listen((it) => onUserConfigChanged(it));
     // todo: default value at first start of new account
   }
 
@@ -69,5 +69,35 @@ class FilterLegacy with Traceable {
     _ops.doListToTagChanged(_controller.getListsToTags().map((key, value) {
       return MapEntry(key, value);
     }));
+  }
+
+  enableFilter(String filterName) async {
+    final selected = _selectedFilters.now;
+    if (selected.any((it) => it.filterName == filterName)) return;
+    _selectedFilters.now = selected..add(FilterSelection(filterName, []));
+    try {
+      final config = await _controller.getConfig(_selectedFilters.now);
+      await traceAs("enableFilterLegacy", (trace) async {
+        _userConfig.now = config;
+        // v2 api will be updated by the callback below
+      });
+    } catch (e) {
+      _selectedFilters.now = selected;
+    }
+  }
+
+  disableFilter(String filterName) async {}
+
+  toggleFilterOption(String filterName, String option) async {}
+
+  onUserConfigChanged(UserFilterConfig? config) {
+    if (config == null) return;
+    final lists = config.lists;
+    if (lists == _device.lists?.toSet()) return;
+
+    // UserConfigs got updated by FilterController, push to v2 api
+    traceAs("onUserConfigChangedLegacy", (trace) async {
+      await _device.setLists(trace, lists.toList());
+    });
   }
 }

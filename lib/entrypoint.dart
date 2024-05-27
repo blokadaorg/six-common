@@ -1,5 +1,5 @@
 import 'package:common/dragon/dragon_deps.dart';
-import 'package:common/dragon/filter/FilterLegacy.dart';
+import 'package:common/dragon/filter/filter_legacy.dart';
 
 import 'account/account.dart';
 import 'account/payment/payment.dart';
