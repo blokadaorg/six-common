@@ -30,7 +30,7 @@ class FilterLegacy with Traceable, TraceOrigin {
   late final _ops = dep<channel.FilterOps>();
   late final _acc = dep<AccountController>();
 
-  final _debounce = Debounce(const Duration(seconds: 3));
+  final _debounce = Debounce(const Duration(seconds: 1));
 
   FilterLegacy(Act act) {
     depend<channel.FilterOps>(getOps(act));
@@ -77,58 +77,54 @@ class FilterLegacy with Traceable, TraceOrigin {
   }
 
   enableFilter(String filterName) async {
-    _debounce.run(() async {
-      print("enabling filter $filterName");
+    print("enabling filter $filterName");
 
-      final known = _knownFilters
-          .get()
-          .firstOrNullWhere((it) => it.filterName == filterName);
-      final newFilter =
-          FilterSelection(filterName, [known!.options.first.optionName]);
+    final known = _knownFilters
+        .get()
+        .firstOrNullWhere((it) => it.filterName == filterName);
+    final newFilter =
+        FilterSelection(filterName, [known!.options.first.optionName]);
 
-      final was = _selectedFilters.now;
-      final selected = was.toList();
-      final index = selected.indexWhere((it) => it.filterName == filterName);
-      if (index != -1) {
-        selected[index] = newFilter;
-      } else {
-        selected.add(newFilter);
-      }
-      _selectedFilters.now = selected;
+    final was = _selectedFilters.now;
+    final selected = was.toList();
+    final index = selected.indexWhere((it) => it.filterName == filterName);
+    if (index != -1) {
+      selected[index] = newFilter;
+    } else {
+      selected.add(newFilter);
+    }
+    _selectedFilters.now = selected;
 
-      try {
-        final config = await _controller.getConfig(_selectedFilters.now);
-        await traceAs("enableFilterLegacy", (trace) async {
-          trace.addAttribute("lists", config.lists);
-          _userConfig.now = config;
-          // v2 api will be updated by the callback below
-        });
-      } catch (e) {
-        _selectedFilters.now = was;
-      }
-    });
+    try {
+      final config = await _controller.getConfig(_selectedFilters.now);
+      await traceAs("enableFilterLegacy", (trace) async {
+        trace.addAttribute("lists", config.lists);
+        _userConfig.now = config;
+        // v2 api will be updated by the callback below
+      });
+    } catch (e) {
+      _selectedFilters.now = was;
+    }
   }
 
   disableFilter(String filterName) async {
-    _debounce.run(() async {
-      print("disabling filter $filterName");
+    print("disabling filter $filterName");
 
-      final was = _selectedFilters.now;
-      final selected = was.toList();
-      selected.removeWhere((it) => it.filterName == filterName);
-      _selectedFilters.now = selected;
+    final was = _selectedFilters.now;
+    final selected = was.toList();
+    selected.removeWhere((it) => it.filterName == filterName);
+    _selectedFilters.now = selected;
 
-      try {
-        final config = await _controller.getConfig(_selectedFilters.now);
-        await traceAs("disableFilterLegacy", (trace) async {
-          trace.addAttribute("lists", config.lists);
-          _userConfig.now = config;
-          // v2 api will be updated by the callback below
-        });
-      } catch (e) {
-        _selectedFilters.now = was;
-      }
-    });
+    try {
+      final config = await _controller.getConfig(_selectedFilters.now);
+      await traceAs("disableFilterLegacy", (trace) async {
+        trace.addAttribute("lists", config.lists);
+        _userConfig.now = config;
+        // v2 api will be updated by the callback below
+      });
+    } catch (e) {
+      _selectedFilters.now = was;
+    }
   }
 
   toggleFilterOption(String filterName, String option) async {
