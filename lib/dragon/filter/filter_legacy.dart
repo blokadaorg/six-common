@@ -164,6 +164,7 @@ class FilterLegacy with Traceable, TraceOrigin {
     } catch (e) {
       _selectedFilters.now = was;
     }
+    print("will sleep now");
     await sleepAsync(const Duration(seconds: 3));
   }
 
