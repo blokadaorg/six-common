@@ -6,10 +6,11 @@ import 'package:common/dragon/filter/controller.dart';
 import 'package:common/dragon/filter/selected_filters.dart';
 import 'package:common/filter/channel.act.dart';
 import 'package:common/filter/channel.pg.dart' as channel;
-import 'package:common/util/async.dart';
 import 'package:common/util/di.dart';
 import 'package:common/util/trace.dart';
 import 'package:dartx/dartx.dart';
+
+import '../debounce.dart';
 
 // This is a legacy layer that brings the new Filter concept
 // to the existing platform code that used Decks/Packs.
@@ -28,6 +29,8 @@ class FilterLegacy with Traceable, TraceOrigin {
   late final _knownFilters = dep<KnownFilters>();
   late final _ops = dep<channel.FilterOps>();
   late final _acc = dep<AccountController>();
+
+  final _debounce = Debounce(const Duration(seconds: 3));
 
   FilterLegacy(Act act) {
     depend<channel.FilterOps>(getOps(act));
@@ -102,7 +105,6 @@ class FilterLegacy with Traceable, TraceOrigin {
     } catch (e) {
       _selectedFilters.now = was;
     }
-    await sleepAsync(const Duration(seconds: 3));
   }
 
   disableFilter(String filterName) async {
@@ -123,49 +125,48 @@ class FilterLegacy with Traceable, TraceOrigin {
     } catch (e) {
       _selectedFilters.now = was;
     }
-    await sleepAsync(const Duration(seconds: 3));
   }
 
   toggleFilterOption(String filterName, String option) async {
-    print("toggling filter $filterName option $option");
+    _debounce.run(() async {
+      print("toggling filter $filterName option $option");
 
-    final known = _knownFilters
-        .get()
-        .firstOrNullWhere((it) => it.filterName == filterName);
-    if (known == null) {
-      print("filter $filterName not found");
-      return;
-    }
-
-    final newFilter = FilterSelection(filterName, [option]);
-
-    final was = _selectedFilters.now;
-    final selected = was.toList();
-    final index = selected.indexWhere((it) => it.filterName == filterName);
-    if (index != -1) {
-      final old = selected[index];
-      if (old.options.contains(option)) {
-        selected[index] = FilterSelection(filterName, old.options - [option]);
-      } else {
-        selected[index] = FilterSelection(filterName, old.options + [option]);
+      final known = _knownFilters
+          .get()
+          .firstOrNullWhere((it) => it.filterName == filterName);
+      if (known == null) {
+        print("filter $filterName not found");
+        return;
       }
-    } else {
-      selected.add(newFilter);
-    }
-    _selectedFilters.now = selected;
 
-    try {
-      final config = await _controller.getConfig(_selectedFilters.now);
-      await traceAs("toggleFilterOptionLegacy", (trace) async {
-        trace.addAttribute("lists", config.lists);
-        _userConfig.now = config;
-        // v2 api will be updated by the callback below
-      });
-    } catch (e) {
-      _selectedFilters.now = was;
-    }
-    print("will sleep now");
-    await sleepAsync(const Duration(seconds: 3));
+      final newFilter = FilterSelection(filterName, [option]);
+
+      final was = _selectedFilters.now;
+      final selected = was.toList();
+      final index = selected.indexWhere((it) => it.filterName == filterName);
+      if (index != -1) {
+        final old = selected[index];
+        if (old.options.contains(option)) {
+          selected[index] = FilterSelection(filterName, old.options - [option]);
+        } else {
+          selected[index] = FilterSelection(filterName, old.options + [option]);
+        }
+      } else {
+        selected.add(newFilter);
+      }
+      _selectedFilters.now = selected;
+
+      try {
+        final config = await _controller.getConfig(_selectedFilters.now);
+        await traceAs("toggleFilterOptionLegacy", (trace) async {
+          trace.addAttribute("lists", config.lists);
+          _userConfig.now = config;
+          // v2 api will be updated by the callback below
+        });
+      } catch (e) {
+        _selectedFilters.now = was;
+      }
+    });
   }
 
   onUserConfigChanged(UserFilterConfig? config) {
