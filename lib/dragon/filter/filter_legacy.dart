@@ -45,8 +45,8 @@ class FilterLegacy with Traceable, TraceOrigin {
         // Read user config from device v2 when it is ready
         // Set it and it will reload FilterController
         // That one will update SelectedFilters
-        _userConfig.now = UserFilterConfig(lists.toSet(), {});
         await sleepAsync(const Duration(seconds: 3));
+        _userConfig.now = UserFilterConfig(lists.toSet(), {});
       }
     });
   }
