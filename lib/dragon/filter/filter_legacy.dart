@@ -46,7 +46,7 @@ class FilterLegacy with Traceable, TraceOrigin {
         // Set it and it will reload FilterController
         // That one will update SelectedFilters
         _userConfig.now = UserFilterConfig(lists.toSet(), {});
-        sleepAsync(const Duration(seconds: 3));
+        await sleepAsync(const Duration(seconds: 3));
       }
     });
   }
