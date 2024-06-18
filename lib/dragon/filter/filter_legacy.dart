@@ -6,6 +6,7 @@ import 'package:common/dragon/filter/controller.dart';
 import 'package:common/dragon/filter/selected_filters.dart';
 import 'package:common/filter/channel.act.dart';
 import 'package:common/filter/channel.pg.dart' as channel;
+import 'package:common/util/async.dart';
 import 'package:common/util/di.dart';
 import 'package:common/util/trace.dart';
 import 'package:dartx/dartx.dart';
@@ -45,6 +46,7 @@ class FilterLegacy with Traceable, TraceOrigin {
         // Set it and it will reload FilterController
         // That one will update SelectedFilters
         _userConfig.now = UserFilterConfig(lists.toSet(), {});
+        sleepAsync(const Duration(seconds: 3));
       }
     });
   }
