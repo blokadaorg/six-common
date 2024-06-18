@@ -45,7 +45,6 @@ class FilterLegacy with Traceable, TraceOrigin {
         // Read user config from device v2 when it is ready
         // Set it and it will reload FilterController
         // That one will update SelectedFilters
-        await sleepAsync(const Duration(seconds: 3));
         _userConfig.now = UserFilterConfig(lists.toSet(), {});
       }
     });
@@ -103,6 +102,7 @@ class FilterLegacy with Traceable, TraceOrigin {
     } catch (e) {
       _selectedFilters.now = was;
     }
+    await sleepAsync(const Duration(seconds: 3));
   }
 
   disableFilter(String filterName) async {
@@ -123,6 +123,7 @@ class FilterLegacy with Traceable, TraceOrigin {
     } catch (e) {
       _selectedFilters.now = was;
     }
+    await sleepAsync(const Duration(seconds: 3));
   }
 
   toggleFilterOption(String filterName, String option) async {
@@ -163,6 +164,7 @@ class FilterLegacy with Traceable, TraceOrigin {
     } catch (e) {
       _selectedFilters.now = was;
     }
+    await sleepAsync(const Duration(seconds: 3));
   }
 
   onUserConfigChanged(UserFilterConfig? config) {
