@@ -7,14 +7,14 @@ import 'package:common/util/di.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class PrivateDnsSheet extends StatefulWidget {
-  const PrivateDnsSheet({Key? key}) : super(key: key);
+class PrivateDnsSheetIos extends StatefulWidget {
+  const PrivateDnsSheetIos({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => PrivateDnsSheetState();
+  State<StatefulWidget> createState() => PrivateDnsSheetIosState();
 }
 
-class PrivateDnsSheetState extends State<PrivateDnsSheet> {
+class PrivateDnsSheetIosState extends State<PrivateDnsSheetIos> {
   late final _openPerms = dep<OpenPerms>();
 
   @override
