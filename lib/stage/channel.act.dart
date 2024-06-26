@@ -37,5 +37,5 @@ _actNormal(MockStageOps ops) {
 
   when(() => ops.doRouteChanged(any())).thenAnswer(ignore());
   when(() => ops.doShowNavbar(any())).thenAnswer(ignore());
-  when(() => ops.doBackHandled(any())).thenAnswer(ignore());
+  when(() => ops.doHomeReached()).thenAnswer(ignore());
 }
