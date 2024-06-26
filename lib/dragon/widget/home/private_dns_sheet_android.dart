@@ -2,6 +2,7 @@ import 'package:common/common/i18n.dart';
 import 'package:common/common/widget/minicard/minicard.dart';
 import 'package:common/common/widget/theme.dart';
 import 'package:common/dragon/device/open_perms.dart';
+import 'package:common/dragon/perm/controller.dart';
 import 'package:common/dragon/widget/home/private_dns_setting_guide.dart';
 import 'package:common/util/di.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +18,7 @@ class PrivateDnsSheetAndroid extends StatefulWidget {
 
 class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
   late final _openPerms = dep<OpenPerms>();
+  late final _perm = dep<PermController>();
 
   @override
   void initState() {
@@ -84,7 +86,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                             ),
                             PrivateDnsSettingGuideWidget(
                               title: "More connection settings",
-                              subtitle: "(not always needed)",
+                              subtitle: "(not always present)",
                               android: true,
                             ),
                             const SizedBox(height: 16),
@@ -133,8 +135,8 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                       child: MiniCard(
                         onTap: () {
                           Navigator.of(context).pop();
-                          Clipboard.setData(
-                              ClipboardData(text: "some.hostname.lol"));
+                          Clipboard.setData(ClipboardData(
+                              text: _perm.getAndroidPrivateDnsString()));
                           _openPerms.open();
                         },
                         color: context.theme.accent,

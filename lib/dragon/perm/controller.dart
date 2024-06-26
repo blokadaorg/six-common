@@ -19,6 +19,21 @@ class PermController with Traceable {
     _stage.addOnValue(routeChanged, onRouteChanged);
   }
 
+  String getAndroidPrivateDnsString() {
+    try {
+      final device = _deviceTag.now!;
+      final name = _sanitizeAlias(device.alias);
+      final tag = device.deviceTag;
+      return "$name-$tag.cloud.blokada.org";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  _sanitizeAlias(String alias) {
+    return alias.trim().replaceAll(" ", "--").substring(0, 56);
+  }
+
   _check() async {
     final device = await _deviceTag.fetch();
     if (device == null) {
