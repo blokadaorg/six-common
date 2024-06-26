@@ -53,6 +53,9 @@ abstract class StageOps {
 
   @async
   void doOpenLink(String url);
+
+  @async
+  void doBackHandled(bool handled);
 }
 
 @FlutterApi()
