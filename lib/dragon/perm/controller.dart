@@ -32,7 +32,9 @@ class PermController with Traceable {
   }
 
   _sanitizeAlias(String alias) {
-    return alias.trim().replaceAll(" ", "--").substring(0, 56);
+    var a = alias.trim().replaceAll(" ", "--");
+    if (a.length > 56) a = a.substring(0, 56);
+    return a;
   }
 
   _check() async {
