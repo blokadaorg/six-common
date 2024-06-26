@@ -6,6 +6,7 @@ import 'package:common/dragon/widget/home/private_dns_setting_guide.dart';
 import 'package:common/util/di.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PrivateDnsSheetAndroid extends StatefulWidget {
   const PrivateDnsSheetAndroid({Key? key}) : super(key: key);
@@ -58,7 +59,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                           style: TextStyle(color: context.theme.textSecondary),
                         ),
                       ),
-                      const SizedBox(height: 24), // Replaces Spacer
+                      const SizedBox(height: 16), // Replaces Spacer
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -71,7 +72,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                             ),
                             PrivateDnsSettingGuideWidget(
                               title: "Connections",
-                              subtitle: "(or \"Connection and sharing\")",
+                              subtitle: "(or \"Connection & sharing\")",
                               icon: CupertinoIcons.wifi,
                               android: true,
                             ),
@@ -110,7 +111,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 24), // Replaces Spacer
+                      const SizedBox(height: 16), // Replaces Spacer
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32.0),
                         child: Text(
@@ -132,6 +133,8 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                       child: MiniCard(
                         onTap: () {
                           Navigator.of(context).pop();
+                          Clipboard.setData(
+                              ClipboardData(text: "some.hostname.lol"));
                           _openPerms.open();
                         },
                         color: context.theme.accent,

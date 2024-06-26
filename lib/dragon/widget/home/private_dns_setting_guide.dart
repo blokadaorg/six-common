@@ -50,7 +50,7 @@ class PrivateDnsSettingGuideWidget extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: Icon(
-                            size: (android) ? 32 : 16,
+                            size: (android) ? 24 : 16,
                             icon!,
                             color: Colors.white,
                           ),
