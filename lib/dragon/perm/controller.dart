@@ -26,6 +26,7 @@ class PermController with Traceable {
       final tag = device.deviceTag;
       return "$name-$tag.cloud.blokada.org";
     } catch (e) {
+      print("getAndroidPrivateDnsString: $e");
       return "";
     }
   }
