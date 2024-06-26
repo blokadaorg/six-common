@@ -266,15 +266,9 @@ abstract class StageStoreBase
   late final ctrl = dep<TopBarController>();
   @action
   Future<void> back(Trace parentTrace) async {
-    // In family, we started using native navigation, so we try that if stage is root
-    if (route.route.path == "") {
-      ctrl.navigatorKey.currentState!.pop();
-      await _ops.doBackHandled(true);
-      return;
+    if (!ctrl.goBackFromPlatform()) {
+      await _ops.doHomeReached();
     }
-    print("route path ${route.route.path}");
-    ctrl.navigatorKey.currentState!.pop();
-    await _ops.doBackHandled(true);
   }
 
   @action
