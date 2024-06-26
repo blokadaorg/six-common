@@ -52,7 +52,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32.0),
                         child: Text(
-                          "Activate the Private DNS setting on your Android device to enable Blokada Family. Exact settings may differ slightly on your device.",
+                          "Activate the Private DNS setting on your Android device to enable Blokada Family.",
                           softWrap: true,
                           textAlign: TextAlign.center,
                           style: TextStyle(color: context.theme.textSecondary),
@@ -71,7 +71,9 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                             ),
                             PrivateDnsSettingGuideWidget(
                               title: "Connections",
+                              subtitle: "(or \"Connection and sharing\")",
                               icon: CupertinoIcons.wifi,
+                              android: true,
                             ),
                             const SizedBox(height: 16),
                             Text(
@@ -82,6 +84,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                             PrivateDnsSettingGuideWidget(
                               title: "More connection settings",
                               subtitle: "(not always needed)",
+                              android: true,
                             ),
                             const SizedBox(height: 16),
                             Text(
@@ -91,6 +94,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                             ),
                             PrivateDnsSettingGuideWidget(
                               title: "Private DNS",
+                              android: true,
                             ),
                             const SizedBox(height: 16),
                             Text(
@@ -99,13 +103,23 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                                   TextStyle(color: context.theme.textSecondary),
                             ),
                             const PrivateDnsSettingGuideWidget(
-                              title: "DNS Provider",
+                              title: "Hostname of private DNS Provider",
                               subtitle: "(or similar name)",
+                              android: true,
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(height: 24), // Replaces Spacer
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        child: Text(
+                          "Then, paste the hostname from the clipboard by a long tap on the text field.",
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: context.theme.textSecondary),
+                        ),
+                      ),
                     ],
                   ),
                 ),
