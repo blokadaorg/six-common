@@ -10,6 +10,7 @@ class PermController with Traceable {
   late final _ops = dep<PermOps>();
   late final _perm = dep<DnsPerm>();
   late final _deviceTag = dep<ThisDevice>();
+  late final _act = dep<Act>();
 
   late final _stage = dep<StageStore>();
 
@@ -44,7 +45,14 @@ class PermController with Traceable {
       return;
     }
     await _ops.doSetDns(device.deviceTag);
-    _perm.now = await _ops.doIsPrivateDnsEnabled(device.deviceTag);
+
+    // TODO: do this for both platforms eventually
+    if (_act.getPlatform() == Platform.android) {
+      final current = await _ops.getPrivateDnsSetting();
+      _perm.now = current == getAndroidPrivateDnsString();
+    } else {
+      _perm.now = await _ops.doIsPrivateDnsEnabled(device.deviceTag);
+    }
   }
 
   Future<void> onRouteChanged(Trace parentTrace, StageRouteState route) async {
