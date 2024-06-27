@@ -97,12 +97,10 @@ class FilterLegacy with Traceable, TraceOrigin {
 
     try {
       final config = await _controller.getConfig(_selectedFilters.now);
-      _debounce.run(() async {
-        await traceAs("enableFilterLegacy", (trace) async {
-          trace.addAttribute("lists", config.lists);
-          _userConfig.now = config;
-          // v2 api will be updated by the callback below
-        });
+      await traceAs("enableFilterLegacy", (trace) async {
+        trace.addAttribute("lists", config.lists);
+        _userConfig.now = config;
+        // v2 api will be updated by the callback below
       });
     } catch (e) {
       _selectedFilters.now = was;
@@ -119,12 +117,10 @@ class FilterLegacy with Traceable, TraceOrigin {
 
     try {
       final config = await _controller.getConfig(_selectedFilters.now);
-      _debounce.run(() async {
-        await traceAs("disableFilterLegacy", (trace) async {
-          trace.addAttribute("lists", config.lists);
-          _userConfig.now = config;
-          // v2 api will be updated by the callback below
-        });
+      await traceAs("disableFilterLegacy", (trace) async {
+        trace.addAttribute("lists", config.lists);
+        _userConfig.now = config;
+        // v2 api will be updated by the callback below
       });
     } catch (e) {
       _selectedFilters.now = was;
@@ -161,12 +157,10 @@ class FilterLegacy with Traceable, TraceOrigin {
 
     try {
       final config = await _controller.getConfig(_selectedFilters.now);
-      _debounce.run(() async {
-        await traceAs("toggleFilterOptionLegacy", (trace) async {
-          trace.addAttribute("lists", config.lists);
-          _userConfig.now = config;
-          // v2 api will be updated by the callback below
-        });
+      await traceAs("toggleFilterOptionLegacy", (trace) async {
+        trace.addAttribute("lists", config.lists);
+        _userConfig.now = config;
+        // v2 api will be updated by the callback below
       });
     } catch (e) {
       _selectedFilters.now = was;
@@ -181,9 +175,11 @@ class FilterLegacy with Traceable, TraceOrigin {
     // v2 will force the default config on empty list.
     // Instead we assume FilterController will set the defaults shortly after.
 
-    // UserConfigs got updated by FilterController, push to v2 api
-    traceAs("onUserConfigChangedLegacy", (trace) async {
-      await _device.setLists(trace, lists.toList());
+    _debounce.run(() async {
+      // UserConfigs got updated by FilterController, push to v2 api
+      traceAs("onUserConfigChangedLegacy", (trace) async {
+        await _device.setLists(trace, lists.toList());
+      });
     });
   }
 }
