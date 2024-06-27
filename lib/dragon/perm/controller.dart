@@ -57,6 +57,8 @@ class PermController with Traceable {
 
   Future<void> onRouteChanged(Trace parentTrace, StageRouteState route) async {
     if (!(route.isBecameForeground() || route.modal == StageModal.perms)) {
+      print(
+          "permCheck: not foreground or perms modal: ${route.route.path}, isfg: ${route.isForeground()}, isbf: ${route.isBecameForeground()}");
       return;
     }
 

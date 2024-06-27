@@ -129,6 +129,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                           style: TextStyle(color: context.theme.textSecondary),
                         ),
                       ),
+                      const SizedBox(height: 16), // Replaces Spacer
                     ],
                   ),
                 ),
