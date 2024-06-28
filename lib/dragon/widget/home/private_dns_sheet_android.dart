@@ -38,6 +38,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
                 child: SingleChildScrollView(
