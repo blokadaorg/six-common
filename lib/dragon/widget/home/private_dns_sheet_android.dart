@@ -43,6 +43,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 24),
                       Text(
@@ -68,6 +69,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -130,6 +132,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                           style: TextStyle(color: context.theme.textSecondary),
                         ),
                       ),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
