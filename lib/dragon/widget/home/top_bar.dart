@@ -353,6 +353,7 @@ class TopBarController extends NavigatorObserver with ChangeNotifier {
     }
 
     if (waitingPush != null) {
+      print("pushing: $waitingPush")
       _push(waitingPush!);
       waitingPush = null;
     }
