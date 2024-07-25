@@ -360,6 +360,7 @@ class TopBarController extends NavigatorObserver with ChangeNotifier {
   }
 
   bool goBackFromPlatform() {
+    print(nav);
     if (nav.length == 1) {
       return false;
     }
