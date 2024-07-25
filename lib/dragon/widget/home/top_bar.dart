@@ -362,7 +362,7 @@ class TopBarController extends NavigatorObserver with ChangeNotifier {
   }
 
   bool goBackFromPlatform() {
-    if (isPopping) return true;
+    if (isPopping) return false;
     if (nav.length == 1) {
       return false;
     }
