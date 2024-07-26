@@ -81,18 +81,11 @@ class AccountExpiration {
         status: AccountStatus.inactive, expiration: expiration);
   }
 
-  DateTime? getNextDate({bool considerJustExpired = false}) {
+  DateTime? getNextDate() {
     if (status == AccountStatus.active) {
       return expiration.subtract(cfg.accountExpiringTimeSpan);
     } else if (status == AccountStatus.expiring) {
       return expiration;
-    } else if (considerJustExpired) {
-      final now = DateTime.now();
-      if (now.isBefore(expiration.add(cfg.accountExpiringTimeSpan))) {
-        return now;
-      } else {
-        return null;
-      }
     } else {
       return null;
     }
@@ -280,8 +273,7 @@ abstract class AccountRefreshStoreBase
 
     final shouldSkipNotification = act.isFamily() && _family.linkedMode;
 
-    DateTime? expDate = expiration.getNextDate(considerJustExpired: true);
-    DateTime now = DateTime.now();
+    DateTime? expDate = expiration.getNextDate();
 
     if (expDate != null && !shouldSkipNotification) {
       _timer.set(_keyTimer, expDate);
@@ -294,9 +286,11 @@ abstract class AccountRefreshStoreBase
       _timer.unset(_keyTimer);
       trace.addAttribute("timer", null);
 
-      _notification.dismiss(trace, id: id);
-      trace.addAttribute("notificationId", id);
-      trace.addAttribute("notificationDate", null);
+      if (expiration.status == AccountStatus.active) {
+        _notification.dismiss(trace, id: id);
+        trace.addAttribute("notificationId", id);
+        trace.addAttribute("notificationDate", null);
+      }
     }
   }
 
