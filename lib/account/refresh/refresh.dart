@@ -171,6 +171,7 @@ abstract class AccountRefreshStoreBase
       await _account.create(trace);
       await syncAccount(trace, _account.account);
       lastRefresh = DateTime.now();
+      _initSuccessful = true;
     });
   }
 
@@ -221,6 +222,7 @@ abstract class AccountRefreshStoreBase
   Future<void> onTimerFired(Trace parentTrace) async {
     return await traceWith(parentTrace, "onTimerFired", (trace) async {
       if (!_initSuccessful) return;
+      trace.addEvent("timer fired, init successful");
       expiration = expiration.update();
       // Maybe account got extended externally, so try to refresh
       // This will invoke the update() above.
