@@ -72,7 +72,14 @@ mixin ValueEmitter<T> {
   }
 }
 
-class EmitterEvent<T> {}
+class EmitterEvent<T> {
+  final String name;
+
+  EmitterEvent(this.name);
+
+  @override
+  String toString() => name;
+}
 
 class CallbackExecutor with TraceOrigin {
   callListener<T>(
@@ -80,14 +87,7 @@ class CallbackExecutor with TraceOrigin {
     // Ignore any listener errors
     // Don't wait for finish to not block other events
     traceAs("on:$on", (trace) async {
-      try {
-        trace.addEvent("listener call");
-        await listener(trace, value);
-        trace.addEvent("listener done");
-      } catch (e) {
-        trace.addEvent("listener threw error: ${e.runtimeType}");
-        trace.addEvent("listener threw error, detail: $e");
-      }
+      await listener(trace, value);
     });
   }
 }
