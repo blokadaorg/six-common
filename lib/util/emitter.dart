@@ -36,6 +36,7 @@ mixin Emitter {
 
 mixin ValueEmitter<T> {
   final List<Function(Trace, T)> _listeners = [];
+  final executor = CallbackExecutor();
   late EmitterEvent<T> event;
 
   willAcceptOnValue(EmitterEvent<T> event) {
@@ -55,9 +56,7 @@ mixin ValueEmitter<T> {
   emitValue(EmitterEvent<T> on, Trace trace, T value) async {
     if (on != event) throw Exception("Unknown event");
     for (final listener in _listeners.toList()) {
-      // Ignore any listener errors
-      // Don't wait for finish to not block other events
-      _callListener(trace, listener, value);
+      await executor.callListener(on, listener, value);
     }
   }
 
@@ -74,3 +73,21 @@ mixin ValueEmitter<T> {
 }
 
 class EmitterEvent<T> {}
+
+class CallbackExecutor with TraceOrigin {
+  callListener<T>(
+      EmitterEvent<T> on, Function(Trace, T) listener, T value) async {
+    // Ignore any listener errors
+    // Don't wait for finish to not block other events
+    traceAs("on:$on", (trace) async {
+      try {
+        trace.addEvent("listener call");
+        await listener(trace, value);
+        trace.addEvent("listener done");
+      } catch (e) {
+        trace.addEvent("listener threw error: ${e.runtimeType}");
+        trace.addEvent("listener threw error, detail: $e");
+      }
+    });
+  }
+}
