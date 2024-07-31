@@ -1,3 +1,6 @@
+import 'package:common/timer/timer.dart';
+import 'package:common/util/di.dart';
+
 import 'trace.dart';
 
 mixin Emitter {
@@ -82,12 +85,41 @@ class EmitterEvent<T> {
 }
 
 class CallbackExecutor with TraceOrigin {
+  late final _timer = dep<TimerService>();
+  final timeout = const Duration(seconds: 10);
+
   callListener<T>(
       EmitterEvent<T> on, Function(Trace, T) listener, T value) async {
     // Ignore any listener errors
     // Don't wait for finish to not block other events
-    traceAs("on:$on", (trace) async {
-      await listener(trace, value);
+    final name = "on#$on#${listener.hashCode}";
+    traceAs(name, (trace) async {
+      _startTimeout(name);
+      try {
+        await listener(trace, value);
+        _stopTimeout(name);
+      } catch (e) {
+        _stopTimeout(name);
+        rethrow;
+      }
     });
+  }
+
+  _startTimeout<T>(String name) {
+    _onTimer(name);
+    _timer.set(name, DateTime.now().add(timeout));
+  }
+
+  _stopTimeout(String name) {
+    _timer.unset(name);
+  }
+
+  _onTimer(String name) {
+    try {
+      _timer.addHandler(name, (trace) async {
+        // This will just show up in tracing
+        throw Exception("Event callback '$name' is too slow");
+      });
+    } catch (e) {}
   }
 }
