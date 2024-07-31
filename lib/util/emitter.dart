@@ -56,14 +56,19 @@ mixin ValueEmitter<T> {
     if (on != event) throw Exception("Unknown event");
     for (final listener in _listeners.toList()) {
       // Ignore any listener errors
-      try {
-        trace.addEvent("listener call");
-        await listener(trace, value);
-        trace.addEvent("listener done");
-      } catch (e) {
-        trace.addEvent("listener threw error: ${e.runtimeType}");
-        trace.addEvent("listener threw error, detail: $e");
-      }
+      // Don't wait for finish to not block other events
+      _callListener(trace, listener, value);
+    }
+  }
+
+  _callListener(Trace trace, Function(Trace, T) listener, T value) async {
+    try {
+      trace.addEvent("listener call");
+      await listener(trace, value);
+      trace.addEvent("listener done");
+    } catch (e) {
+      trace.addEvent("listener threw error: ${e.runtimeType}");
+      trace.addEvent("listener threw error, detail: $e");
     }
   }
 }
