@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+
 import 'package:common/common/widget/theme.dart';
 import 'package:common/dragon/widget/home/animated_bg.dart';
 import 'package:common/dragon/widget/home/overlay.dart';
@@ -161,7 +163,7 @@ class MainScreenState extends State<MainScreen> {
           children: [
             const AnimatedBg(),
             Padding(
-              padding: const EdgeInsets.only(bottom: 44),
+              padding: EdgeInsets.only(bottom: io.Platform.isAndroid ? 44 : 0),
               child: Navigator(
                 key: widget.ctrl.navigatorKey,
                 observers: [widget.ctrl, widget.nav],
