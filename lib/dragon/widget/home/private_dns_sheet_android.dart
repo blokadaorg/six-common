@@ -63,7 +63,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-      sleepAsync(const Duration(seconds: 3));
+      await sleepAsync(const Duration(seconds: 3));
       _performCTA();
     } else {
       _performCTA();
