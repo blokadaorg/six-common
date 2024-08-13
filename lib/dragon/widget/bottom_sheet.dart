@@ -22,7 +22,9 @@ showSheet(BuildContext context, {required WidgetBuilder builder}) async {
     context: context,
     duration: const Duration(milliseconds: 300),
     backgroundColor: context.theme.bgColorCard,
-    builder: builder,
+    builder: (c) => Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        child: builder(c)),
   );
 }
 
