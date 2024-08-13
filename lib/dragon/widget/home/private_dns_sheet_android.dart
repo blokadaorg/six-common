@@ -4,7 +4,6 @@ import 'package:common/common/widget/theme.dart';
 import 'package:common/dragon/device/open_perms.dart';
 import 'package:common/dragon/perm/controller.dart';
 import 'package:common/dragon/widget/home/private_dns_setting_guide.dart';
-import 'package:common/util/async.dart';
 import 'package:common/util/di.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,10 +38,6 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
   }
 
   void _checkIfContentIsFullyVisible() {
-    print(_scrollController.position.pixels);
-    print(_scrollController.position.maxScrollExtent);
-    print("--");
-
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       setState(() {
@@ -63,8 +58,8 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-      await sleepAsync(const Duration(seconds: 3));
-      _performCTA();
+      // await sleepAsync(const Duration(seconds: 3));
+      // _performCTA();
     } else {
       _performCTA();
     }
@@ -161,39 +156,6 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                               android: true,
                             ),
                             const SizedBox(height: 16),
-                            Text(
-                              "4.",
-                              style:
-                                  TextStyle(color: context.theme.textSecondary),
-                            ),
-                            PrivateDnsSettingGuideWidget(
-                              title: "family perms setting android host".i18n,
-                              subtitle:
-                                  "family perms setting android similar".i18n,
-                              android: true,
-                            ),
-                            Text(
-                              "4.",
-                              style:
-                                  TextStyle(color: context.theme.textSecondary),
-                            ),
-                            PrivateDnsSettingGuideWidget(
-                              title: "family perms setting android host".i18n,
-                              subtitle:
-                                  "family perms setting android similar".i18n,
-                              android: true,
-                            ),
-                            Text(
-                              "4.",
-                              style:
-                                  TextStyle(color: context.theme.textSecondary),
-                            ),
-                            PrivateDnsSettingGuideWidget(
-                              title: "family perms setting android host".i18n,
-                              subtitle:
-                                  "family perms setting android similar".i18n,
-                              android: true,
-                            ),
                             Text(
                               "4.",
                               style:
