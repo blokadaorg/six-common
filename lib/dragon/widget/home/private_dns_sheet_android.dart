@@ -79,6 +79,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
             children: [
               Expanded(
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
