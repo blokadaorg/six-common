@@ -68,6 +68,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -150,6 +151,39 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                               android: true,
                             ),
                             const SizedBox(height: 16),
+                            Text(
+                              "4.",
+                              style:
+                                  TextStyle(color: context.theme.textSecondary),
+                            ),
+                            PrivateDnsSettingGuideWidget(
+                              title: "family perms setting android host".i18n,
+                              subtitle:
+                                  "family perms setting android similar".i18n,
+                              android: true,
+                            ),
+                            Text(
+                              "4.",
+                              style:
+                                  TextStyle(color: context.theme.textSecondary),
+                            ),
+                            PrivateDnsSettingGuideWidget(
+                              title: "family perms setting android host".i18n,
+                              subtitle:
+                                  "family perms setting android similar".i18n,
+                              android: true,
+                            ),
+                            Text(
+                              "4.",
+                              style:
+                                  TextStyle(color: context.theme.textSecondary),
+                            ),
+                            PrivateDnsSettingGuideWidget(
+                              title: "family perms setting android host".i18n,
+                              subtitle:
+                                  "family perms setting android similar".i18n,
+                              android: true,
+                            ),
                             Text(
                               "4.",
                               style:
