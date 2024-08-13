@@ -157,25 +157,27 @@ class MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: ChangeNotifierProvider(
         create: (context) => widget.ctrl,
-        child: Stack(
-          children: [
-            const AnimatedBg(),
-            Navigator(
-              key: widget.ctrl.navigatorKey,
-              observers: [widget.ctrl, widget.nav],
-              onGenerateRoute: (settings) {
-                return Navigation().generateRoute(context, settings,
-                    homeContent: widget.content);
-              },
-            ),
-            const Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: TopCommonBar(),
-            ),
-            const OverlaySheet(),
-          ],
+        child: SafeArea(
+          child: Stack(
+            children: [
+              const AnimatedBg(),
+              Navigator(
+                key: widget.ctrl.navigatorKey,
+                observers: [widget.ctrl, widget.nav],
+                onGenerateRoute: (settings) {
+                  return Navigation().generateRoute(context, settings,
+                      homeContent: widget.content);
+                },
+              ),
+              const Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: TopCommonBar(),
+              ),
+              const OverlaySheet(),
+            ],
+          ),
         ),
       ),
     );
