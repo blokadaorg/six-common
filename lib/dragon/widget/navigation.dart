@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+
 import 'package:common/common/i18n.dart';
 import 'package:common/common/model.dart';
 import 'package:common/common/widget/common_clickable.dart';
@@ -47,7 +49,8 @@ double getTopPadding(BuildContext context) {
   final topPadding = MediaQuery.of(context).padding.top;
   print("Top padding: $topPadding");
   final noNotch = topPadding < 30;
-  return (noNotch ? 100 : 68); // I don't get it either
+  final android = io.Platform.isAndroid ? 44.0 : 0.0;
+  return (noNotch ? 100 : 68) + android; // I don't get it either
 }
 
 class Navigation with TraceOrigin {
