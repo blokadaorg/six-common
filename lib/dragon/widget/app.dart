@@ -1,5 +1,3 @@
-import 'dart:io' as io;
-
 import 'package:common/common/widget/theme.dart';
 import 'package:common/dragon/widget/home/animated_bg.dart';
 import 'package:common/dragon/widget/home/overlay.dart';
@@ -7,6 +5,7 @@ import 'package:common/dragon/widget/home/top_bar.dart';
 import 'package:common/dragon/widget/navigation.dart';
 import 'package:common/util/config.dart';
 import 'package:common/util/di.dart';
+import 'package:common/util/platform_info.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -163,7 +162,8 @@ class MainScreenState extends State<MainScreen> {
           children: [
             const AnimatedBg(),
             Padding(
-              padding: EdgeInsets.only(bottom: io.Platform.isAndroid ? 44 : 0),
+              padding: EdgeInsets.only(
+                  bottom: PlatformInfo().isSmallAndroid(context) ? 44 : 0),
               child: Navigator(
                 key: widget.ctrl.navigatorKey,
                 observers: [widget.ctrl, widget.nav],

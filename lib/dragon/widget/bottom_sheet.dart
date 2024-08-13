@@ -26,7 +26,7 @@ showSheet(BuildContext context, {required WidgetBuilder builder}) async {
     backgroundColor:
         Platform.isAndroid ? Colors.transparent : context.theme.bgColorCard,
     builder: (c) => Padding(
-        padding: EdgeInsets.only(top: Platform.isAndroid ? 44 : 0),
+        padding: EdgeInsets.only(top: Platform.isAndroid ? 34 : 0),
         child: builder(c)),
   );
 }
