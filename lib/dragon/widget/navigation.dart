@@ -45,6 +45,7 @@ const maxContentWidthTablet = 1500.0;
 
 double getTopPadding(BuildContext context) {
   final topPadding = MediaQuery.of(context).padding.top;
+  print("Top padding: $topPadding");
   final noNotch = topPadding < 30;
   return (noNotch ? 100 : 68); // I don't get it either
 }

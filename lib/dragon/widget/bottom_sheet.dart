@@ -21,7 +21,7 @@ showSheet(BuildContext context, {required WidgetBuilder builder}) async {
   return showCupertinoModalBottomSheet(
     context: context,
     duration: const Duration(milliseconds: 300),
-    backgroundColor: context.theme.bgColorCard,
+    backgroundColor: Colors.transparent,
     builder: (c) =>
         Padding(padding: EdgeInsets.only(top: 120), child: builder(c)),
   );
