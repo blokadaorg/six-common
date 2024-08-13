@@ -4,6 +4,7 @@ import 'package:common/common/widget/theme.dart';
 import 'package:common/dragon/device/open_perms.dart';
 import 'package:common/dragon/perm/controller.dart';
 import 'package:common/dragon/widget/home/private_dns_setting_guide.dart';
+import 'package:common/util/async.dart';
 import 'package:common/util/di.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,39 +23,48 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
 
   final _scrollController = ScrollController();
   bool _isFullyVisible = false;
-  bool _firstTap = true;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      // Check if scroll is at the bottom
-      print(_scrollController.position.pixels);
-      print(_scrollController.position.maxScrollExtent);
-      print("--");
 
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        setState(() {
-          _isFullyVisible = true;
-        });
-      } else {
-        setState(() {
-          _isFullyVisible = false;
-        });
-      }
+    // Check if the content is fully visible after the first frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkIfContentIsFullyVisible();
+    });
+
+    _scrollController.addListener(() {
+      _checkIfContentIsFullyVisible();
     });
   }
 
-  void _onButtonTap() {
-    if (!_isFullyVisible && _firstTap) {
+  void _checkIfContentIsFullyVisible() {
+    print(_scrollController.position.pixels);
+    print(_scrollController.position.maxScrollExtent);
+    print("--");
+
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      setState(() {
+        _isFullyVisible = true;
+      });
+    } else {
+      setState(() {
+        _isFullyVisible = false;
+      });
+    }
+  }
+
+  void _onButtonTap() async {
+    if (!_isFullyVisible) {
       // Scroll to the bottom if content is not fully visible
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-      _firstTap = false;
+      sleepAsync(const Duration(seconds: 3));
+      _performCTA();
     } else {
       _performCTA();
     }
