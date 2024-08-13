@@ -29,6 +29,10 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
     super.initState();
     _scrollController.addListener(() {
       // Check if scroll is at the bottom
+      print(_scrollController.position.pixels);
+      print(_scrollController.position.maxScrollExtent);
+      print("--");
+
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         setState(() {
