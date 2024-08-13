@@ -20,9 +20,46 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
   late final _openPerms = dep<OpenPerms>();
   late final _perm = dep<PermController>();
 
+  final _scrollController = ScrollController();
+  bool _isFullyVisible = false;
+  bool _firstTap = true;
+
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+      // Check if scroll is at the bottom
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          _isFullyVisible = true;
+        });
+      } else {
+        setState(() {
+          _isFullyVisible = false;
+        });
+      }
+    });
+  }
+
+  void _onButtonTap() {
+    if (!_isFullyVisible && _firstTap) {
+      // Scroll to the bottom if content is not fully visible
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      _firstTap = false;
+    } else {
+      _performCTA();
+    }
+  }
+
+  void _performCTA() {
+    Navigator.of(context).pop();
+    Clipboard.setData(ClipboardData(text: _perm.getAndroidPrivateDnsString()));
+    _openPerms.open();
   }
 
   @override
@@ -143,12 +180,7 @@ class PrivateDnsSheetAndroidState extends State<PrivateDnsSheetAndroid> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: MiniCard(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Clipboard.setData(ClipboardData(
-                              text: _perm.getAndroidPrivateDnsString()));
-                          _openPerms.open();
-                        },
+                        onTap: _onButtonTap,
                         color: context.theme.accent,
                         child: SizedBox(
                           height: 32,
