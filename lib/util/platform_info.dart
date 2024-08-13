@@ -41,7 +41,7 @@ class PlatformInfo {
   bool isSmallAndroid(BuildContext context) {
     print(MediaQuery.of(context).size.height);
     return getCurrentPlatformType() == PlatformType.android &&
-        MediaQuery.of(context).size.height < 600;
+        MediaQuery.of(context).size.height < 750;
   }
 }
 
