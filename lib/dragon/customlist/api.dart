@@ -14,14 +14,13 @@ class CustomListApi {
     return _marshal.toCustomList(response);
   }
 
-  Future<JsonCustomList> add(String profileId, JsonCustomList entry) async {
-    final result = await _api.request(ApiEndpoint.postCustomList,
+  add(String profileId, JsonCustomList entry) async {
+    await _api.request(ApiEndpoint.postCustomList,
         payload: _marshal.fromPayload(JsonCustomListPayload.forCreate(
           profileId: profileId,
           domainName: entry.domainName,
           action: entry.action,
         )));
-    return _marshal.toEntry(result);
   }
 
   delete(String profileId, JsonCustomList entry) async {
