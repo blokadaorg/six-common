@@ -66,7 +66,7 @@ class CustomListController {
     denied.remove(domain);
     onChange();
     await _customlist.delete(
-        profileId,
+        profileId!,
         JsonCustomList(
           domainName: domain,
           action: JsonCustomListAction.allow, // Ignored
