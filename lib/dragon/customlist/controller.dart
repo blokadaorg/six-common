@@ -5,13 +5,14 @@ import 'package:common/util/di.dart';
 class CustomListController {
   late final _customlist = dep<CustomListApi>();
 
-  late String profileId;
+  String? profileId;
 
   List<String> denied = [];
   List<String> allowed = [];
 
   Function onChange = () {};
 
+  // Has to be called before other methods
   setProfileId(String id) async {
     if (profileId == id) return;
     profileId = id;
@@ -21,7 +22,7 @@ class CustomListController {
   }
 
   fetch() async {
-    final entries = await _customlist.fetchForProfile(profileId);
+    final entries = await _customlist.fetchForProfile(profileId!);
     denied = entries
         .where((e) => e.action == JsonCustomListAction.block)
         .map((e) => e.domainName)
@@ -40,7 +41,7 @@ class CustomListController {
     allowed.add(domain);
     onChange();
     await _customlist.add(
-        profileId,
+        profileId!,
         JsonCustomList(
           domainName: domain,
           action: JsonCustomListAction.allow,
@@ -52,7 +53,7 @@ class CustomListController {
     denied.add(domain);
     onChange();
     await _customlist.add(
-        profileId,
+        profileId!,
         JsonCustomList(
           domainName: domain,
           action: JsonCustomListAction.block,
