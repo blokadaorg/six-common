@@ -106,6 +106,7 @@ class Http {
 
   Map<ApiParam, String> _params() => {
         ApiParam.accountId: _accountId.now,
+        ApiParam.userAgent: _userAgent.now,
       };
 
   Map<String, String> _headers() => {

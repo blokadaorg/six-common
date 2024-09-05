@@ -14,6 +14,7 @@ import 'package:common/dragon/widget/settings/exceptions_section.dart';
 import 'package:common/dragon/widget/settings/settings_screen.dart';
 import 'package:common/dragon/widget/stats/stats_detail_section.dart';
 import 'package:common/dragon/widget/stats/stats_section.dart';
+import 'package:common/dragon/widget/support/support_screen.dart';
 import 'package:common/dragon/widget/with_top_bar.dart';
 import 'package:common/util/di.dart';
 import 'package:common/util/platform_info.dart';
@@ -28,7 +29,8 @@ enum Paths {
   deviceStats("/device/stats", true),
   deviceStatsDetail("/device/stats/detail", true),
   settings("/settings", false),
-  settingsExceptions("/settings/exceptions", true);
+  settingsExceptions("/settings/exceptions", true),
+  support("/support", false);
 
   final String path;
   final bool openInTablet;
@@ -129,6 +131,11 @@ class Navigation with TraceOrigin {
           child: const ExceptionsSection(),
         ),
       );
+    }
+
+    if (settings.name == Paths.support.path) {
+      return StandardRoute(
+          settings: settings, builder: (context) => const SupportScreen());
     }
 
     return StandardRoute(

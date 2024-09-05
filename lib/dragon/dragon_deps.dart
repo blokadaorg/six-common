@@ -32,6 +32,8 @@ import 'package:common/dragon/profile/controller.dart';
 import 'package:common/dragon/scheduler.dart';
 import 'package:common/dragon/stats/api.dart';
 import 'package:common/dragon/stats/controller.dart';
+import 'package:common/dragon/support/api.dart';
+import 'package:common/dragon/support/controller.dart';
 import 'package:common/util/di.dart';
 
 class DragonDeps {
@@ -95,6 +97,9 @@ class DragonDeps {
       depend<PermController>(PermController());
 
       depend<Scheduler>(Scheduler(timer: SchedulerTimer()));
+
+      depend<SupportApi>(SupportApi());
+      depend<SupportController>(SupportController());
     }
   }
 }

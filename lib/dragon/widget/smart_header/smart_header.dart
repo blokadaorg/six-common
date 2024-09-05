@@ -2,7 +2,6 @@ import 'package:common/common/model.dart';
 import 'package:common/dragon/widget/navigation.dart';
 import 'package:common/dragon/widget/smart_header/smart_header_button.dart';
 import 'package:common/lock/lock.dart';
-import 'package:common/stage/channel.pg.dart';
 import 'package:common/stage/stage.dart';
 import 'package:common/util/di.dart';
 import 'package:common/util/trace.dart';
@@ -82,9 +81,10 @@ class SmartHeaderState extends State<SmartHeader>
     list.add(SmartHeaderButton(
         icon: CupertinoIcons.question_circle,
         onTap: () {
-          traceAs("tappedHelp", (trace) async {
-            _stage.showModal(trace, StageModal.help);
-          });
+          Navigation.open(context, Paths.support);
+          // traceAs("tappedHelp", (trace) async {
+          //   _stage.showModal(trace, StageModal.help);
+          // });
           // showCupertinoModalBottomSheet(
           //   context: context,
           //   duration: const Duration(milliseconds: 300),
