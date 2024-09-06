@@ -53,6 +53,10 @@ class Http {
 
     // Replace param template with actual values
     var url = _baseUrl.now + request.endpoint.template;
+    if (request.endpoint.template.startsWith("http")) {
+      url = request.endpoint.template;
+    }
+
     for (final param in request.endpoint.params) {
       final value = params[param];
       if (value == null) throw Exception("missing param: $param");

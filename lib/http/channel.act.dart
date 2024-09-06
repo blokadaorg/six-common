@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dartx/dartx.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
@@ -39,7 +41,7 @@ class DirectHttpOps implements HttpOps {
       // TODO: user agent?
     };
 
-    String t = type.capitalize();
+    String t = type.toUpperCase();
     http.Response response;
     if (t == "POST") {
       response = await http.post(uri, headers: headers, body: payload);
@@ -48,7 +50,7 @@ class DirectHttpOps implements HttpOps {
     } else if (t == "DELETE") {
       response = await http.delete(uri, headers: headers, body: payload);
     } else {
-      throw Exception("Unsupported type: $type");
+      throw Exception("Unsupported type: $t");
     }
 
     if (response.statusCode == 200) {
@@ -69,7 +71,7 @@ class DirectHttpOps implements HttpOps {
         .filter((map) => map.key != null && map.value != null)
         .map((key, value) => MapEntry(key!, value!)));
 
-    String t = type.capitalize();
+    String t = type.toUpperCase();
     http.Response response;
     if (t == "POST") {
       response = await http.post(uri, headers: headers, body: payload);
@@ -78,11 +80,12 @@ class DirectHttpOps implements HttpOps {
     } else if (t == "DELETE") {
       response = await http.delete(uri, headers: headers, body: payload);
     } else {
-      throw Exception("Unsupported type: $type");
+      throw Exception("Unsupported type: $t");
     }
 
     if (response.statusCode == 200) {
-      return response.body;
+      // Make sure utf is used
+      return utf8.decode(response.bodyBytes);
     } else {
       throw Exception("code:${response.statusCode}, body: ${response.body}");
     }

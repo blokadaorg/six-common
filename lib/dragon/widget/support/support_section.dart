@@ -38,8 +38,8 @@ class SupportSectionState extends State<SupportSection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(left: 16.0, right: 16.0, top: getTopPadding(context)),
+      padding: EdgeInsets.only(
+          left: 16.0, right: 16.0, top: getTopPadding(context), bottom: 32.0),
       child: Chat(
         messages: _messages.reversed.toList(),
         onSendPressed: _handleSendPressed,
