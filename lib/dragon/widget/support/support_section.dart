@@ -25,14 +25,17 @@ class SupportSectionState extends State<SupportSection> {
   @override
   void initState() {
     super.initState();
-    _controller.onChange = () {
-      setState(() {
-        _messages.clear();
-        _messages
-            .addAll(_controller.messages.map((e) => e.toMessage(_me, _notMe)));
-      });
-    };
+    _controller.onChange = _refresh;
     _controller.loadOrInit();
+    _refresh();
+  }
+
+  _refresh() {
+    setState(() {
+      _messages.clear();
+      _messages
+          .addAll(_controller.messages.map((e) => e.toMessage(_me, _notMe)));
+    });
   }
 
   @override
@@ -45,6 +48,7 @@ class SupportSectionState extends State<SupportSection> {
         onSendPressed: _handleSendPressed,
         user: _me,
         theme: context.theme.chatTheme,
+        emptyState: Text("Ask about anything you want to know!"),
       ),
     );
   }
