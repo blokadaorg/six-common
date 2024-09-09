@@ -27,7 +27,8 @@ class SupportController with TraceOrigin {
 
   sendMessage(String? message) async {
     if (message?.startsWith("cc ") ?? false) {
-      await _handleCommand(message!.substring(3));
+      await _addMyMessage(message!);
+      await _handleCommand(message.substring(3));
       return;
     }
 
@@ -81,7 +82,9 @@ class SupportController with TraceOrigin {
 
   _handleCommand(String message) async {
     try {
-      await _command.onCommand(message);
+      await traceAs("supportCommand", (trace) async {
+        await _command.onCommandString(trace, message);
+      });
     } catch (e) {
       print("Error handling command");
       print(e);
