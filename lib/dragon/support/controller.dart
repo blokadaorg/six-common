@@ -1,12 +1,15 @@
 import 'dart:math';
 
+import 'package:common/command/command.dart';
 import 'package:common/common/model.dart';
 import 'package:common/dragon/support/api.dart';
 import 'package:common/util/async.dart';
 import 'package:common/util/di.dart';
+import 'package:common/util/trace.dart';
 
-class SupportController {
+class SupportController with TraceOrigin {
   late final _api = dep<SupportApi>();
+  late final _command = dep<CommandStore>();
 
   String language = "en";
   String? sessionId;
@@ -23,6 +26,8 @@ class SupportController {
   }
 
   sendMessage(String? message) async {
+    if (message?.startsWith("cc") ?? false) await _handleCommand(message!);
+
     try {
       if (message != null) _addMyMessage(message);
 
@@ -55,9 +60,9 @@ class SupportController {
     onChange();
   }
 
-  _addErrorMessage() {
+  _addErrorMessage({String? error}) {
     messages.add(SupportMessage(
-      "Sorry did not understand, can you repeat?",
+      error ?? "Sorry did not understand, can you repeat?",
       DateTime.now(),
       isMe: false,
     ));
@@ -69,5 +74,16 @@ class SupportController {
     // Math.random().toString(36).substring(2, 15)
 
     return Random().nextDouble().toStringAsFixed(15).substring(2, 15);
+  }
+
+  _handleCommand(String message) async {
+    try {
+      await _command.onCommand(message);
+    } catch (e) {
+      print("Error handling command");
+      print(e);
+      await sleepAsync(const Duration(milliseconds: 500));
+      _addErrorMessage(error: e.toString());
+    }
   }
 }
