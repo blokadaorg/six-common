@@ -81,15 +81,14 @@ class SupportController with TraceOrigin {
   }
 
   _handleCommand(String message) async {
-    try {
-      await traceAs("supportCommand", (trace) async {
+    await traceAs("supportCommand", (trace) async {
+      try {
         await _command.onCommandString(trace, message);
-      });
-    } catch (e) {
-      print("Error handling command");
-      print(e);
-      await sleepAsync(const Duration(milliseconds: 500));
-      _addErrorMessage(error: e.toString());
-    }
+      } catch (e) {
+        await sleepAsync(const Duration(milliseconds: 500));
+        _addErrorMessage(error: e.toString());
+        rethrow;
+      }
+    });
   }
 }
