@@ -26,7 +26,10 @@ class SupportController with TraceOrigin {
   }
 
   sendMessage(String? message) async {
-    if (message?.startsWith("cc") ?? false) await _handleCommand(message!);
+    if (message?.startsWith("cc ") ?? false) {
+      await _handleCommand(message!.substring(3));
+      return;
+    }
 
     try {
       if (message != null) _addMyMessage(message);
