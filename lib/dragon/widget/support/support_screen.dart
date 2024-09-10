@@ -1,14 +1,14 @@
-import 'package:common/command/command.dart';
 import 'package:common/common/i18n.dart';
 import 'package:common/common/widget/common_clickable.dart';
 import 'package:common/common/widget/theme.dart';
 import 'package:common/custom/custom.dart';
 import 'package:common/dragon/widget/Support/Support_section.dart';
+import 'package:common/dragon/widget/dialog.dart';
 import 'package:common/dragon/widget/navigation.dart';
 import 'package:common/dragon/widget/with_top_bar.dart';
 import 'package:common/util/di.dart';
 import 'package:common/util/trace.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({Key? key}) : super(key: key);
@@ -19,7 +19,6 @@ class SupportScreen extends StatefulWidget {
 
 class SupportScreenState extends State<SupportScreen> with TraceOrigin {
   late final _custom = dep<CustomStore>();
-  late final _command = dep<CommandStore>();
 
   Paths _path = Paths.support;
   Object? _arguments;
@@ -87,16 +86,14 @@ class SupportScreenState extends State<SupportScreen> with TraceOrigin {
 
     return CommonClickable(
         onTap: () {
-          traceAs("sendLog", (trace) async {
-            await _command.onCommand("log");
-          });
+          // traceAs("sendLog", (trace) async {
+          //   await _command.onCommand("log");
+          // });
+          showSupportDialog(context);
         },
-        child: Text(
-          "universal action show log".i18n,
-          style: TextStyle(
-            color: context.theme.accent,
-            fontSize: 17,
-          ),
+        child: Icon(
+          CupertinoIcons.ellipsis_circle,
+          color: context.theme.accent,
         ));
   }
 }

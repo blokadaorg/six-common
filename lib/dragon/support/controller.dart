@@ -24,14 +24,15 @@ class SupportController with TraceOrigin {
   loadOrInit() async {
     await _currentSession.fetch();
 
+    // TODO: figure out language
+
     await _chatHistory.fetch();
     if (_chatHistory.now != null) {
       messages = _chatHistory.now!.messages;
+      onChange();
+    } else {
+      sendMessage(null);
     }
-
-    // TODO: figure out language
-
-    sendMessage(null);
   }
 
   resetSession() async {
