@@ -5,6 +5,7 @@ import 'package:common/common/model.dart';
 import 'package:common/dragon/support/api.dart';
 import 'package:common/dragon/support/chat_history.dart';
 import 'package:common/dragon/support/current_session.dart';
+import 'package:common/dragon/support/support_unread.dart';
 import 'package:common/notification/notification.dart';
 import 'package:common/util/async.dart';
 import 'package:common/util/di.dart';
@@ -13,9 +14,10 @@ import 'package:common/util/trace.dart';
 class SupportController with TraceOrigin {
   late final _api = dep<SupportApi>();
   late final _command = dep<CommandStore>();
+  late final _notification = dep<NotificationStore>();
   late final _currentSession = dep<CurrentSession>();
   late final _chatHistory = dep<ChatHistory>();
-  late final _notification = dep<NotificationStore>();
+  late final _unread = dep<SupportUnread>();
 
   String language = "en";
 
@@ -25,6 +27,7 @@ class SupportController with TraceOrigin {
 
   loadOrInit() async {
     await _currentSession.fetch();
+    await _unread.fetch();
 
     // TODO: figure out language
 
@@ -36,6 +39,8 @@ class SupportController with TraceOrigin {
       _currentSession.now = null;
       sendMessage(null);
     }
+
+    _unread.now = false;
   }
 
   resetSession() async {
@@ -76,8 +81,9 @@ class SupportController with TraceOrigin {
   }
 
   notifyNewMessage(Trace parentTrace) async {
+    await sleepAsync(const Duration(seconds: 5));
     _notification.show(parentTrace, NotificationId.supportNewMessage);
-    // TODO: show unread badge on chat icon, that clears when entered chat
+    _unread.now = true;
   }
 
   _addMyMessage(String msg) {

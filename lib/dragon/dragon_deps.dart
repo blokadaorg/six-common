@@ -36,6 +36,7 @@ import 'package:common/dragon/support/api.dart';
 import 'package:common/dragon/support/chat_history.dart';
 import 'package:common/dragon/support/controller.dart';
 import 'package:common/dragon/support/current_session.dart';
+import 'package:common/dragon/support/support_unread.dart';
 import 'package:common/util/di.dart';
 
 class DragonDeps {
@@ -104,6 +105,7 @@ class DragonDeps {
       depend<SupportController>(SupportController());
       depend<CurrentSession>(CurrentSession());
       depend<ChatHistory>(ChatHistory());
+      depend<SupportUnread>(SupportUnread());
     }
   }
 }
