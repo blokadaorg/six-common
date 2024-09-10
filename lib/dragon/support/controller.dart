@@ -33,6 +33,7 @@ class SupportController with TraceOrigin {
       messages = _chatHistory.now!.messages;
       onChange();
     } else {
+      _currentSession.now = null;
       sendMessage(null);
     }
   }
@@ -115,6 +116,10 @@ class SupportController with TraceOrigin {
     await traceAs("supportCommand", (trace) async {
       try {
         await _command.onCommandString(trace, message);
+        final msg = SupportMessage("OK", DateTime.now(), isMe: false);
+        messages.add(msg);
+        _chatHistory.now = SupportMessages(messages);
+        onChange();
       } catch (e) {
         await sleepAsync(const Duration(milliseconds: 500));
         _addErrorMessage(error: e.toString());
