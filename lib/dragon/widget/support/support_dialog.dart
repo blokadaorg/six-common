@@ -39,7 +39,7 @@ class SupportDialogState extends State<SupportDialog> with TraceOrigin {
         _buildButton(
           context,
           CupertinoIcons.doc_text,
-          "universal action show log".i18n,
+          "universal action share log".i18n,
           onTap: () {
             traceAs("supportSendLog", (trace) async {
               await _command.onCommand("log");

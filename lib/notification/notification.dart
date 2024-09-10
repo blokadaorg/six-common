@@ -33,6 +33,7 @@ enum NotificationId {
   all,
   accountExpired,
   accountExpiredFamily,
+  supportNewMessage,
 }
 
 enum NotificationEventType {

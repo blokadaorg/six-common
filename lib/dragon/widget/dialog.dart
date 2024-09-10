@@ -11,8 +11,8 @@ import 'package:flutter/material.dart';
 
 void showSupportDialog(BuildContext context) {
   showDefaultDialog(context,
-      title: Text("universal label help".i18n),
-      content: (context) => SupportDialog(),
+      title: Text("universal action more".i18n),
+      content: (context) => const SupportDialog(),
       actions: (context) => []);
 }
 
