@@ -90,7 +90,8 @@ abstract class NotificationStoreBase with Store, Traceable, Dependable {
       Trace parentTrace, NotificationId id, NotificationPayload payload,
       {DateTime? when}) async {
     return await traceWith(parentTrace, "showWithPayload", (trace) async {
-      _addCapped(NotificationEvent.shown(id, when ?? DateTime.now(),
+      _addCapped(NotificationEvent.shown(
+          id, when ?? DateTime.now().add(const Duration(seconds: 3)),
           payload: payload));
       trace.addAttribute("notificationId", id);
     });
@@ -100,7 +101,8 @@ abstract class NotificationStoreBase with Store, Traceable, Dependable {
   Future<void> show(Trace parentTrace, NotificationId id,
       {DateTime? when}) async {
     return await traceWith(parentTrace, "show", (trace) async {
-      _addCapped(NotificationEvent.shown(id, when ?? DateTime.now()));
+      _addCapped(NotificationEvent.shown(
+          id, when ?? DateTime.now().add(const Duration(seconds: 3))));
       trace.addAttribute("notificationId", id);
     });
   }
