@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:common/command/command.dart';
 import 'package:common/common/model.dart';
 import 'package:common/dragon/support/api.dart';
+import 'package:common/dragon/support/chat_history.dart';
+import 'package:common/dragon/support/current_session.dart';
 import 'package:common/util/async.dart';
 import 'package:common/util/di.dart';
 import 'package:common/util/trace.dart';
@@ -10,19 +12,33 @@ import 'package:common/util/trace.dart';
 class SupportController with TraceOrigin {
   late final _api = dep<SupportApi>();
   late final _command = dep<CommandStore>();
+  late final _currentSession = dep<CurrentSession>();
+  late final _chatHistory = dep<ChatHistory>();
 
   String language = "en";
-  String? sessionId;
 
   List<SupportMessage> messages = [];
 
   Function onChange = () {};
 
   loadOrInit() async {
-    // TODO: loading existing session, and persistence of msgs
+    await _currentSession.fetch();
+
+    await _chatHistory.fetch();
+    if (_chatHistory.now != null) {
+      messages = _chatHistory.now!.messages;
+    }
+
     // TODO: figure out language
 
     sendMessage(null);
+  }
+
+  resetSession() async {
+    final id = _newSession();
+    _currentSession.now = id;
+    messages = [];
+    _chatHistory.now = null;
   }
 
   sendMessage(String? message) async {
@@ -35,15 +51,16 @@ class SupportController with TraceOrigin {
     try {
       if (message != null) _addMyMessage(message);
 
-      if (sessionId == null) {
-        final id = _newSession();
-        final hi = await _api.sendEvent(id, language, SupportEvent.firstOpen);
-        sessionId = id;
+      if (_currentSession.now == null) {
+        await resetSession();
+        final hi = await _api.sendEvent(
+            _currentSession.now!, language, SupportEvent.firstOpen);
         _addMessage(hi);
       }
 
       if (message != null) {
-        final msg = await _api.sendMessage(sessionId!, language, message);
+        final msg =
+            await _api.sendMessage(_currentSession.now!, language, message);
         _addMessage(msg);
       }
     } catch (e) {
@@ -55,21 +72,27 @@ class SupportController with TraceOrigin {
   }
 
   _addMyMessage(String msg) {
-    messages.add(SupportMessage(msg, DateTime.now(), isMe: true));
+    final message = SupportMessage(msg, DateTime.now(), isMe: true);
+    messages.add(message);
+    _chatHistory.now = SupportMessages(messages);
     onChange();
   }
 
   _addMessage(JsonSupportMessage msg) {
-    messages.add(SupportMessage(msg.message, DateTime.now(), isMe: false));
+    final message = SupportMessage(msg.message, DateTime.now(), isMe: false);
+    messages.add(message);
+    _chatHistory.now = SupportMessages(messages);
     onChange();
   }
 
   _addErrorMessage({String? error}) {
-    messages.add(SupportMessage(
+    final message = SupportMessage(
       error ?? "Sorry did not understand, can you repeat?",
       DateTime.now(),
       isMe: false,
-    ));
+    );
+    messages.add(message);
+    _chatHistory.now = SupportMessages(messages);
     onChange();
   }
 
