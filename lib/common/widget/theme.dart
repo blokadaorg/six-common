@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 
 extension ThemeOnWidget on BuildContext {
   BlokadaTheme get theme => Theme.of(this).extension<BlokadaTheme>()!;
@@ -19,7 +18,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
   final Color textPrimary;
   final Color textSecondary;
   final Color divider;
-  final ChatTheme chatTheme;
+  // final ChatTheme chatTheme;
 
   const BlokadaTheme({
     required this.bgColor,
@@ -35,7 +34,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
     required this.textPrimary,
     required this.textSecondary,
     required this.divider,
-    required this.chatTheme,
+    // required this.chatTheme,
   });
 
   bool isDarkTheme() => textPrimary == Colors.white;
@@ -56,7 +55,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
     Color? textPrimary,
     Color? textSecondary,
     Color? divider,
-    ChatTheme? chatTheme,
+    // ChatTheme? chatTheme,
   }) =>
       BlokadaTheme(
         bgColor: bgColor ?? this.bgColor,
@@ -72,7 +71,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
         textPrimary: textPrimary ?? this.textPrimary,
         textSecondary: textSecondary ?? this.textSecondary,
         divider: divider ?? this.divider,
-        chatTheme: chatTheme ?? this.chatTheme,
+        // chatTheme: chatTheme ?? this.chatTheme,
       );
 
   @override
@@ -94,7 +93,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
       textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
       divider: Color.lerp(divider, other.divider, t)!,
-      chatTheme: other.chatTheme,
+      // chatTheme: other.chatTheme,
     );
   }
 }

@@ -1,13 +1,13 @@
+import 'package:chatview/chatview.dart';
 import 'package:common/common/model.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 extension SupportMsgExt on SupportMessage {
-  types.Message toMessage(types.User me, types.User notMe) {
-    return types.TextMessage(
-      author: isMe ? me : notMe,
-      createdAt: when.millisecondsSinceEpoch,
+  Message toMessage(ChatUser me, ChatUser notMe) {
+    return Message(
+      sentBy: isMe ? me.id : notMe.id,
+      createdAt: when,
       id: when.millisecondsSinceEpoch.toString(),
-      text: text,
+      message: text,
     );
   }
 }
