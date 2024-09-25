@@ -36,12 +36,8 @@ class SupportApi {
     ));
 
     // Fail every random for testing
-    if (Random().nextInt(5) == 0) {
-      throw Exception("Random failure");
-    }
-
-    if (Random().nextInt(4) == 0) {
-      throw HttpCodeException(400, "simulating session excp");
+    if (Random().nextInt(3) == 0) {
+      throw HttpCodeException(400, "simulating session exp");
     }
 
     final result = await _api.request(ApiEndpoint.putSupport, payload: payload);

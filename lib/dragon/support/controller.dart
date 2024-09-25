@@ -88,7 +88,7 @@ class SupportController with TraceOrigin {
         // Session bad or expired
         clearSession();
         if (!retry) {
-          await startSession();
+          print("Invalid session, Retrying...");
           await sendMessage(message, retry: true);
         } else {
           throw Exception("Retry failed: $e");
@@ -140,7 +140,7 @@ class SupportController with TraceOrigin {
 
   _addErrorMessage({String? error}) {
     final message = SupportMessage(
-      error ?? "Sorry did not understand, can you repeat?",
+      error ?? "Sorry did not understand, can you repeat?", // TODO: localize
       DateTime.now(),
       isMe: false,
     );
