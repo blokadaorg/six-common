@@ -2,13 +2,13 @@ import 'package:common/command/command.dart';
 import 'package:common/common/model.dart';
 import 'package:common/dragon/scheduler.dart';
 import 'package:common/dragon/support/api.dart';
-import 'package:common/dragon/support/chat_history.dart';
 import 'package:common/dragon/support/current_session.dart';
 import 'package:common/dragon/support/support_unread.dart';
 import 'package:common/notification/notification.dart';
 import 'package:common/util/async.dart';
 import 'package:common/util/di.dart';
 import 'package:common/util/trace.dart';
+import 'package:dartx/dartx.dart';
 import 'package:i18n_extension/i18n_extension.dart';
 
 const _keyExpireSession = "supportExpireSession";
@@ -18,7 +18,6 @@ class SupportController with TraceOrigin {
   late final _command = dep<CommandStore>();
   late final _notification = dep<NotificationStore>();
   late final _currentSession = dep<CurrentSession>();
-  late final _chatHistory = dep<ChatHistory>();
   late final _unread = dep<SupportUnread>();
   late final _scheduler = dep<Scheduler>();
   late String language = I18n.localeStr;
@@ -33,15 +32,21 @@ class SupportController with TraceOrigin {
     await _currentSession.fetch();
     await _unread.fetch();
 
-    // TODO: figure out language
-
-    await _chatHistory.fetch();
-    if (_chatHistory.now != null) {
-      messages = _chatHistory.now!.messages;
-      onChange();
+    if (_currentSession.now != null) {
+      try {
+        final session = await _api.getSession(_currentSession.now!);
+        _ttl = session.ttl;
+        messages = session.history.filter((e) => e.text != null).map((e) {
+          return SupportMessage(e.text!, DateTime.parse(e.timestamp),
+              isMe: !e.isAgent);
+        }).toList();
+        onChange();
+      } catch (e) {
+        print("Error loading session: $e");
+        startSession();
+      }
     } else {
-      _currentSession.now = null;
-      sendMessage(null);
+      startSession();
     }
 
     _unread.now = false;
@@ -60,7 +65,7 @@ class SupportController with TraceOrigin {
 
   clearSession() async {
     _currentSession.now = null;
-    _chatHistory.now = null;
+    // _chatHistory.now = null;
     messages = [];
     onChange();
   }
@@ -73,13 +78,12 @@ class SupportController with TraceOrigin {
     }
 
     try {
-      if (message != null) _addMyMessage(message);
-
       if (_currentSession.now == null) {
         await startSession();
       }
 
       if (message != null) {
+        _addMyMessage(message);
         final msg = await _api.sendMessage(_currentSession.now!, message);
         _handleResponse(msg);
       }
@@ -114,7 +118,7 @@ class SupportController with TraceOrigin {
   _addMyMessage(String msg) {
     final message = SupportMessage(msg, DateTime.now(), isMe: true);
     messages.add(message);
-    _chatHistory.now = SupportMessages(messages);
+    //_chatHistory.now = SupportMessages(messages);
     onChange();
   }
 
@@ -134,7 +138,7 @@ class SupportController with TraceOrigin {
   _addMessage(SupportMessage message) {
     messages.add(message);
     messages.sort((a, b) => a.when.compareTo(b.when));
-    _chatHistory.now = SupportMessages(messages);
+    //_chatHistory.now = SupportMessages(messages);
     onChange();
   }
 

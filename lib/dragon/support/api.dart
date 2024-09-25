@@ -17,6 +17,13 @@ class SupportApi {
     return _marshal.toSession(result);
   }
 
+  Future<JsonSupportSession> getSession(String sessionId) async {
+    final result = await _api.request(ApiEndpoint.getSupport,
+        params: {ApiParam.sessionId: sessionId});
+    print("get session: $result");
+    return _marshal.toSession(result);
+  }
+
   Future<JsonSupportResponse> sendEvent(
       String sessionId, SupportEvent event) async {
     final result = await _api.request(ApiEndpoint.putSupport,
