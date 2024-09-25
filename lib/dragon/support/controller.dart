@@ -9,6 +9,7 @@ import 'package:common/notification/notification.dart';
 import 'package:common/util/async.dart';
 import 'package:common/util/di.dart';
 import 'package:common/util/trace.dart';
+import 'package:i18n_extension/i18n_extension.dart';
 
 const _keyExpireSession = "supportExpireSession";
 
@@ -20,9 +21,9 @@ class SupportController with TraceOrigin {
   late final _chatHistory = dep<ChatHistory>();
   late final _unread = dep<SupportUnread>();
   late final _scheduler = dep<Scheduler>();
+  late String language = I18n.localeStr;
 
   late int _ttl;
-  String language = "en";
 
   List<SupportMessage> messages = [];
 

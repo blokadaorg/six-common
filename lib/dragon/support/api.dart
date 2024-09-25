@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:common/common/model.dart';
 import 'package:common/dragon/api/api.dart';
 import 'package:common/util/di.dart';
@@ -32,6 +34,15 @@ class SupportApi {
       sessionId: sessionId,
       message: message,
     ));
+
+    // Fail every random for testing
+    if (Random().nextInt(5) == 0) {
+      throw Exception("Random failure");
+    }
+
+    if (Random().nextInt(4) == 0) {
+      throw HttpCodeException(400, "simulating session excp");
+    }
 
     final result = await _api.request(ApiEndpoint.putSupport, payload: payload);
     print("send msg: $result");
