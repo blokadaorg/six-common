@@ -38,6 +38,7 @@ class SupportController with TraceOrigin {
       try {
         final session = await _api.getSession(_currentSession.now!);
         _ttl = session.ttl;
+        if (_ttl < 0) throw Exception("Session expired");
         await _loadChatHistory(session.history);
       } catch (e) {
         print("Error loading session: $e");
@@ -67,6 +68,15 @@ class SupportController with TraceOrigin {
       messages.add(msg);
     }
     messages.sort((a, b) => a.when.compareTo(b.when));
+
+    // Drop two exact same messages in a row
+    // TODO: would be better with messages ids or something
+    for (var i = 0; i < messages.length - 1; i++) {
+      if (messages[i].text == messages[i + 1].text) {
+        messages.removeAt(i);
+        i--;
+      }
+    }
 
     // Update local cache
     _chatHistory.now = SupportMessages(messages);
