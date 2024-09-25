@@ -10,8 +10,8 @@ class SupportApi {
     final result = await _api.request(ApiEndpoint.postSupport,
         payload: _marshal.fromCreateSession(JsonSupportPayloadCreateSession(
           language: language,
-          event: SupportEvent.firstOpen,
         )));
+    print("create session: $result");
     return _marshal.toSession(result);
   }
 
@@ -22,6 +22,7 @@ class SupportApi {
           sessionId: sessionId,
           event: event,
         )));
+    print("send event: $result");
     return _marshal.toResponse(result);
   }
 
@@ -33,7 +34,7 @@ class SupportApi {
     ));
 
     final result = await _api.request(ApiEndpoint.putSupport, payload: payload);
-    print("sendmsg: $result");
+    print("send msg: $result");
     return _marshal.toResponse(result);
   }
 }
