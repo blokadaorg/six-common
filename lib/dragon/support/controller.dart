@@ -41,6 +41,7 @@ class SupportController with TraceOrigin {
           return SupportMessage(e.text!, DateTime.parse(e.timestamp),
               isMe: !e.isAgent);
         }).toList();
+        messages.sort((a, b) => a.when.compareTo(b.when));
         onChange();
       } catch (e) {
         print("Error loading session: $e");
