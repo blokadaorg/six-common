@@ -36,7 +36,8 @@ class SupportController with TraceOrigin {
       try {
         final session = await _api.getSession(_currentSession.now!);
         _ttl = session.ttl;
-        messages = session.history.filter((e) => e.text != null).map((e) {
+        messages =
+            session.history.filter((e) => e.text?.isBlank == false).map((e) {
           return SupportMessage(e.text!, DateTime.parse(e.timestamp),
               isMe: !e.isAgent);
         }).toList();
