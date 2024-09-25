@@ -119,10 +119,10 @@ class SupportController with TraceOrigin {
 
   _handleResponse(JsonSupportResponse response) {
     for (final msg in response.messages) {
-      if (msg.message == null) continue; // TODO: support other types of msgs
+      if (msg.text == null) continue; // TODO: support other types of msgs
 
       final message = SupportMessage(
-        msg.message!,
+        msg.text!,
         DateTime.parse(msg.timestamp),
         isMe: !msg.isAgent,
       );
