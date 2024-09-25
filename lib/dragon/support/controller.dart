@@ -2,6 +2,7 @@ import 'package:common/command/command.dart';
 import 'package:common/common/model.dart';
 import 'package:common/dragon/scheduler.dart';
 import 'package:common/dragon/support/api.dart';
+import 'package:common/dragon/support/chat_history.dart';
 import 'package:common/dragon/support/current_session.dart';
 import 'package:common/dragon/support/support_unread.dart';
 import 'package:common/notification/notification.dart';
@@ -18,6 +19,7 @@ class SupportController with TraceOrigin {
   late final _command = dep<CommandStore>();
   late final _notification = dep<NotificationStore>();
   late final _currentSession = dep<CurrentSession>();
+  late final _chatHistory = dep<ChatHistory>();
   late final _unread = dep<SupportUnread>();
   late final _scheduler = dep<Scheduler>();
   late String language = I18n.localeStr;
@@ -36,13 +38,7 @@ class SupportController with TraceOrigin {
       try {
         final session = await _api.getSession(_currentSession.now!);
         _ttl = session.ttl;
-        messages =
-            session.history.filter((e) => e.text?.isBlank == false).map((e) {
-          return SupportMessage(e.text!, DateTime.parse(e.timestamp),
-              isMe: !e.isAgent);
-        }).toList();
-        messages.sort((a, b) => a.when.compareTo(b.when));
-        onChange();
+        await _loadChatHistory(session.history);
       } catch (e) {
         print("Error loading session: $e");
         startSession();
@@ -52,6 +48,30 @@ class SupportController with TraceOrigin {
     }
 
     _unread.now = false;
+  }
+
+  _loadChatHistory(List<JsonSupportHistoryItem> history) async {
+    await _chatHistory.fetch();
+    messages = _chatHistory.now?.messages ?? [];
+
+    final apiHistory = history.filter((e) => e.text?.isBlank == false).map((e) {
+      return SupportMessage(e.text!, DateTime.parse(e.timestamp),
+          isMe: !e.isAgent);
+    }).toList();
+
+    // Put the api history with respect to timestamps, and avoid duplicates
+    for (final msg in apiHistory) {
+      if (messages.any((e) => e.when == msg.when)) {
+        continue;
+      }
+      messages.add(msg);
+    }
+    messages.sort((a, b) => a.when.compareTo(b.when));
+
+    // Update local cache
+    _chatHistory.now = SupportMessages(messages);
+
+    onChange();
   }
 
   startSession() async {
@@ -67,7 +87,7 @@ class SupportController with TraceOrigin {
 
   clearSession() async {
     _currentSession.now = null;
-    // _chatHistory.now = null;
+    _chatHistory.now = null;
     messages = [];
     onChange();
   }
@@ -120,7 +140,7 @@ class SupportController with TraceOrigin {
   _addMyMessage(String msg) {
     final message = SupportMessage(msg, DateTime.now(), isMe: true);
     messages.add(message);
-    //_chatHistory.now = SupportMessages(messages);
+    _chatHistory.now = SupportMessages(messages);
     onChange();
   }
 
@@ -140,7 +160,7 @@ class SupportController with TraceOrigin {
   _addMessage(SupportMessage message) {
     messages.add(message);
     messages.sort((a, b) => a.when.compareTo(b.when));
-    //_chatHistory.now = SupportMessages(messages);
+    _chatHistory.now = SupportMessages(messages);
     onChange();
   }
 
