@@ -73,7 +73,7 @@ class SupportController with TraceOrigin {
     // TODO: would be better with messages ids or something
     for (var i = 0; i < messages.length - 1; i++) {
       if (messages[i].text == messages[i + 1].text) {
-        messages.removeAt(i);
+        messages.removeAt(i + 1);
         i--;
       }
     }
