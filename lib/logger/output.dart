@@ -4,7 +4,7 @@ class FileLoggerOutput extends LogOutput {
   late final _ops = dep<LoggerOps>();
 
   FileLoggerOutput() {
-    final template = '''
+    const template = '''
 \t\t\t
 ''';
     _ops.doStartFile(getLogFilename(), template);
@@ -12,18 +12,20 @@ class FileLoggerOutput extends LogOutput {
 
   @override
   void output(OutputEvent event) {
-    for (var line in event.lines) {
-      print(line);
+    if (kReleaseMode) {
+      developer.log(
+        "\n${event.lines.join("\n")}",
+        time: event.origin.time,
+        level: event.level.value,
+      );
+    } else {
+      for (var line in event.lines) {
+        print(line);
+      }
     }
 
-    // developer.log(
-    //   "\n${event.lines.join("\n")}",
-    //   time: event.origin.time,
-    //   level: event.level.value,
-    // );
-
     // Save batch to file
-    //if (event.level == Level.trace && kReleaseMode) return;
+    if (event.level == Level.trace && kReleaseMode) return;
     _ops.doSaveBatch(getLogFilename(), "${event.lines.join("\n")}\n", "\t\t\t");
   }
 }
