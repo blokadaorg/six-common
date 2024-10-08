@@ -145,6 +145,7 @@ class LoggerCommands with Logging, Dependable {
   void attach(Act act) {
     depend<LoggerOps>(getOps(act));
     depend<Logger>(Logger(
+      filter: ProductionFilter(),
       printer: _printer,
       output: FileLoggerOutput(),
     ));
