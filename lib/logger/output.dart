@@ -23,7 +23,7 @@ class FileLoggerOutput extends LogOutput {
     // );
 
     // Save batch to file
-    if (event.level == Level.trace && kReleaseMode) return;
+    //if (event.level == Level.trace && kReleaseMode) return;
     _ops.doSaveBatch(getLogFilename(), "${event.lines.join("\n")}\n", "\t\t\t");
   }
 }

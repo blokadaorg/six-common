@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:common/logger/channel.pg.dart';
 import 'package:common/util/di.dart';
 import 'package:common/util/platform_info.dart';
@@ -81,7 +79,7 @@ class Log {
       if (took > 3000) {
         _tracer.end(marker, Level.warning, traceName,
             "⏸️️ 🐌 🐌 $traceName (${took}ms)");
-      } else if (took > 300) {
+      } else if (took > 1000) {
         _tracer.end(
             marker, Level.warning, traceName, "⏸️️ 🐌 $traceName (${took}ms)");
       } else {
