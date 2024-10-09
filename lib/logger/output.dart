@@ -7,7 +7,7 @@ class FileLoggerOutput extends LogOutput {
     const template = '''
 \t\t\t
 ''';
-    _ops.doStartFile(getLogFilename(), template);
+    _ops.doUseFilename(getLogFilename());
   }
 
   @override
@@ -26,7 +26,7 @@ class FileLoggerOutput extends LogOutput {
 
     // Save batch to file
     if (event.level == Level.trace && kReleaseMode) return;
-    _ops.doSaveBatch(getLogFilename(), "${event.lines.join("\n")}\n", "\t\t\t");
+    _ops.doSaveBatch(getLogFilename(), "${event.lines.join("\n")}\n");
   }
 }
 
