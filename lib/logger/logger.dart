@@ -147,7 +147,7 @@ class LoggerCommands with Logging, Dependable {
     depend<Logger>(Logger(
       filter: ProductionFilter(),
       printer: _printer,
-      output: FileLoggerOutput(),
+      output: FileLoggerOutput(act),
     ));
     LogTracer().attachAndSaveAct(act);
     depend<LoggerCommands>(this);

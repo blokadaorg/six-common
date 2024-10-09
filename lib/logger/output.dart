@@ -2,9 +2,10 @@ part of 'logger.dart';
 
 class FileLoggerOutput extends LogOutput {
   late final _ops = dep<LoggerOps>();
-  late final _act = dep<Act>();
+  late Act _act;
 
-  FileLoggerOutput() {
+  FileLoggerOutput(Act act) {
+    _act = act;
     const template = '''
 \t\t\t
 ''';
