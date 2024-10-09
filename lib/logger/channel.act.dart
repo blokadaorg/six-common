@@ -18,6 +18,6 @@ LoggerOps getOps(Act act) {
 
 _actNormal(MockLoggerOps ops) {
   when(() => ops.doUseFilename(any())).thenAnswer(ignore());
-  when(() => ops.doSaveBatch(any(), any())).thenAnswer(ignore());
-  when(() => ops.doShareFile(any())).thenAnswer(ignore());
+  when(() => ops.doSaveBatch(any())).thenAnswer(ignore());
+  when(() => ops.doShareFile()).thenAnswer(ignore());
 }

@@ -162,7 +162,7 @@ class LoggerCommands with Logging, Dependable {
   }
 
   shareLog({bool forCrash = false}) {
-    _ops.doShareFile(getLogFilename());
+    _ops.doShareFile();
   }
 
   // TODO: crash log stuff

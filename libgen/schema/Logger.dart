@@ -6,8 +6,8 @@ abstract class LoggerOps {
   void doUseFilename(String filename);
 
   @async
-  void doSaveBatch(String filename, String batch);
+  void doSaveBatch(String batch);
 
   @async
-  void doShareFile(String filename);
+  void doShareFile();
 }
