@@ -167,13 +167,3 @@ class LoggerCommands with Logging, Dependable {
 
   // TODO: crash log stuff
 }
-
-String getLogFilename({bool forCrash = false}) {
-  final type = PlatformInfo().getCurrentPlatformType();
-  final platform = type == PlatformType.iOS
-      ? "i"
-      : (type == PlatformType.android ? "a" : "mock");
-  final mode = forCrash ? "crash" : "log";
-
-  return "blokada-${platform}6.$mode";
-}

@@ -2,12 +2,23 @@ part of 'logger.dart';
 
 class FileLoggerOutput extends LogOutput {
   late final _ops = dep<LoggerOps>();
+  late final _act = dep<Act>();
 
   FileLoggerOutput() {
     const template = '''
 \t\t\t
 ''';
     _ops.doUseFilename(getLogFilename());
+  }
+
+  String getLogFilename() {
+    final type = PlatformInfo().getCurrentPlatformType();
+    final platform = type == PlatformType.iOS
+        ? "i"
+        : (type == PlatformType.android ? "a" : "z");
+    final flavor = _act.isFamily() ? "F" : "6";
+
+    return "blokada-$platform${flavor}x.log";
   }
 
   @override
