@@ -47,12 +47,13 @@ class PermController with Logging {
     await _ops.doSetDns(device.deviceTag);
 
     // TODO: do this for both platforms eventually
-    if (_act.getPlatform() == Platform.android) {
-      final current = await _ops.getPrivateDnsSetting();
-      _perm.now = current == getAndroidPrivateDnsString(m);
-    } else {
-      _perm.now = await _ops.doIsPrivateDnsEnabled(device.deviceTag);
-    }
+    // if (_act.getPlatform() == Platform.android) {
+    final current = await _ops.getPrivateDnsSetting();
+    log(m).pair("current dns", current);
+    _perm.now = current == getAndroidPrivateDnsString(m);
+    // } else {
+    //   _perm.now = await _ops.doIsPrivateDnsEnabled(device.deviceTag);
+    // }
   }
 
   Future<void> onRouteChanged(StageRouteState route, Marker m) async {

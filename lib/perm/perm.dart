@@ -177,7 +177,10 @@ abstract class PermStoreBase with Store, Logging, Dependable {
   }
 
   _recheckDnsPerm(DeviceTag tag, Marker m) async {
-    final isEnabled = await _ops.doIsPrivateDnsEnabled(tag);
+    final current = await _ops.getPrivateDnsSetting();
+    log(m).pair("current dns", current);
+    final isEnabled = current == getAndroidPrivateDnsString(m);
+
     if (isEnabled) {
       await setPrivateDnsEnabled(tag, m);
     } else {
@@ -188,5 +191,22 @@ abstract class PermStoreBase with Store, Logging, Dependable {
   _recheckVpnPerm(Marker m) async {
     final isEnabled = await _ops.doVpnEnabled();
     await setVpnPermEnabled(isEnabled, m);
+  }
+
+  String getAndroidPrivateDnsString(Marker m) {
+    try {
+      final name = _sanitizeAlias(_device.deviceAlias);
+      final tag = _device.deviceTag;
+      return "$name-$tag.cloud.blokada.org";
+    } catch (e) {
+      log(m).e(msg: "getAndroidPrivateDnsString", err: e);
+      return "";
+    }
+  }
+
+  _sanitizeAlias(String alias) {
+    var a = alias.trim().replaceAll(" ", "--");
+    if (a.length > 56) a = a.substring(0, 56);
+    return a;
   }
 }
