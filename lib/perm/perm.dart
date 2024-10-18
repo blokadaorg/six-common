@@ -1,4 +1,5 @@
 import 'package:common/logger/logger.dart';
+import 'package:common/perm/dnscheck.dart';
 import 'package:mobx/mobx.dart';
 
 import '../app/app.dart';
@@ -20,6 +21,7 @@ abstract class PermStoreBase with Store, Logging, Dependable {
   late final _device = dep<DeviceStore>();
   late final _plus = dep<PlusStore>();
   late final _stage = dep<StageStore>();
+  late final _check = PrivateDnsCheck();
 
   PermStoreBase() {
     _stage.addOnValue(routeChanged, onRouteChanged);
@@ -178,8 +180,8 @@ abstract class PermStoreBase with Store, Logging, Dependable {
 
   _recheckDnsPerm(DeviceTag tag, Marker m) async {
     final current = await _ops.getPrivateDnsSetting();
-    log(m).pair("current dns", current);
-    final isEnabled = current == getAndroidPrivateDnsString(m);
+    final isEnabled =
+        _check.isCorrect(m, current, _device.deviceTag!, _device.deviceAlias);
 
     if (isEnabled) {
       await setPrivateDnsEnabled(tag, m);
@@ -191,22 +193,5 @@ abstract class PermStoreBase with Store, Logging, Dependable {
   _recheckVpnPerm(Marker m) async {
     final isEnabled = await _ops.doVpnEnabled();
     await setVpnPermEnabled(isEnabled, m);
-  }
-
-  String getAndroidPrivateDnsString(Marker m) {
-    try {
-      final name = _sanitizeAlias(_device.deviceAlias);
-      final tag = _device.deviceTag;
-      return "$name-$tag.cloud.blokada.org";
-    } catch (e) {
-      log(m).e(msg: "getAndroidPrivateDnsString", err: e);
-      return "";
-    }
-  }
-
-  _sanitizeAlias(String alias) {
-    var a = alias.trim().replaceAll(" ", "--");
-    if (a.length > 56) a = a.substring(0, 56);
-    return a;
   }
 }
