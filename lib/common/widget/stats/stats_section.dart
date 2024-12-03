@@ -1,10 +1,10 @@
+import 'package:common/common/module/customlist/customlist.dart';
 import 'package:common/common/module/journal/journal.dart';
 import 'package:common/common/navigation.dart';
 import 'package:common/common/widget/common_divider.dart';
 import 'package:common/common/widget/stats/activity_item.dart';
 import 'package:common/common/widget/theme.dart';
 import 'package:common/core/core.dart';
-import 'package:common/family/module/customlist_v3/customlist.dart';
 import 'package:common/family/module/device_v3/device.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ class StatsSectionState extends State<StatsSection> with Disposables {
   late final _journal = DI.get<JournalActor>();
   late final _filter = DI.get<JournalFilterValue>();
   late final _entries = DI.get<JournalEntriesValue>();
-  late final _custom = DI.get<CustomlistActor>();
+  late final _customlist = DI.get<CustomlistPayloadValue>();
 
   bool _isReady = false;
 
@@ -34,9 +34,7 @@ class StatsSectionState extends State<StatsSection> with Disposables {
     disposeLater(_filter.onChange.listen(rebuild));
     disposeLater(_entries.onChange.listen(rebuildEntries));
 
-    _custom.onChange = () {
-      rebuild(null);
-    };
+    _customlist.onChange.listen(rebuild);
     rebuild(null);
   }
 

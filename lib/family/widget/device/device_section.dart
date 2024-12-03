@@ -1,4 +1,5 @@
 import 'package:common/common/dialog.dart';
+import 'package:common/common/module/customlist/customlist.dart';
 import 'package:common/common/module/filter/filter.dart';
 import 'package:common/common/navigation.dart';
 import 'package:common/common/widget/bottom_sheet.dart';
@@ -11,7 +12,6 @@ import 'package:common/common/widget/minicard/minicard.dart';
 import 'package:common/common/widget/stats/radial_segment.dart';
 import 'package:common/common/widget/theme.dart';
 import 'package:common/core/core.dart';
-import 'package:common/family/module/customlist_v3/customlist.dart';
 import 'package:common/family/module/device_v3/device.dart';
 import 'package:common/family/module/family/family.dart';
 import 'package:common/family/widget/home/link_device_sheet.dart';

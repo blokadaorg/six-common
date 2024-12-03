@@ -1,5 +1,6 @@
 import 'package:common/common/api/api.dart';
 import 'package:common/common/module/account/account.dart';
+import 'package:common/common/module/customlist/customlist.dart';
 import 'package:common/common/module/filter/filter.dart';
 import 'package:common/common/module/journal/journal.dart';
 import 'package:common/common/module/list/list.dart';
@@ -9,7 +10,6 @@ import 'package:common/common/module/support/support.dart';
 import 'package:common/common/widget/top_bar.dart';
 import 'package:common/core/core.dart';
 import 'package:common/family/module/auth/auth.dart';
-import 'package:common/family/module/customlist_v3/customlist.dart';
 import 'package:common/family/module/device_v3/device.dart';
 import 'package:common/family/module/family/family.dart';
 import 'package:common/family/module/perm/perm.dart';
