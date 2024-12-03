@@ -2,6 +2,7 @@ import 'package:common/core/core.dart';
 import 'package:common/platform/stage/stage.dart';
 import 'package:common/v6/widget/home/home_section.dart';
 import 'package:common/v6/widget/home/stats/stats_section.dart';
+import 'package:common/v6/widget/tab/tab.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -87,33 +88,15 @@ class _V6HomeScreenState extends State<V6HomeScreen> with Logging {
                 children: _getPages(),
               ),
               // Journal screen
-              Text("Journal"),
-              Text("Packs"),
-              Text("Settings"),
+              const Text("Journal"),
+              const Text("Packs"),
+              const Text("Settings"),
             ],
           ),
-          Column(
+          const Column(
             children: [
               Spacer(),
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => _stage.setRoute("home", Markers.userTap),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("Home"),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => _stage.setRoute("activity", Markers.userTap),
-                    child: Text("Activity"),
-                  ),
-                  GestureDetector(
-                    onTap: () => _stage.setRoute("advanced", Markers.userTap),
-                    child: Text("Advanced"),
-                  ),
-                ],
-              ),
+              TabWidget(),
             ],
           )
         ],
