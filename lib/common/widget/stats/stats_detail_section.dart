@@ -27,19 +27,22 @@ class StatsDetailSection extends StatefulWidget {
 }
 
 class StatsDetailSectionState extends State<StatsDetailSection> with Logging {
-  final _profile = DI.get<ProfileActor>();
-  final _filter = DI.get<FilterActor>();
-  final _custom = DI.get<CustomlistActor>();
+  late final _profile = DI.get<ProfileActor>();
+  late final _filter = DI.get<FilterActor>();
+  late final _custom = DI.get<CustomlistActor>();
 
   late JsonProfile? profile;
 
   @override
   void initState() {
     super.initState();
-    try {
-      profile = _profile.get(widget.entry.profileId!);
-    } catch (e) {
-      profile = null;
+
+    if (widget.entry.profileId != null) {
+      try {
+        profile = _profile.get(widget.entry.profileId!);
+      } catch (e) {
+        profile = null;
+      }
     }
   }
 
