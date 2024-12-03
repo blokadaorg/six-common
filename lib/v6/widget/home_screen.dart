@@ -92,19 +92,27 @@ class _V6HomeScreenState extends State<V6HomeScreen> with Logging {
               Text("Settings"),
             ],
           ),
-          Row(
+          Column(
             children: [
-              GestureDetector(
-                onTap: () => _stage.setRoute("home", Markers.userTap),
-                child: Text("Home"),
-              ),
-              GestureDetector(
-                onTap: () => _stage.setRoute("activity", Markers.userTap),
-                child: Text("Activity"),
-              ),
-              GestureDetector(
-                onTap: () => _stage.setRoute("advanced", Markers.userTap),
-                child: Text("Advanced"),
+              Spacer(),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => _stage.setRoute("home", Markers.userTap),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Home"),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => _stage.setRoute("activity", Markers.userTap),
+                    child: Text("Activity"),
+                  ),
+                  GestureDetector(
+                    onTap: () => _stage.setRoute("advanced", Markers.userTap),
+                    child: Text("Advanced"),
+                  ),
+                ],
               ),
             ],
           )
