@@ -10,4 +10,9 @@ class JournalApi {
     });
     return _marshal.toEndpoint(response).activity;
   }
+
+  Future<List<JsonJournalEntry>> fetchForV6(Marker m) async {
+    final response = await _api.get(ApiEndpoint.getJournalV2, m);
+    return _marshal.toEndpoint(response).activity;
+  }
 }

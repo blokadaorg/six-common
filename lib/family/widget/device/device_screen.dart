@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:common/common/dialog.dart';
 import 'package:common/common/module/filter/filter.dart';
 import 'package:common/common/navigation.dart';
 import 'package:common/common/widget/common_clickable.dart';
+import 'package:common/common/widget/stats/stats_filter.dart';
 import 'package:common/common/widget/stats/stats_section.dart';
 import 'package:common/common/widget/theme.dart';
 import 'package:common/common/widget/with_top_bar.dart';
@@ -27,7 +27,7 @@ class DeviceScreen extends StatefulWidget {
 
 class DeviceScreenState extends State<DeviceScreen> {
   late final _family = DI.get<FamilyDevicesValue>();
-  late final _journal = DI.get<JournalActor>();
+  late final _filter = DI.get<JournalFilterValue>();
   late final _selectedFilters = DI.get<SelectedFilters>();
 
   Paths _path = Paths.deviceStats;
@@ -119,8 +119,7 @@ class DeviceScreenState extends State<DeviceScreen> {
     return CommonClickable(
         onTap: () {
           showStatsFilterDialog(context, onConfirm: (filter) {
-            _journal.filter = filter;
-            _journal.fetch(widget.tag, Markers.userTap);
+            _filter.now = filter;
           });
         },
         child: Text(

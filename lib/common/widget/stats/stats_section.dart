@@ -20,35 +20,35 @@ class StatsSection extends StatefulWidget {
   State<StatefulWidget> createState() => StatsSectionState();
 }
 
-class StatsSectionState extends State<StatsSection> {
+class StatsSectionState extends State<StatsSection> with Disposables {
   late final _journal = DI.get<JournalActor>();
+  late final _filter = DI.get<JournalFilterValue>();
+  late final _entries = DI.get<JournalEntriesValue>();
   late final _custom = DI.get<CustomlistActor>();
 
   bool _isReady = false;
-  late List<UiJournalEntry> _entries;
 
   @override
   void initState() {
     super.initState();
-    _journal.onChange = () {
-      if (!mounted) return;
-      setState(() {
-        _isReady = true;
-        _entries = _journal.filteredEntries;
-      });
-    };
+    disposeLater(_filter.onChange.listen(rebuildFilter));
+    disposeLater(_entries.onChange.listen(rebuildEntries));
+
     _custom.onChange = () {
-      _reload();
+      rebuildFilter(null);
     };
-    _reload();
+    //_reload();
   }
 
-  _reload() async {
+  rebuildFilter(dynamic it) async {
     if (!mounted) return;
-    await _journal.fetch(widget.deviceTag, Markers.stats);
+    await _journal.fetch(Markers.stats, tag: widget.deviceTag);
+  }
+
+  rebuildEntries(dynamic it) {
+    if (!mounted) return;
     setState(() {
       _isReady = true;
-      _entries = _journal.filteredEntries;
     });
   }
 
@@ -70,7 +70,7 @@ class StatsSectionState extends State<StatsSection> {
                 height: 12,
               ),
             ] +
-            (!_isReady || _entries.isEmpty
+            (!_isReady || _entries.now.isEmpty
                 ? _buildEmpty(context)
                 : _buildItems(context)) +
             [
@@ -89,12 +89,12 @@ class StatsSectionState extends State<StatsSection> {
   }
 
   List<Widget> _buildItems(BuildContext context) {
-    return _entries.mapIndexed((index, it) {
+    return _entries.now.mapIndexed((index, it) {
       return Container(
         color: context.theme.bgMiniCard,
         child: Column(children: [
           ActivityItem(entry: it),
-          index < _entries.length - 1
+          index < _entries.now.length - 1
               ? const CommonDivider(indent: 60)
               : Container(),
         ]),

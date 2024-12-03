@@ -37,7 +37,7 @@ class StatsDetailSectionState extends State<StatsDetailSection> with Logging {
   void initState() {
     super.initState();
     try {
-      profile = _profile.get(widget.entry.profileId);
+      profile = _profile.get(widget.entry.profileId!);
     } catch (e) {
       profile = null;
     }

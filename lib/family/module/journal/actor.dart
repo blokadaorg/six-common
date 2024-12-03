@@ -10,15 +10,24 @@ class JournalActor with Logging, Actor {
   late final _api = DI.get<JournalApi>();
   late final _custom = DI.get<CustomStore>();
 
-  JournalFilter filter = _noFilter;
+  late final filteredEntries = DI.get<JournalEntriesValue>();
+  late final filter = DI.get<JournalFilterValue>();
+
   List<UiJournalEntry> allEntries = [];
-  List<UiJournalEntry> filteredEntries = [];
 
-  Function() onChange = () {};
-
-  fetch(DeviceTag tag, Marker m) async {
+  fetch(Marker m, {DeviceTag? tag}) async {
     await log(m).trace("fetch", (m) async {
-      final entries = await _api.fetch(m, tag);
+      if (act.isFamily && tag == null) {
+        throw Exception("Family must provide a tag");
+      }
+
+      List<JsonJournalEntry> entries;
+      if (act.isFamily) {
+        entries = await _api.fetch(m, tag!);
+      } else {
+        entries = await _api.fetchForV6(m);
+      }
+
       final mapped =
           entries.map((e) => UiJournalEntry.fromJsonEntry(e)).toList();
 
@@ -55,14 +64,8 @@ class JournalActor with Logging, Actor {
       }
 
       allEntries = grouped;
-      filteredEntries = filter.apply(allEntries);
-
+      filteredEntries.now = filter.now.apply(allEntries);
       await _custom.fetch(m);
-      onChange();
     });
-  }
-
-  resetFilter() {
-    filter = _noFilter;
   }
 }

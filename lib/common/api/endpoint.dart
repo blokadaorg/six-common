@@ -40,6 +40,9 @@ enum ApiEndpoint {
     ApiParam.accountId,
     ApiParam.deviceTag,
   ]),
+  getJournalV2("v2/activity", params: [
+    ApiParam.accountId,
+  ]),
   postToken("v3/auth/token", type: "POST"),
   postTokenRefresh("v3/auth/token/refresh", type: "POST"),
   getTokenInfo("v3/auth/token/info"),

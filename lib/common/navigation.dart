@@ -4,6 +4,7 @@ import 'package:common/common/route.dart';
 import 'package:common/common/widget/common_clickable.dart';
 import 'package:common/common/widget/settings/exceptions_section.dart';
 import 'package:common/common/widget/settings/settings_screen.dart';
+import 'package:common/common/widget/stats/stats_filter.dart';
 import 'package:common/common/widget/stats/stats_section.dart';
 import 'package:common/common/widget/support/support_screen.dart';
 import 'package:common/common/widget/theme.dart';
@@ -52,7 +53,7 @@ double getTopPadding(BuildContext context) {
 }
 
 class Navigation with Logging {
-  late final journal = DI.get<JournalActor>();
+  late final _filter = DI.get<JournalFilterValue>();
   late final _custom = DI.get<CustomStore>();
 
   static late bool isTabletMode;
@@ -147,8 +148,7 @@ class Navigation with Logging {
     return CommonClickable(
         onTap: () {
           showStatsFilterDialog(context, onConfirm: (filter) {
-            journal.filter = filter;
-            journal.fetch(tag, Markers.userTap);
+            _filter.now = filter;
           });
         },
         child: Text(
@@ -180,7 +180,7 @@ class Navigation with Logging {
 }
 
 class NavigationPopObserver extends NavigatorObserver {
-  late final _journal = DI.get<JournalActor>();
+  late final _filter = DI.get<JournalFilterValue>();
   late final _unread = DI.get<SupportUnreadActor>();
 
   @override
@@ -191,7 +191,7 @@ class NavigationPopObserver extends NavigatorObserver {
 
       // Resets journal filter when leaving device section
       if (r.name == Paths.device.path && p.name == Paths.home.path) {
-        _journal.resetFilter();
+        _filter.reset();
       }
 
       // Resets some flag when leaving support section
