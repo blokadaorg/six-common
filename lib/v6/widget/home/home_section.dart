@@ -14,16 +14,16 @@ import 'power_button.dart';
 
 const pathHomeStats = "home/stats";
 
-class HomeScreen extends StatefulWidget {
-  HomeScreen({Key? key}) : super(key: key);
+class V6HomeSection extends StatefulWidget {
+  V6HomeSection({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return HomeScreenState();
+    return V6HomeSectionState();
   }
 }
 
-class HomeScreenState extends State<HomeScreen>
+class V6HomeSectionState extends State<V6HomeSection>
     with TickerProviderStateMixin, Logging, Disposables {
   final _app = DI.get<AppStore>();
   final _stage = DI.get<StageStore>();

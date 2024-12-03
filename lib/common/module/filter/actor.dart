@@ -205,7 +205,7 @@ class FilterActor with Logging, Actor {
   _reconfigure(Marker m) async {
     final filters = _knownFilters.get();
     final selectedFilters = await _selectedFilters.now();
-    final userConfig = _userConfig.now;
+    final userConfig = _userConfig.present;
 
     // 1. figure out how to activate each filter
     Set<ListHashId> shouldBeLists = {};

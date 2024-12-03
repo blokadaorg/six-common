@@ -2,11 +2,11 @@ import 'package:common/common/widget/app.dart';
 import 'package:common/core/core.dart';
 import 'package:common/modules.dart';
 import 'package:common/platform/stage/stage.dart';
+import 'package:common/v6/widget/home_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'platform/command/channel.pg.dart';
 import 'platform/command/command.dart';
-import 'v6/widget/scaffolding.dart';
 
 void main() async {
   // Needed for the MethodChannels
@@ -24,7 +24,7 @@ void main() async {
   command.onCommandWithParam(CommandName.route.name, "home", Markers.start);
 
   runApp(BlokadaApp(
-    content: const Scaffolding(title: 'Blokada'),
+    content: const V6HomeScreen(),
   ));
 
   MockedStart().start();

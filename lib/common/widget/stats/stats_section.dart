@@ -31,16 +31,17 @@ class StatsSectionState extends State<StatsSection> with Disposables {
   @override
   void initState() {
     super.initState();
-    disposeLater(_filter.onChange.listen(rebuildFilter));
+    disposeLater(_filter.onChange.listen(rebuild));
     disposeLater(_entries.onChange.listen(rebuildEntries));
 
     _custom.onChange = () {
-      rebuildFilter(null);
+      rebuild(null);
     };
-    //_reload();
+    rebuild(null);
   }
 
-  rebuildFilter(dynamic it) async {
+  @override
+  rebuild(dynamic it) async {
     if (!mounted) return;
     await _journal.fetch(Markers.stats, tag: widget.deviceTag);
   }

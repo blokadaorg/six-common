@@ -12,12 +12,12 @@ import 'package:i18n_extension/i18n_extension.dart';
 import 'package:provider/provider.dart';
 
 class BlokadaApp extends StatelessWidget {
-  final Widget? content;
+  final Widget content;
   late final ctrl = DI.get<TopBarController>();
 
   late final nav = NavigationPopObserver();
 
-  BlokadaApp({Key? key, this.content}) : super(key: key);
+  BlokadaApp({Key? key, required this.content}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -160,12 +160,15 @@ class BlokadaApp extends StatelessWidget {
 }
 
 class MainScreen extends StatefulWidget {
-  final Widget? content;
+  final Widget content;
   final TopBarController ctrl;
   final NavigationPopObserver nav;
 
   const MainScreen(
-      {super.key, this.content, required this.ctrl, required this.nav});
+      {super.key,
+      required this.content,
+      required this.ctrl,
+      required this.nav});
 
   @override
   State<StatefulWidget> createState() => MainScreenState();

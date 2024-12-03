@@ -1,5 +1,6 @@
 import 'package:common/common/widget/app.dart';
 import 'package:common/core/core.dart';
+import 'package:common/family/widget/home/home_screen.dart';
 import 'package:common/mocked-deps.dart';
 import 'package:common/modules.dart';
 import 'package:common/platform/stage/stage.dart';
@@ -25,7 +26,7 @@ void main() async {
   command.onCommandWithParam(CommandName.route.name, "home", Markers.start);
 
   runApp(BlokadaApp(
-    content: null,
+    content: const FamilyHomeScreen(),
   ));
 
   MockedStart().start();

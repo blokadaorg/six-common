@@ -10,11 +10,10 @@ import 'package:common/platform/app/app.dart';
 import 'package:common/platform/app/channel.pg.dart';
 import 'package:common/platform/stage/stage.dart';
 import 'package:common/platform/stats/stats.dart';
+import 'package:common/v6/widget/home/home.dart';
+import 'package:common/v6/widget/home/home_section.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart' as mobx;
-
-import 'home.dart';
-import 'home_screen.dart';
 
 class HomeCounter2 extends StatefulWidget {
   HomeCounter2({Key? key}) : super(key: key);

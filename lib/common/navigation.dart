@@ -16,7 +16,6 @@ import 'package:common/family/module/family/family.dart';
 import 'package:common/family/module/journal/journal.dart';
 import 'package:common/family/widget/device/device_screen.dart';
 import 'package:common/family/widget/filters_section.dart';
-import 'package:common/family/widget/home/home_screen.dart';
 import 'package:common/family/widget/stats_detail_section.dart';
 import 'package:common/platform/custom/custom.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +72,7 @@ class Navigation with Logging {
   }
 
   StandardRoute generateRoute(BuildContext context, RouteSettings settings,
-      {Widget? homeContent}) {
+      {required Widget homeContent}) {
     if (settings.name == Paths.device.path) {
       final device = settings.arguments as FamilyDevice;
       return StandardRoute(
@@ -139,9 +138,7 @@ class Navigation with Logging {
           settings: settings, builder: (context) => const SupportScreen());
     }
 
-    return StandardRoute(
-        settings: settings,
-        builder: (context) => homeContent ?? const HomeScreen());
+    return StandardRoute(settings: settings, builder: (context) => homeContent);
   }
 
   Widget? _getStatsAction(BuildContext context, DeviceTag tag) {

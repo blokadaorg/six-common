@@ -2,8 +2,9 @@ import 'dart:io' as io;
 
 import 'package:common/common/widget/app.dart';
 import 'package:common/core/core.dart';
+import 'package:common/family/widget/home/home_screen.dart';
 import 'package:common/modules.dart';
-import 'package:common/v6/widget/scaffolding.dart';
+import 'package:common/v6/widget/home_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,8 +42,9 @@ void main() async {
   // depend(ws);
   // ws.handle();
 
-  runApp(BlokadaApp(
-    content:
-        (flavor == Flavor.family) ? null : const Scaffolding(title: 'Blokada'),
-  ));
+  final home = (flavor == Flavor.family)
+      ? const FamilyHomeScreen()
+      : const V6HomeScreen();
+
+  runApp(BlokadaApp(content: home));
 }

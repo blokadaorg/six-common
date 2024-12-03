@@ -1,5 +1,6 @@
 import 'package:common/common/widget/app.dart';
 import 'package:common/core/core.dart';
+import 'package:common/family/widget/home/home_screen.dart';
 import 'package:common/modules.dart';
 import 'package:common/platform/command/command.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ void main() async {
   DI.register(ws);
   ws.handle();
 
-  runApp(BlokadaApp(content: null));
+  runApp(BlokadaApp(content: const FamilyHomeScreen()));
 }
 
 class DevWebsocket {
