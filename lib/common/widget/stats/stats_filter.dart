@@ -1,8 +1,8 @@
 import 'package:common/common/dialog.dart';
+import 'package:common/common/module/journal/journal.dart';
 import 'package:common/common/widget/common_item.dart';
 import 'package:common/common/widget/theme.dart';
 import 'package:common/core/core.dart';
-import 'package:common/family/module/journal/journal.dart';
 import 'package:common/family/widget/profile/profile_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

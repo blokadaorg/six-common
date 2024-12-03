@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:common/common/module/filter/filter.dart';
+import 'package:common/common/module/journal/journal.dart';
 import 'package:common/common/navigation.dart';
 import 'package:common/common/widget/common_clickable.dart';
+import 'package:common/common/widget/stats/stats_detail_section.dart';
 import 'package:common/common/widget/stats/stats_filter.dart';
 import 'package:common/common/widget/stats/stats_section.dart';
 import 'package:common/common/widget/theme.dart';
@@ -10,10 +12,8 @@ import 'package:common/common/widget/with_top_bar.dart';
 import 'package:common/core/core.dart';
 import 'package:common/family/module/device_v3/device.dart';
 import 'package:common/family/module/family/family.dart';
-import 'package:common/family/module/journal/journal.dart';
 import 'package:common/family/widget/device/device_section.dart';
 import 'package:common/family/widget/filters_section.dart';
-import 'package:common/family/widget/stats_detail_section.dart';
 import 'package:flutter/material.dart';
 
 class DeviceScreen extends StatefulWidget {

@@ -1,6 +1,7 @@
 import 'package:common/common/api/api.dart';
 import 'package:common/common/module/account/account.dart';
 import 'package:common/common/module/filter/filter.dart';
+import 'package:common/common/module/journal/journal.dart';
 import 'package:common/common/module/list/list.dart';
 import 'package:common/common/module/lock/lock.dart';
 import 'package:common/common/module/rate/rate.dart';
@@ -11,7 +12,6 @@ import 'package:common/family/module/auth/auth.dart';
 import 'package:common/family/module/customlist_v3/customlist.dart';
 import 'package:common/family/module/device_v3/device.dart';
 import 'package:common/family/module/family/family.dart';
-import 'package:common/family/module/journal/journal.dart';
 import 'package:common/family/module/perm/perm.dart';
 import 'package:common/family/module/profile/profile.dart';
 import 'package:common/family/module/stats/stats.dart';
@@ -60,15 +60,15 @@ class Modules with Logging {
     await _registerModule(ApiModule());
     await _registerModule(ListModule());
     await _registerModule(FilterModule());
+    await _registerModule(JournalModule());
+    await _registerModule(CustomlistModule());
 
     // Then family-only deps (for now at least)
     if (act.isFamily) {
       await _registerModule(ProfileModule());
-      await _registerModule(CustomlistModule());
       await _registerModule(DeviceModule());
       await _registerModule(AuthModule());
       await _registerModule(StatsModule());
-      await _registerModule(JournalModule());
       await _registerModule(PermModule());
       await _registerModule(SupportModule());
     }

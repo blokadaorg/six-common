@@ -1,3 +1,4 @@
+import 'package:common/common/widget/stats/stats_section.dart';
 import 'package:common/core/core.dart';
 import 'package:common/platform/stage/stage.dart';
 import 'package:common/v6/widget/home/home_section.dart';
@@ -88,7 +89,7 @@ class _V6HomeScreenState extends State<V6HomeScreen> with Logging {
                 children: _getPages(),
               ),
               // Journal screen
-              const Text("Journal"),
+              StatsSection(deviceTag: null),
               const Text("Packs"),
               const Text("Settings"),
             ],
