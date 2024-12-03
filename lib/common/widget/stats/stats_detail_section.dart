@@ -31,7 +31,7 @@ class StatsDetailSectionState extends State<StatsDetailSection> with Logging {
   late final _filter = DI.get<FilterActor>();
   late final _custom = DI.get<CustomlistActor>();
 
-  late JsonProfile? profile;
+  JsonProfile? profile;
 
   @override
   void initState() {
