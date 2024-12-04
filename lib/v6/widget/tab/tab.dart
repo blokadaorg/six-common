@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:common/common/widget/theme.dart';
+import 'package:common/common/widget/top_bar.dart';
 import 'package:common/core/core.dart';
 import 'package:common/platform/stage/stage.dart';
 import 'package:common/v6/widget/tab/tab_item.dart';
@@ -16,6 +17,7 @@ class TabWidget extends StatefulWidget {
 
 class _TabState extends State<TabWidget> with Disposables {
   final _stage = DI.get<StageStore>();
+  final _nav = DI.get<TopBarController>();
 
   StageTab _active = StageTab.home;
 
@@ -45,6 +47,7 @@ class _TabState extends State<TabWidget> with Disposables {
       _active = tab;
     });
 
+    _nav.navigatorKey.currentState!.popUntil((route) => route.isFirst);
     _stage.setRoute(tab.name, Markers.userTap);
   }
 
