@@ -6,6 +6,7 @@ import 'package:common/common/widget/stats/activity_item.dart';
 import 'package:common/common/widget/theme.dart';
 import 'package:common/core/core.dart';
 import 'package:common/family/module/device_v3/device.dart';
+import 'package:common/v6/widget/tab/tab_bar_compensation.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +14,11 @@ class StatsSection extends StatefulWidget {
   final DeviceTag? deviceTag;
   final bool primary;
 
-  const StatsSection({Key? key, required this.deviceTag, this.primary = true})
-      : super(key: key);
+  const StatsSection({
+    Key? key,
+    required this.deviceTag,
+    this.primary = true,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => StatsSectionState();
@@ -82,7 +86,8 @@ class StatsSectionState extends State<StatsSection> with Disposables {
                 ),
                 height: 12,
               ),
-            ],
+            ] +
+            [const TapBarCompensation()],
       ),
     );
   }

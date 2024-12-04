@@ -20,6 +20,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
   final Color textSecondary;
   final Color divider;
   final ChatTheme chatTheme;
+  final bool isFamily;
 
   const BlokadaTheme({
     required this.bgColor,
@@ -36,6 +37,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
     required this.textSecondary,
     required this.divider,
     required this.chatTheme,
+    required this.isFamily,
   });
 
   bool isDarkTheme() => textPrimary == Colors.white;
@@ -57,6 +59,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
     Color? textSecondary,
     Color? divider,
     ChatTheme? chatTheme,
+    bool? isFamily,
   }) =>
       BlokadaTheme(
         bgColor: bgColor ?? this.bgColor,
@@ -73,6 +76,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
         textSecondary: textSecondary ?? this.textSecondary,
         divider: divider ?? this.divider,
         chatTheme: chatTheme ?? this.chatTheme,
+        isFamily: isFamily ?? this.isFamily,
       );
 
   @override
@@ -95,6 +99,7 @@ class BlokadaTheme extends ThemeExtension<BlokadaTheme> {
       textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,
       divider: Color.lerp(divider, other.divider, t)!,
       chatTheme: other.chatTheme,
+      isFamily: other.isFamily,
     );
   }
 }

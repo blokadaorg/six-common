@@ -1,9 +1,9 @@
+import 'package:common/common/widget/settings/settings_section.dart';
 import 'package:common/common/widget/stats/stats_section.dart';
 import 'package:common/core/core.dart';
 import 'package:common/platform/stage/stage.dart';
 import 'package:common/v6/widget/home/home_section.dart';
 import 'package:common/v6/widget/home/stats/stats_section.dart';
-import 'package:common/v6/widget/tab/tab.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -63,6 +63,8 @@ class _V6HomeScreenState extends State<V6HomeScreen> with Logging {
           _screenCtrl.jumpToPage(1);
         } else if (_stage.route.isTab(StageTab.advanced)) {
           _screenCtrl.jumpToPage(2);
+        } else if (_stage.route.isTab(StageTab.settings)) {
+          _screenCtrl.jumpToPage(3);
         }
       });
     });
@@ -89,17 +91,11 @@ class _V6HomeScreenState extends State<V6HomeScreen> with Logging {
                 children: _getPages(),
               ),
               // Journal screen
-              StatsSection(deviceTag: null),
+              const StatsSection(deviceTag: null),
               const Text("Packs"),
-              const Text("Settings"),
+              const SettingsSection(),
             ],
           ),
-          const Column(
-            children: [
-              Spacer(),
-              TabWidget(),
-            ],
-          )
         ],
       ),
     );

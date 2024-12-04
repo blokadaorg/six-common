@@ -1,8 +1,10 @@
+import 'package:common/common/navigation.dart';
 import 'package:common/common/widget/app.dart';
+import 'package:common/common/widget/top_bar.dart';
 import 'package:common/core/core.dart';
 import 'package:common/modules.dart';
 import 'package:common/platform/stage/stage.dart';
-import 'package:common/v6/widget/home_screen.dart';
+import 'package:common/v6/widget/main_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'platform/command/channel.pg.dart';
@@ -23,8 +25,12 @@ void main() async {
   final CommandStore command = DI.get<CommandStore>();
   command.onCommandWithParam(CommandName.route.name, "home", Markers.start);
 
+  final ctrl = DI.get<TopBarController>();
+  final nav = NavigationPopObserver();
+
   runApp(BlokadaApp(
-    content: const V6HomeScreen(),
+    content: V6MainScreen(ctrl: ctrl, nav: nav),
+    isFamily: false,
   ));
 
   MockedStart().start();

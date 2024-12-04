@@ -22,22 +22,24 @@ class TabItem extends StatefulWidget {
 class TabItemState extends State<TabItem> {
   @override
   Widget build(BuildContext context) {
+    final color =
+        widget.active ? context.theme.accent : context.theme.textPrimary;
+
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
         padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            Icon(widget.icon,
-                color: widget.active
-                    ? context.theme.accent
-                    : context.theme.textPrimary),
-            Text(widget.title,
-                style: TextStyle(
-                    color: widget.active
-                        ? context.theme.accent
-                        : context.theme.textPrimary)),
-          ],
+        child: SizedBox(
+          height: 48,
+          child: Column(
+            children: [
+              Icon(
+                widget.icon,
+                color: color,
+              ),
+              Text(widget.title, style: TextStyle(color: color))
+            ],
+          ),
         ),
       ),
     );

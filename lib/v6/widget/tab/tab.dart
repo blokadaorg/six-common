@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:common/common/widget/theme.dart';
 import 'package:common/core/core.dart';
 import 'package:common/platform/stage/stage.dart';
@@ -24,67 +26,86 @@ class _TabState extends State<TabWidget> with Disposables {
   }
 
   _updateRoute(StageRouteState route, Marker m) async {
-    if (_stage.route.isTab(StageTab.home)) {
-      _active = StageTab.home;
-    } else if (_stage.route.isTab(StageTab.activity)) {
-      _active = StageTab.activity;
-    } else if (_stage.route.isTab(StageTab.advanced)) {
-      _active = StageTab.advanced;
-    } else if (_stage.route.isTab(StageTab.settings)) {
-      _active = StageTab.settings;
-    }
+    setState(() {
+      if (_stage.route.isTab(StageTab.home)) {
+        _active = StageTab.home;
+      } else if (_stage.route.isTab(StageTab.activity)) {
+        _active = StageTab.activity;
+      } else if (_stage.route.isTab(StageTab.advanced)) {
+        _active = StageTab.advanced;
+      } else if (_stage.route.isTab(StageTab.settings)) {
+        _active = StageTab.settings;
+      }
+    });
+  }
 
-    rebuild(null);
+  _tap(StageTab tab) {
+    // Instant UI feedback
+    setState(() {
+      _active = tab;
+    });
+
+    _stage.setRoute(tab.name, Markers.userTap);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.theme.bgColorCard,
-        boxShadow: [
-          BoxShadow(
-            color: context.theme.shadow,
-            spreadRadius: 0,
-            offset: const Offset(0, -1),
+    return SizedBox(
+      height: 94,
+      child: Stack(
+        children: [
+          ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 25,
+                sigmaY: 25,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.theme.panelBackground.withOpacity(0.2),
+                  border: Border(
+                    top: BorderSide(
+                      width: 1,
+                      color: context.theme.divider.withOpacity(0.05),
+                    ),
+                  ),
+                ),
+                height: 104,
+                //color: context.theme.divider.withOpacity(0.05),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TabItem(
+                    icon: Icons.shield_outlined,
+                    title: "main tab home".i18n,
+                    active: _active == StageTab.home,
+                    onTap: () => _tap(StageTab.home)),
+                TabItem(
+                    icon: CupertinoIcons.chart_bar,
+                    title: "main tab activity".i18n,
+                    active: _active == StageTab.activity,
+                    onTap: () => _tap(StageTab.activity)),
+                TabItem(
+                    icon: CupertinoIcons.cube_box,
+                    title: "main tab advanced".i18n,
+                    active: _active == StageTab.advanced,
+                    onTap: () {
+                      _stage.setRoute("advanced", Markers.userTap);
+                    }),
+                TabItem(
+                    icon: CupertinoIcons.settings,
+                    title: "main tab settings".i18n,
+                    active: _active == StageTab.settings,
+                    onTap: () => _tap(StageTab.settings)),
+              ],
+            ),
           ),
         ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 18, right: 18, bottom: 32, top: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            TabItem(
-                icon: Icons.shield_outlined,
-                title: "main tab home".i18n,
-                active: _active == StageTab.home,
-                onTap: () {
-                  _stage.setRoute("home", Markers.userTap);
-                }),
-            TabItem(
-                icon: CupertinoIcons.chart_bar,
-                title: "main tab activity".i18n,
-                active: _active == StageTab.activity,
-                onTap: () {
-                  _stage.setRoute("activity", Markers.userTap);
-                }),
-            TabItem(
-                icon: CupertinoIcons.cube_box,
-                title: "main tab advanced".i18n,
-                active: _active == StageTab.advanced,
-                onTap: () {
-                  _stage.setRoute("advanced", Markers.userTap);
-                }),
-            TabItem(
-                icon: CupertinoIcons.settings,
-                title: "main tab settings".i18n,
-                active: _active == StageTab.settings,
-                onTap: () {
-                  _stage.setRoute("settings", Markers.userTap);
-                }),
-          ],
-        ),
       ),
     );
   }

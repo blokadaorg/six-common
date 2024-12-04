@@ -1,10 +1,12 @@
 import 'dart:io' as io;
 
+import 'package:common/common/navigation.dart';
 import 'package:common/common/widget/app.dart';
+import 'package:common/common/widget/top_bar.dart';
 import 'package:common/core/core.dart';
-import 'package:common/family/widget/home/home_screen.dart';
+import 'package:common/family/widget/main_screen.dart';
 import 'package:common/modules.dart';
-import 'package:common/v6/widget/home_screen.dart';
+import 'package:common/v6/widget/main_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,9 +44,12 @@ void main() async {
   // depend(ws);
   // ws.handle();
 
-  final home = (flavor == Flavor.family)
-      ? const FamilyHomeScreen()
-      : const V6HomeScreen();
+  final ctrl = DI.get<TopBarController>();
+  final nav = NavigationPopObserver();
 
-  runApp(BlokadaApp(content: home));
+  final home = (flavor == Flavor.family)
+      ? FamilyMainScreen(ctrl: ctrl, nav: nav)
+      : V6MainScreen(ctrl: ctrl, nav: nav);
+
+  runApp(BlokadaApp(content: home, isFamily: flavor == Flavor.family));
 }

@@ -28,6 +28,8 @@ enum Paths {
   deviceStatsDetail("/device/stats/detail", true),
   settings("/settings", false),
   settingsExceptions("/settings/exceptions", true),
+  settingsAccount("/settings/account", true),
+  settingsRetention("/settings/retention", true),
   support("/support", false);
 
   final String path;

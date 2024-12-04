@@ -62,6 +62,7 @@ class Modules with Logging {
     await _registerModule(FilterModule());
     await _registerModule(JournalModule());
     await _registerModule(CustomlistModule());
+    await _registerModule(SupportModule());
 
     // Then family-only deps (for now at least)
     if (act.isFamily) {
@@ -70,7 +71,6 @@ class Modules with Logging {
       await _registerModule(AuthModule());
       await _registerModule(StatsModule());
       await _registerModule(PermModule());
-      await _registerModule(SupportModule());
     }
 
     await _registerModule(PlatformPersistenceModule());

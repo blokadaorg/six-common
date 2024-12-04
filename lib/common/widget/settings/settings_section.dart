@@ -14,6 +14,7 @@ import 'package:common/platform/command/command.dart';
 import 'package:common/platform/env/env.dart';
 import 'package:common/platform/link/channel.pg.dart';
 import 'package:common/platform/stage/stage.dart';
+import 'package:common/v6/widget/tab/tab_bar_compensation.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,12 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
               height: 96,
               child: Stack(
                 children: [
-                  const FamilyBgWidget(),
+                  Container(
+                    color: context.theme.bgColorCard,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                  context.theme.isFamily ? const FamilyBgWidget() : Container(),
                   Row(
                     children: [
                       Padding(
@@ -76,7 +82,9 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
                           width: 64,
                           height: 64,
                           child: Image.asset(
-                            "assets/images/family-logo.png",
+                            context.theme.isFamily
+                                ? "assets/images/family-logo.png"
+                                : "assets/images/blokada_logo.png",
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -102,6 +110,26 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
           CommonCard(
             child: Column(
               children: [
+                (!context.theme.isFamily)
+                    ? Column(
+                        children: [
+                          SettingsItem(
+                              icon: CupertinoIcons.person_crop_circle,
+                              text: "account action my account".i18n,
+                              onTap: () {
+                                Navigation.open(Paths.settingsAccount);
+                              }),
+                          const CommonDivider(),
+                          SettingsItem(
+                              icon: CupertinoIcons.chart_bar,
+                              text: "activity section header".i18n,
+                              onTap: () {
+                                Navigation.open(Paths.settingsRetention);
+                              }),
+                          const CommonDivider(),
+                        ],
+                      )
+                    : Container(),
                 // SettingsItem(
                 //     icon: CupertinoIcons.shield_lefthalf_fill,
                 //     text: "My exceptions",
@@ -200,6 +228,7 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
           Center(
               child: Text(_getAppVersion(),
                   style: TextStyle(color: context.theme.divider))),
+          const TapBarCompensation(),
         ],
       ),
     );

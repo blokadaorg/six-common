@@ -1,23 +1,21 @@
 import 'package:common/common/navigation.dart';
-import 'package:common/common/widget/overlay.dart';
 import 'package:common/common/widget/theme.dart';
-import 'package:common/common/widget/top_bar.dart';
 import 'package:common/core/core.dart';
-import 'package:common/family/widget/home/animated_bg.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:i18n_extension/i18n_extension.dart';
-import 'package:provider/provider.dart';
 
 class BlokadaApp extends StatelessWidget {
   final Widget content;
-  late final ctrl = DI.get<TopBarController>();
+  final bool isFamily;
 
-  late final nav = NavigationPopObserver();
-
-  BlokadaApp({Key? key, required this.content}) : super(key: key);
+  const BlokadaApp({
+    Key? key,
+    required this.content,
+    required this.isFamily,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +104,7 @@ class BlokadaApp extends StatelessWidget {
                 primaryColor: accentColor,
                 secondaryColor: Colors.white,
               ),
+              isFamily: isFamily,
             )
           }),
       darkTheme: FlexThemeData.dark(
@@ -143,6 +142,7 @@ class BlokadaApp extends StatelessWidget {
                 primaryColor: accentColor,
                 secondaryColor: Color(0xFF1C1C1E),
               ),
+              isFamily: isFamily,
             )
           }),
       home: Builder(builder: (context) {
@@ -151,60 +151,9 @@ class BlokadaApp extends StatelessWidget {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
           //child: I18n(child: content),
-          child:
-              I18n(child: MainScreen(content: content, ctrl: ctrl, nav: nav)),
+          child: I18n(child: content),
         );
       }),
-    );
-  }
-}
-
-class MainScreen extends StatefulWidget {
-  final Widget content;
-  final TopBarController ctrl;
-  final NavigationPopObserver nav;
-
-  const MainScreen(
-      {super.key,
-      required this.content,
-      required this.ctrl,
-      required this.nav});
-
-  @override
-  State<StatefulWidget> createState() => MainScreenState();
-}
-
-class MainScreenState extends State<MainScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ChangeNotifierProvider(
-        create: (context) => widget.ctrl,
-        child: Stack(
-          children: [
-            const AnimatedBg(),
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: PlatformInfo().isSmallAndroid(context) ? 44 : 0),
-              child: Navigator(
-                key: widget.ctrl.navigatorKey,
-                observers: [widget.ctrl, widget.nav],
-                onGenerateRoute: (settings) {
-                  return Navigation().generateRoute(context, settings,
-                      homeContent: widget.content);
-                },
-              ),
-            ),
-            const Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: TopCommonBar(),
-            ),
-            const OverlaySheet(),
-          ],
-        ),
-      ),
     );
   }
 }
