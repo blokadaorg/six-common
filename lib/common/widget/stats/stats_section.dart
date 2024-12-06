@@ -1,8 +1,10 @@
 import 'package:common/common/module/customlist/customlist.dart';
 import 'package:common/common/module/journal/journal.dart';
 import 'package:common/common/navigation.dart';
+import 'package:common/common/widget/common_clickable.dart';
 import 'package:common/common/widget/common_divider.dart';
 import 'package:common/common/widget/stats/activity_item.dart';
+import 'package:common/common/widget/stats/stats_filter.dart';
 import 'package:common/common/widget/theme.dart';
 import 'package:common/core/core.dart';
 import 'package:common/family/module/device_v3/device.dart';
@@ -66,19 +68,7 @@ class StatsSectionState extends State<StatsSection> with Disposables {
         children: [
               // Header for v6 or padding for Family
               (widget.isHeader)
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "main tab activity".i18n,
-                          style: const TextStyle(
-                            fontSize: 34.0, // Mimic large iOS-style header
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 24.0),
-                      ],
-                    )
+                  ? _buildHeaderForV6(context)
                   : SizedBox(height: getTopPadding(context)),
               // The rest of the screen
               Container(
@@ -107,6 +97,41 @@ class StatsSectionState extends State<StatsSection> with Disposables {
             ] +
             [const TapBarCompensation()],
       ),
+    );
+  }
+
+  Widget _buildHeaderForV6(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "main tab activity".i18n,
+              style: const TextStyle(
+                fontSize: 34.0, // Mimic large iOS-style header
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            CommonClickable(
+                onTap: () {
+                  showStatsFilterDialog(context, onConfirm: (filter) {
+                    _filter.now = filter;
+                  });
+                },
+                child: Text(
+                  "universal action search".i18n,
+                  style: TextStyle(
+                    color: context.theme.accent,
+                    fontSize: 17,
+                  ),
+                )),
+          ],
+        ),
+        const SizedBox(height: 24.0),
+      ],
     );
   }
 
