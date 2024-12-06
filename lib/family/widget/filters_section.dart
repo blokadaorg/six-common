@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:common/common/module/filter/filter.dart';
 import 'package:common/common/navigation.dart';
 import 'package:common/common/widget/filter/filter.dart';
+import 'package:common/common/widget/theme.dart';
 import 'package:common/core/core.dart';
 import 'package:common/family/module/profile/profile.dart';
 import 'package:common/family/widget/profile/profile_utils.dart';
@@ -111,8 +112,9 @@ class FiltersSectionState extends State<FiltersSection> with Logging {
   List<Widget> _buildFilters(BuildContext context) {
     final filters = <Widget>[];
     int i = 0;
+    final colors = context.theme.isFamily ? _cardColorsFamily : _cardColorsV6;
     for (final filter in _knownFilters.get()) {
-      final color = _cardColors.elementAtOrNull(i++);
+      final color = colors.elementAtOrNull(i++);
       final selected = _selectedFilters.present
               ?.firstWhereOrNull((it) => it.filterName == filter.filterName)
               ?.options ??
@@ -122,11 +124,22 @@ class FiltersSectionState extends State<FiltersSection> with Logging {
     return filters;
   }
 
-  final List<Color?> _cardColors = [
+  final List<Color?> _cardColorsFamily = [
     const Color(0xFFA9CCFE),
     null,
     const Color(0xFFF4B1C6),
-    const Color(0XFFFDB39C),
+    const Color(0xFFFDB39C),
+  ];
+
+  final List<Color?> _cardColorsV6 = [
+    const Color(0xFFFEC7A9),
+    null,
+    const Color(0xFFF4B1E1),
+    const Color(0xFFB1CCF4),
+    null,
+    const Color(0xFFB1F4C8),
+    null,
+    const Color(0xFFFDB39C),
   ];
 
   Widget _buildFilter(
