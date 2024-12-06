@@ -7,13 +7,19 @@ import 'package:common/common/widget/filter/filter.dart';
 import 'package:common/core/core.dart';
 import 'package:common/family/module/profile/profile.dart';
 import 'package:common/family/widget/profile/profile_utils.dart';
+import 'package:common/v6/widget/tab/tab_bar_compensation.dart';
 import 'package:flutter/material.dart';
 
 class FiltersSection extends StatefulWidget {
-  final String profileId;
+  final String? profileId;
   final bool primary;
+  final bool isHeader;
 
-  const FiltersSection({Key? key, required this.profileId, this.primary = true})
+  const FiltersSection(
+      {Key? key,
+      required this.profileId,
+      required this.isHeader,
+      this.primary = true})
       : super(key: key);
 
   @override
@@ -43,42 +49,63 @@ class FiltersSectionState extends State<FiltersSection> with Logging {
 
   @override
   Widget build(BuildContext context) {
-    profile = _profiles.get(widget.profileId);
+    List<Widget> header = [];
+    if (!widget.isHeader) {
+      profile = _profiles.get(widget.profileId!);
+      header = _buildFamilyHeader(context);
+    } else {
+      header = _buildV6Header(context);
+    }
 
     return ListView(
         primary: widget.primary,
-        children: <Widget>[
-              SizedBox(height: getTopPadding(context)),
-              Column(
-                children: [
-                  const SizedBox(height: 12),
-                  Icon(
-                    getProfileIcon(profile.template),
-                    size: 48,
-                    color: getProfileColor(profile.template),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                      "family profile template name"
-                          .i18n
-                          .withParams(profile.displayAlias.i18n),
-                      style: const TextStyle(
-                          fontSize: 28, fontWeight: FontWeight.w700)),
-
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     showRenameDialog(context, "profile", widget.profile);
-                  //   },
-                  //   child: Text("Edit",
-                  //       style: TextStyle(color: context.theme.family)),
-                  // ),
-                ],
-              ),
-              const SizedBox(height: 16),
-            ] +
-            _buildFilters(context) //+
+        children: header + _buildFilters(context) + [const TapBarCompensation()]
         //_buildFooter(context),
         );
+  }
+
+  List<Widget> _buildFamilyHeader(BuildContext context) {
+    return [
+      SizedBox(height: getTopPadding(context)),
+      Column(
+        children: [
+          const SizedBox(height: 12),
+          Icon(
+            getProfileIcon(profile.template),
+            size: 48,
+            color: getProfileColor(profile.template),
+          ),
+          const SizedBox(height: 8),
+          Text(
+              "family profile template name"
+                  .i18n
+                  .withParams(profile.displayAlias.i18n),
+              style:
+                  const TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
+        ],
+      ),
+      const SizedBox(height: 16),
+    ];
+  }
+
+  List<Widget> _buildV6Header(BuildContext context) {
+    return [
+      Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "main tab advanced".i18n,
+                style: const TextStyle(
+                  fontSize: 34.0, // Mimic large iOS-style header
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12.0),
+            ],
+          )),
+    ];
   }
 
   List<Widget> _buildFilters(BuildContext context) {

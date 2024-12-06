@@ -103,7 +103,8 @@ class Navigation with Logging {
         settings: settings,
         builder: (context) => WithTopBar(
           title: "family stats label blocklists".i18n,
-          child: FiltersSection(profileId: device.profile.profileId),
+          child: FiltersSection(
+              profileId: device.profile.profileId, isHeader: true),
         ),
       );
     }

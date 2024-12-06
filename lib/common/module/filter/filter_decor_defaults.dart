@@ -188,7 +188,7 @@ final _v6 = [
     creditUrl: "https://go.blokada.org/urlhaus",
   ),
   FilterDecor(
-    filterName: "1Hosts",
+    filterName: "1hosts",
     tags: ["official", "adblocking", "tracking"],
     title: "1Hosts",
     slug: "A blocklist for ads and tracking, updated regularly",

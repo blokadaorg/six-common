@@ -1,6 +1,7 @@
 import 'package:common/common/widget/settings/settings_section.dart';
 import 'package:common/common/widget/stats/stats_section.dart';
 import 'package:common/core/core.dart';
+import 'package:common/family/widget/filters_section.dart';
 import 'package:common/platform/stage/stage.dart';
 import 'package:common/v6/widget/home/home_section.dart';
 import 'package:common/v6/widget/home/stats/stats_section.dart';
@@ -92,7 +93,7 @@ class _V6HomeScreenState extends State<V6HomeScreen> with Logging {
               ),
               // Journal screen
               const StatsSection(deviceTag: null, isHeader: true),
-              const Text("Packs"),
+              const FiltersSection(profileId: null, isHeader: true),
               const SettingsSection(isHeader: true),
             ],
           ),
