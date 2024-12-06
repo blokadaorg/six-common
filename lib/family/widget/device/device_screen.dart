@@ -101,7 +101,8 @@ class DeviceScreenState extends State<DeviceScreen> {
   Widget _buildForPath(Paths path, FamilyDevice device, Object? arguments) {
     switch (path) {
       case Paths.deviceStats:
-        return StatsSection(deviceTag: widget.tag, primary: false);
+        return StatsSection(
+            deviceTag: widget.tag, primary: false, isHeader: false);
       case Paths.deviceStatsDetail:
         final entry = arguments as UiJournalEntry;
         return StatsDetailSection(entry: entry, primary: false);

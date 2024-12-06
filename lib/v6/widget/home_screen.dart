@@ -91,9 +91,9 @@ class _V6HomeScreenState extends State<V6HomeScreen> with Logging {
                 children: _getPages(),
               ),
               // Journal screen
-              const StatsSection(deviceTag: null),
+              const StatsSection(deviceTag: null, isHeader: true),
               const Text("Packs"),
-              const SettingsSection(),
+              const SettingsSection(isHeader: true),
             ],
           ),
         ],

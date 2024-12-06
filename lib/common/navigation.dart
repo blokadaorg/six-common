@@ -90,7 +90,8 @@ class Navigation with Logging {
         builder: (context) => WithTopBar(
           title: "activity section header".i18n,
           topBarTrailing: _getStatsAction(context, device.device.deviceTag),
-          child: StatsSection(deviceTag: device.device.deviceTag),
+          child:
+              StatsSection(deviceTag: device.device.deviceTag, isHeader: false),
         ),
       );
     }

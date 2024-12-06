@@ -45,7 +45,7 @@ class SettingsScreenState extends State<SettingsScreen> with Logging {
   Widget _buildForPhone(BuildContext context) {
     return WithTopBar(
       title: "account action my account".i18n,
-      child: const SettingsSection(),
+      child: const SettingsSection(isHeader: false),
     );
   }
 
@@ -58,7 +58,7 @@ class SettingsScreenState extends State<SettingsScreen> with Logging {
         children: [
           const Expanded(
             flex: 1,
-            child: SettingsSection(),
+            child: SettingsSection(isHeader: false),
           ),
           Expanded(
             flex: 1,

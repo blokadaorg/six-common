@@ -1,7 +1,7 @@
 import 'package:common/common/widget/theme.dart';
 import 'package:flutter/material.dart';
 
-const _tabBarHeight = 88.0;
+const _tabBarHeight = 80.0;
 
 class TapBarCompensation extends StatelessWidget {
   const TapBarCompensation({Key? key}) : super(key: key);

@@ -23,7 +23,9 @@ import 'package:pinput/pinput.dart';
 import '../../module/lock/lock.dart';
 
 class SettingsSection extends StatefulWidget {
-  const SettingsSection({super.key});
+  final bool isHeader;
+
+  const SettingsSection({super.key, required this.isHeader});
 
   @override
   State<StatefulWidget> createState() => SettingsState();
@@ -60,7 +62,23 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
       child: ListView(
         primary: true,
         children: [
-          SizedBox(height: getTopPadding(context)),
+          // Header for v6 or padding for Family
+          (widget.isHeader)
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "main tab settings".i18n,
+                      style: const TextStyle(
+                        fontSize: 34.0, // Mimic large iOS-style header
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 24.0),
+                  ],
+                )
+              : SizedBox(height: getTopPadding(context)),
+          // The rest of the screen
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: SizedBox(
@@ -95,7 +113,10 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall!
-                                .copyWith(color: Colors.white)),
+                                .copyWith(
+                                    color: context.theme.isFamily
+                                        ? Colors.white
+                                        : context.theme.textPrimary)),
                       ),
                       const SizedBox(width: 16),
                     ],

@@ -13,10 +13,12 @@ import 'package:flutter/material.dart';
 class StatsSection extends StatefulWidget {
   final DeviceTag? deviceTag;
   final bool primary;
+  final bool isHeader;
 
   const StatsSection({
     Key? key,
     required this.deviceTag,
+    required this.isHeader,
     this.primary = true,
   }) : super(key: key);
 
@@ -62,7 +64,23 @@ class StatsSectionState extends State<StatsSection> with Disposables {
       child: ListView(
         primary: widget.primary,
         children: [
-              SizedBox(height: getTopPadding(context)),
+              // Header for v6 or padding for Family
+              (widget.isHeader)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "main tab activity".i18n,
+                          style: const TextStyle(
+                            fontSize: 34.0, // Mimic large iOS-style header
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 24.0),
+                      ],
+                    )
+                  : SizedBox(height: getTopPadding(context)),
+              // The rest of the screen
               Container(
                 decoration: BoxDecoration(
                   color: context.theme.bgMiniCard,
