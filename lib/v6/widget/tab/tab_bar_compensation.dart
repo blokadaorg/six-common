@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 
 const _tabBarHeight = 80.0;
 
-class TapBarCompensation extends StatelessWidget {
-  TapBarCompensation({Key? key}) : super(key: key);
+class TapBarCompensation extends StatefulWidget {
+  const TapBarCompensation({Key? key}) : super(key: key);
 
   @override
+  State<TapBarCompensation> createState() => _TapBarCompensationState();
+}
+
+class _TapBarCompensationState extends State<TapBarCompensation> {
+  @override
   Widget build(BuildContext context) {
-    if (Core.act.isFamily) return Container();
+    if (Core.act.isFamily) return const SizedBox.shrink();
     return SizedBox(height: context.isKeyboardOpened ? 0 : _tabBarHeight);
   }
 }
