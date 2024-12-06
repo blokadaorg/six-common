@@ -142,6 +142,13 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
                               }),
                           const CommonDivider(),
                           SettingsItem(
+                              icon: CupertinoIcons.shield_lefthalf_fill,
+                              text: "My exceptions",
+                              onTap: () {
+                                Navigation.open(Paths.settingsExceptions);
+                              }),
+                          const CommonDivider(),
+                          SettingsItem(
                               icon: CupertinoIcons.chart_bar,
                               text: "activity section header".i18n,
                               onTap: () {
@@ -151,13 +158,6 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
                         ],
                       )
                     : Container(),
-                // SettingsItem(
-                //     icon: CupertinoIcons.shield_lefthalf_fill,
-                //     text: "My exceptions",
-                //     onTap: () {
-                //       Navigation.open(Paths.settingsExceptions);
-                //     }),
-                // const CommonDivider(),
                 SettingsItem(
                     icon: CupertinoIcons.ellipsis,
                     text: "family settings lock pin".i18n,
