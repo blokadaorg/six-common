@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:collection/collection.dart';
 import 'package:common/common/module/filter/filter.dart';
 import 'package:common/common/navigation.dart';
@@ -27,25 +25,24 @@ class FiltersSection extends StatefulWidget {
   State<StatefulWidget> createState() => FiltersSectionState();
 }
 
-class FiltersSectionState extends State<FiltersSection> with Logging {
+class FiltersSectionState extends State<FiltersSection>
+    with Logging, Disposables {
   late final _knownFilters = Core.get<KnownFilters>();
   late final _profiles = Core.get<ProfileActor>();
   late final _selectedFilters = Core.get<SelectedFilters>();
 
   late JsonProfile profile;
 
-  late StreamSubscription _subscription;
-
   @override
   void initState() {
     super.initState();
-    _subscription = _selectedFilters.onChange.listen((_) => setState(() {}));
+    disposeLater(_selectedFilters.onChange.listen(rebuild));
   }
 
   @override
   void dispose() {
-    _subscription.cancel();
     super.dispose();
+    disposeAll();
   }
 
   @override

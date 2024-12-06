@@ -3,7 +3,6 @@ import 'package:common/common/widget/theme.dart';
 import 'package:common/core/core.dart';
 import 'package:common/platform/app/app.dart';
 import 'package:common/platform/app/channel.pg.dart';
-import 'package:common/platform/stage/channel.pg.dart';
 import 'package:common/platform/stage/stage.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -110,8 +109,8 @@ class V6HomeSectionState extends State<V6HomeSection>
                           HomeIcon(
                             icon: Icons.help_outline,
                             onTap: () {
-                              _stage.showModal(
-                                  StageModal.help, Markers.userTap);
+                              _stage.setRoute(
+                                  StageTab.settings.name, Markers.userTap);
                             },
                           ),
                         ],

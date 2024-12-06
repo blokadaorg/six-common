@@ -38,6 +38,12 @@ class FamilyHomeScreenState extends State<FamilyHomeScreen>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    disposeAll();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final phase = _phase.now;
     final deviceCount = _devices.now.entries.length;

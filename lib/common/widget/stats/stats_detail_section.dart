@@ -152,54 +152,7 @@ class StatsDetailSectionState extends State<StatsDetailSection> with Logging {
                           height: 40,
                         ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("family stats label profile".i18n,
-                              style: TextStyle(
-                                  color: context.theme.textSecondary,
-                                  fontSize: 12)),
-                          profile != null
-                              ? Row(
-                                  children: [
-                                    Icon(getProfileIcon(profile!.template),
-                                        color:
-                                            getProfileColor(profile!.template),
-                                        size: 20),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      profile!.displayAlias.i18n,
-                                      style: TextStyle(
-                                        color:
-                                            getProfileColor(profile!.template),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                  ],
-                                )
-                              : Row(
-                                  children: [
-                                    Icon(CupertinoIcons.question_circle,
-                                        color: context.theme.textSecondary,
-                                        size: 20),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      "family stats label profile unknown".i18n,
-                                      style: TextStyle(
-                                        color: context.theme.textSecondary,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                  ],
-                                ),
-                        ],
-                      ),
+                      _buildProfileInfo(context),
                     ],
                   ),
                 ],
@@ -271,6 +224,53 @@ class StatsDetailSectionState extends State<StatsDetailSection> with Logging {
           const TapBarCompensation(),
         ],
       ),
+    );
+  }
+
+  Widget _buildProfileInfo(BuildContext context) {
+    if (!Core.act.isFamily) return Container();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("family stats label profile".i18n,
+            style: TextStyle(color: context.theme.textSecondary, fontSize: 12)),
+        profile != null
+            ? Row(
+                children: [
+                  Icon(getProfileIcon(profile!.template),
+                      color: getProfileColor(profile!.template), size: 20),
+                  const SizedBox(width: 4),
+                  Text(
+                    profile!.displayAlias.i18n,
+                    style: TextStyle(
+                      color: getProfileColor(profile!.template),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
+              )
+            : Row(
+                children: [
+                  Icon(CupertinoIcons.question_circle,
+                      color: context.theme.textSecondary, size: 20),
+                  const SizedBox(width: 4),
+                  Text(
+                    "family stats label profile unknown".i18n,
+                    style: TextStyle(
+                      color: context.theme.textSecondary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
+              ),
+      ],
     );
   }
 }
