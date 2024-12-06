@@ -104,7 +104,6 @@ class BlokadaApp extends StatelessWidget {
                 primaryColor: accentColor,
                 secondaryColor: Colors.white,
               ),
-              isFamily: isFamily,
             )
           }),
       darkTheme: FlexThemeData.dark(
@@ -142,7 +141,6 @@ class BlokadaApp extends StatelessWidget {
                 primaryColor: accentColor,
                 secondaryColor: Color(0xFF1C1C1E),
               ),
-              isFamily: isFamily,
             )
           }),
       home: Builder(builder: (context) {

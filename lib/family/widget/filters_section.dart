@@ -109,7 +109,7 @@ class FiltersSectionState extends State<FiltersSection>
   List<Widget> _buildFilters(BuildContext context) {
     final filters = <Widget>[];
     int i = 0;
-    final colors = context.theme.isFamily ? _cardColorsFamily : _cardColorsV6;
+    final colors = Core.act.isFamily ? _cardColorsFamily : _cardColorsV6;
     for (final filter in _knownFilters.get()) {
       final color = colors.elementAtOrNull(i++);
       final selected = _selectedFilters.present

@@ -91,7 +91,7 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
                     width: double.infinity,
                     height: double.infinity,
                   ),
-                  context.theme.isFamily ? const FamilyBgWidget() : Container(),
+                  Core.act.isFamily ? const FamilyBgWidget() : Container(),
                   Row(
                     children: [
                       Padding(
@@ -100,7 +100,7 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
                           width: 64,
                           height: 64,
                           child: Image.asset(
-                            context.theme.isFamily
+                            Core.act.isFamily
                                 ? "assets/images/family-logo.png"
                                 : "assets/images/blokada_logo.png",
                             fit: BoxFit.contain,
@@ -114,7 +114,7 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
                                 .textTheme
                                 .titleSmall!
                                 .copyWith(
-                                    color: context.theme.isFamily
+                                    color: Core.act.isFamily
                                         ? Colors.white
                                         : context.theme.textPrimary)),
                       ),
@@ -131,7 +131,7 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
           CommonCard(
             child: Column(
               children: [
-                (!context.theme.isFamily)
+                (!Core.act.isFamily)
                     ? Column(
                         children: [
                           SettingsItem(
