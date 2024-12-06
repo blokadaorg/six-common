@@ -48,6 +48,8 @@ class FilterActor with Logging, Actor {
   }
 
   String getFilterContainingList(ListHashId id, {bool full = false}) {
+    log(Markers.root).t("getFilterContainingList: $id");
+
     final list = _lists.firstWhereOrNull((it) => it.id == id);
     if (list == null) return "family stats label none".i18n;
 
@@ -81,7 +83,7 @@ class FilterActor with Logging, Actor {
     if (filterName == null) return "family stats label none".i18n;
 
     if (full && optionName != null) {
-      return "$filterName (${optionName.firstLetterUppercase})";
+      return "$filterName (${optionName.firstLetterUppercase()})";
     }
 
     return filterName;
