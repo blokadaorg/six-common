@@ -47,17 +47,20 @@ class FilterActor with Logging, Actor {
     });
   }
 
-  String getFilterContainingList(ListHashId id) {
+  String getFilterContainingList(ListHashId id, {bool full = false}) {
     final list = _lists.firstWhereOrNull((it) => it.id == id);
     if (list == null) return "family stats label none".i18n;
 
     String? filterName;
+    String? optionName;
+
     outer:
     for (var filter in _knownFilters.get()) {
       for (var option in filter.options) {
         if (option.action == FilterAction.list &&
             option.actionParams.contains("${list.vendor}/${list.variant}")) {
           filterName = filter.filterName;
+          optionName = option.optionName;
           break outer;
         }
 
@@ -65,6 +68,7 @@ class FilterActor with Logging, Actor {
         if (option.action2 == FilterAction.list &&
             option.action2Params!.contains("${list.vendor}/${list.variant}")) {
           filterName = filter.filterName;
+          optionName = option.optionName;
           break outer;
         }
       }
@@ -75,6 +79,10 @@ class FilterActor with Logging, Actor {
         ?.title;
 
     if (filterName == null) return "family stats label none".i18n;
+
+    if (full && optionName != null) {
+      return "$filterName (${optionName.firstLetterUppercase})";
+    }
 
     return filterName;
   }

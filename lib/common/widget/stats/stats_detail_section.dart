@@ -116,42 +116,18 @@ class StatsDetailSectionState extends State<StatsDetailSection> with Logging {
                   const SizedBox(height: 24),
                   Row(
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("family stats label blocklist".i18n,
-                              style: TextStyle(
-                                  color: context.theme.textSecondary,
-                                  fontSize: 12)),
-                          Row(
-                            children: [
-                              // Icon(CupertinoIcons.eye_slash_fill,
-                              //     color: context.theme.textSecondary,
-                              //     size: 20),
-                              // const SizedBox(width: 4),
-                              Text(
-                                _filter.getFilterContainingList(
-                                    widget.entry.listId),
-                                style: TextStyle(
-                                  color: context.theme.textSecondary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
+                      _buildFilterInfo(context),
+                      (Core.act.isFamily)
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Container(
+                                color: context.theme.divider.withOpacity(0.1),
+                                width: 1,
+                                height: 40,
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Container(
-                          color: context.theme.divider.withOpacity(0.1),
-                          width: 1,
-                          height: 40,
-                        ),
-                      ),
+                            )
+                          : Container(),
                       _buildProfileInfo(context),
                     ],
                   ),
@@ -224,6 +200,35 @@ class StatsDetailSectionState extends State<StatsDetailSection> with Logging {
           const TapBarCompensation(),
         ],
       ),
+    );
+  }
+
+  Widget _buildFilterInfo(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("family stats label blocklist".i18n,
+            style: TextStyle(color: context.theme.textSecondary, fontSize: 12)),
+        Row(
+          children: [
+            // Icon(CupertinoIcons.eye_slash_fill,
+            //     color: context.theme.textSecondary,
+            //     size: 20),
+            // const SizedBox(width: 4),
+            Text(
+              _filter.getFilterContainingList(widget.entry.listId,
+                  full: !Core.act.isFamily),
+              style: TextStyle(
+                color: context.theme.textSecondary,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ],
+        ),
+      ],
     );
   }
 
