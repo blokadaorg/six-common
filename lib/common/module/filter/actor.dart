@@ -51,7 +51,11 @@ class FilterActor with Logging, Actor {
     log(Markers.root).t("getFilterContainingList: $id");
 
     final list = _lists.firstWhereOrNull((it) => it.id == id);
-    if (list == null) return "family stats label none".i18n;
+    if (list == null) {
+      if (id.isBlank) return "family stats label none".i18n;
+      if (id.length < 16) return "family stats title".i18n; // My exceptions
+      return "family stats label none".i18n;
+    }
 
     String? filterName;
     String? optionName;
