@@ -9,7 +9,7 @@ class TapBarCompensation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (Core.act.isFamily) return Container();
-    return const SizedBox(height: _tabBarHeight);
+    return SizedBox(height: context.tabBarHeight);
   }
 }
 

@@ -143,7 +143,7 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
                           const CommonDivider(),
                           SettingsItem(
                               icon: CupertinoIcons.shield_lefthalf_fill,
-                              text: "My exceptions",
+                              text: "family stats title".i18n, // My exceptions
                               onTap: () {
                                 Navigation.open(Paths.settingsExceptions);
                               }),
