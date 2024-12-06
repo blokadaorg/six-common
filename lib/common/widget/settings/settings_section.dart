@@ -249,7 +249,7 @@ class SettingsState extends State<SettingsSection> with Logging, Disposables {
           Center(
               child: Text(_getAppVersion(),
                   style: TextStyle(color: context.theme.divider))),
-          const TapBarCompensation(),
+          TapBarCompensation(),
         ],
       ),
     );

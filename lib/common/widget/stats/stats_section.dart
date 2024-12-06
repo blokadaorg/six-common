@@ -95,7 +95,7 @@ class StatsSectionState extends State<StatsSection> with Disposables {
                 height: 12,
               ),
             ] +
-            [const TapBarCompensation()],
+            [TapBarCompensation()],
       ),
     );
   }

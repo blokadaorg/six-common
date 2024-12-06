@@ -197,7 +197,7 @@ class StatsDetailSectionState extends State<StatsDetailSection> with Logging {
             ),
           ),
           const SizedBox(height: 40),
-          const TapBarCompensation(),
+          TapBarCompensation(),
         ],
       ),
     );

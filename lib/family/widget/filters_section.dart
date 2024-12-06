@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:common/common/module/filter/filter.dart';
 import 'package:common/common/navigation.dart';
 import 'package:common/common/widget/filter/filter.dart';
-import 'package:common/common/widget/theme.dart';
 import 'package:common/core/core.dart';
 import 'package:common/family/module/profile/profile.dart';
 import 'package:common/family/widget/profile/profile_utils.dart';
@@ -57,7 +56,7 @@ class FiltersSectionState extends State<FiltersSection>
 
     return ListView(
         primary: widget.primary,
-        children: header + _buildFilters(context) + [const TapBarCompensation()]
+        children: header + _buildFilters(context) + [TapBarCompensation()]
         //_buildFooter(context),
         );
   }
