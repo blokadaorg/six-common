@@ -10,4 +10,7 @@ class DI {
   static T get<T extends Object>({String? tag}) {
     return di<T>(instanceName: tag ?? "default");
   }
+
+  static late Act act;
+  static late Config config;
 }

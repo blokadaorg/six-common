@@ -81,9 +81,8 @@ abstract class DeviceStoreBase with Store, Logging, Actor, Cooldown, Emitter {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<DeviceOps>(getOps(act));
+  onRegister() {
+    DI.register<DeviceOps>(getOps());
     DI.register<DeviceJson>(DeviceJson());
     DI.register<DeviceStore>(this as DeviceStore);
   }
@@ -132,7 +131,7 @@ abstract class DeviceStoreBase with Store, Logging, Actor, Cooldown, Emitter {
 
   @action
   Future<void> fetch(Marker m) async {
-    if (act.isFamily) return;
+    if (DI.act.isFamily) return;
 
     return await log(m).trace("fetch", (m) async {
       log(m).pair("tag", deviceTag);
@@ -177,7 +176,7 @@ abstract class DeviceStoreBase with Store, Logging, Actor, Cooldown, Emitter {
   Future<void> setDeviceName(String? deviceName, Marker m) async {
     // Simple handling of OG flavor (no generated device names)
     // TODO: refactor
-    if (!act.isFamily) {
+    if (!DI.act.isFamily) {
       deviceAlias = deviceName!;
       return;
     }
@@ -187,7 +186,7 @@ abstract class DeviceStoreBase with Store, Logging, Actor, Cooldown, Emitter {
   Future<void> onRouteChanged(StageRouteState route, Marker m) async {
     if (!route.isForeground()) return;
     if (!route.isMainRoute()) return;
-    if (!isCooledDown(cfg.deviceRefreshCooldown)) return;
+    if (!isCooledDown(DI.config.deviceRefreshCooldown)) return;
 
     return await log(m).trace("fetchDevice", (m) async {
       await fetch(m);

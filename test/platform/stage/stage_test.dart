@@ -22,7 +22,6 @@ void main() {
         DI.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
-        subject.act = mockedAct;
         await subject.setReady(true, m);
         expect(subject.route.isForeground(), false);
 
@@ -43,7 +42,6 @@ void main() {
         DI.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
-        subject.act = mockedAct;
         await subject.setReady(true, m);
         await subject.setForeground(m);
 
@@ -66,7 +64,6 @@ void main() {
         DI.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
-        subject.act = mockedAct;
         await subject.setReady(true, m);
         await subject.setForeground(m);
         expect(subject.route.modal, null);
@@ -128,7 +125,6 @@ void main() {
         DI.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
-        subject.act = mockedAct;
         await subject.setReady(true, m);
         await subject.setForeground(m);
         expect(subject.route.modal, null);
@@ -172,7 +168,6 @@ void main() {
         DI.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
-        subject.act = mockedAct;
 
         // Stage is not ready, should save this route for later
         await subject.setRoute("activity", m);
@@ -208,7 +203,6 @@ void main() {
         DI.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
-        subject.act = mockedAct;
 
         int counter = 0;
         subject.addOnValue(routeChanged, (route, m) {

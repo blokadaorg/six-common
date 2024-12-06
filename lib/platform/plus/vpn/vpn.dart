@@ -70,9 +70,8 @@ abstract class PlusVpnStoreBase with Store, Logging, Actor {
   late final _app = DI.get<AppStore>();
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<PlusVpnOps>(getOps(act));
+  onRegister() {
+    DI.register<PlusVpnOps>(getOps());
     DI.register<PlusVpnStore>(this as PlusVpnStore);
   }
 
@@ -226,7 +225,7 @@ abstract class PlusVpnStoreBase with Store, Logging, Actor {
     await _scheduler.addOrUpdate(Job(
       _keyTimer,
       m,
-      before: DateTime.now().add(cfg.plusVpnCommandTimeout),
+      before: DateTime.now().add(DI.config.plusVpnCommandTimeout),
       callback: _onTimerFired,
     ));
   }
@@ -251,7 +250,7 @@ abstract class PlusVpnStoreBase with Store, Logging, Actor {
     await _scheduler.addOrUpdate(Job(
       _keyOngoingTimer,
       m,
-      before: DateTime.now().add(cfg.plusVpnCommandTimeout),
+      before: DateTime.now().add(DI.config.plusVpnCommandTimeout),
       callback: _onOngoingTimerFired,
     ));
   }

@@ -50,7 +50,7 @@ class RateActor with Logging, Actor {
     // Skip if already showing stuff
     if (!_stage.route.isMainRoute()) return false;
 
-    if (!act.isFamily) {
+    if (!DI.act.isFamily) {
       // Skip if not warmed up
       if (_stats.stats.totalBlocked < 100) return false;
     } else {

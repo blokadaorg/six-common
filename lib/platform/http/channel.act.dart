@@ -9,8 +9,8 @@ import 'channel.pg.dart';
 
 class MockHttpOps extends Mock implements HttpOps {}
 
-HttpOps getOps(Act act) {
-  if (act.isProd) {
+HttpOps getOps() {
+  if (DI.act.isProd) {
     return HttpOps();
   }
 

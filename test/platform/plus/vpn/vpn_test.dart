@@ -144,7 +144,7 @@ void main() {
 
         final subject = PlusVpnStore();
         subject.actualStatus = VpnStatus.deactivated;
-        cfg.plusVpnCommandTimeout = const Duration(seconds: 0);
+        DI.config.plusVpnCommandTimeout = const Duration(seconds: 0);
 
         await expectLater(subject.turnVpnOn(m), throwsException);
       });

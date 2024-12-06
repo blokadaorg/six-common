@@ -121,7 +121,7 @@ class FamilyActor with Logging, Actor {
 
   // Locking this device will enable the blocking for "this device"
   _updatePhaseFromLock(ValueUpdate<bool> isLocked) async {
-    if (!act.isFamily) return;
+    if (!DI.act.isFamily) return;
     _updatePhase(Markers.root, loading: true);
     appLocked = isLocked.now;
 
@@ -149,7 +149,7 @@ class FamilyActor with Logging, Actor {
 
   // Show the welcome screen on the first start (family only)
   _maybeShowOnboardOnStart(Marker m) async {
-    if (!act.isFamily) return;
+    if (!DI.act.isFamily) return;
     if (_account.type.isActive()) return;
     if (devices.now.hasDevices == true) return;
     if (_link.linkedMode.now) return;

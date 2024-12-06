@@ -43,11 +43,10 @@ class CommandStore with Logging, Actor implements CommandEvents {
   late final _plusVpn = DI.get<PlusVpnStore>();
 
   @override
-  void onRegister(Act act) {
-    this.act = act;
+  void onRegister() {
     DI.register<CommandStore>(this);
-    if (act.isProd) CommandEvents.setup(this);
-    getOps(act).doCanAcceptCommands();
+    if (DI.act.isProd) CommandEvents.setup(this);
+    getOps().doCanAcceptCommands();
   }
 
   final newCommands = ["WARNING", "FATAL"];
@@ -245,11 +244,11 @@ class CommandStore with Logging, Actor implements CommandEvents {
         return false;
       case CommandName.debugHttpFail:
         _ensureParam(p1);
-        cfg.debugFailingRequests.add(p1!);
+        DI.config.debugFailingRequests.add(p1!);
         return;
       case CommandName.debugHttpOk:
         _ensureParam(p1);
-        cfg.debugFailingRequests.remove(p1!);
+        DI.config.debugFailingRequests.remove(p1!);
         return;
       case CommandName.debugOnboard:
         // await _account.restore("mockedmocked");
@@ -257,7 +256,7 @@ class CommandStore with Logging, Actor implements CommandEvents {
         // return await _family.deleteAllDevices;
         throw Exception("Not implemented WIP");
       case CommandName.debugBg:
-        cfg.debugBg = !cfg.debugBg;
+        DI.config.debugBg = !DI.config.debugBg;
         return;
       case CommandName.setFlavor:
         return;

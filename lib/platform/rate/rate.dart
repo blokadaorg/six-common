@@ -6,8 +6,8 @@ part 'channel.dart';
 
 class PlatformRateModule with Module {
   @override
-  onCreateModule(Act act) async {
-    if (act.isProd) {
+  onCreateModule() async {
+    if (DI.act.isProd) {
       await register<RateChannel>(PlatformRateChannel());
     } else {
       await register<RateChannel>(NoOpRateChanel());

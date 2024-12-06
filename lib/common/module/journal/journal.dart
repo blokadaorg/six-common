@@ -14,7 +14,7 @@ part 'value.dart';
 
 class JournalModule with Module {
   @override
-  onCreateModule(Act act) async {
+  onCreateModule() async {
     await register(JournalEntriesValue());
     await register(JournalFilterValue());
     await register(JournalApi());

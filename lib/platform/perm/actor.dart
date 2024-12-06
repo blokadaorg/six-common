@@ -68,7 +68,7 @@ class PlatformPermActor with Logging, Actor {
       if (enabled != _vpnEnabled.present) {
         _vpnEnabled.change(m, enabled);
         if (!enabled) {
-          if (!act.isFamily) await _plus.reactToPlusLost(m);
+          if (!DI.act.isFamily) await _plus.reactToPlusLost(m);
           await _app.plusActivated(false, m);
         }
       }
@@ -88,7 +88,7 @@ class PlatformPermActor with Logging, Actor {
         _previousTag = tag;
         _previousAlias = _device.deviceAlias;
 
-        if (!act.isFamily) {
+        if (!DI.act.isFamily) {
           await _channel.doSetPrivateDnsEnabled(tag, _device.deviceAlias);
           await _recheckDnsPerm(tag, m);
         }

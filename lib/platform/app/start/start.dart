@@ -62,9 +62,8 @@ abstract class AppStartStoreBase with Store, Logging, Actor {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<AppStartOps>(getOps(act));
+  onRegister() {
+    DI.register<AppStartOps>(getOps());
     DI.register<AppStartStore>(this as AppStartStore);
   }
 
@@ -99,7 +98,7 @@ abstract class AppStartStoreBase with Store, Logging, Actor {
 
       await _app.initStarted(m);
       try {
-        final startables = act.isFamily ? _startablesFamily : _startablesV6;
+        final startables = DI.act.isFamily ? _startablesFamily : _startablesV6;
         for (final startable in startables) {
           log(m).i("starting ${startable.runtimeType}");
           await startable.start(m);
@@ -120,7 +119,7 @@ abstract class AppStartStoreBase with Store, Logging, Actor {
       try {
         await _app.reconfiguring(m);
         await _pauseApp(m);
-        if (!act.isFamily) await _plus.reactToAppPause(false, m);
+        if (!DI.act.isFamily) await _plus.reactToAppPause(false, m);
         paused = true;
         await _app.appPaused(true, m);
         final pausedUntil = DateTime.now().add(duration);
@@ -143,7 +142,7 @@ abstract class AppStartStoreBase with Store, Logging, Actor {
       try {
         await _app.reconfiguring(m);
         await _pauseApp(m);
-        if (!act.isFamily) await _plus.reactToAppPause(false, m);
+        if (!DI.act.isFamily) await _plus.reactToAppPause(false, m);
         paused = true;
         await _app.appPaused(true, m);
         await _scheduler.stop(m, _keyTimer);
@@ -163,7 +162,7 @@ abstract class AppStartStoreBase with Store, Logging, Actor {
       try {
         await _app.reconfiguring(m);
         await _unpauseApp(m);
-        if (!act.isFamily) await _plus.reactToAppPause(true, m);
+        if (!DI.act.isFamily) await _plus.reactToAppPause(true, m);
         paused = false;
         await _app.appPaused(false, m);
         await _scheduler.stop(m, _keyTimer);

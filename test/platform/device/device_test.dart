@@ -97,7 +97,6 @@ void main() {
         DI.register<DeviceOps>(ops);
 
         final subject = DeviceStore();
-        subject.act = mockedAct;
 
         await expectLater(subject.fetch(m), throwsException);
 
@@ -121,7 +120,6 @@ void main() {
         DI.register<DeviceOps>(ops);
 
         final subject = DeviceStore();
-        subject.act = mockedAct;
 
         await expectLater(subject.setCloudEnabled(true, m), throwsException);
         await expectLater(subject.setRetention("1h", m), throwsException);

@@ -177,9 +177,8 @@ abstract class StageStoreBase
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<StageOps>(getOps(act));
+  onRegister() {
+    DI.register<StageOps>(getOps());
     DI.register<StageStore>(this as StageStore);
   }
 
@@ -422,7 +421,7 @@ abstract class StageStoreBase
   _actOnModal(StageModal? modal, Marker m) async {
     var show = !noNavbarModals.contains(modal);
     if (!_showNavbar) show = false;
-    if (act.isFamily) show = false;
+    if (DI.act.isFamily) show = false;
     log(m).log(attr: {"show": show});
     await _ops.doShowNavbar(show);
   }

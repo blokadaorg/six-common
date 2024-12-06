@@ -58,9 +58,8 @@ abstract class PlusGatewayStoreBase with Store, Logging, Actor, Cooldown {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<PlusGatewayOps>(getOps(act));
+  onRegister() {
+    DI.register<PlusGatewayOps>(getOps());
     DI.register<PlusGatewayJson>(PlusGatewayJson());
     DI.register<PlusGatewayStore>(this as PlusGatewayStore);
   }
@@ -127,7 +126,7 @@ abstract class PlusGatewayStoreBase with Store, Logging, Actor, Cooldown {
     }
 
     if (!route.isBecameForeground()) return;
-    if (!isCooledDown(cfg.plusGatewayRefreshCooldown)) return;
+    if (!isCooledDown(DI.config.plusGatewayRefreshCooldown)) return;
 
     return await log(m).trace("fetchGateways", (m) async {
       await fetch(m);

@@ -49,7 +49,6 @@ void main() {
         DI.register<AppStartOps>(ops);
 
         final subject = AppStartStore();
-        subject.act = mockedAct;
 
         await subject.pauseAppUntil(const Duration(seconds: 30), m);
 
@@ -76,7 +75,6 @@ void main() {
         DI.register<AppStartOps>(ops);
 
         final subject = AppStartStore();
-        subject.act = mockedAct;
 
         await subject.pauseAppIndefinitely(m);
 
@@ -114,7 +112,6 @@ void main() {
         DI.register<AppStartOps>(ops);
 
         final subject = AppStartStore();
-        subject.act = mockedAct;
 
         // No perms
         await subject.unpauseApp(m);

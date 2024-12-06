@@ -36,10 +36,10 @@ class Api {
 
 class ApiModule with Module {
   @override
-  onCreateModule(Act act) async {
-    await register(BaseUrl(act));
+  onCreateModule() async {
+    await register(BaseUrl());
     await register(UserAgent());
-    await register(ApiRetryDuration(act));
+    await register(ApiRetryDuration());
 
     await register(AccountId());
     await register(Http());

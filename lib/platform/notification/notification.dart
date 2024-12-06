@@ -71,9 +71,8 @@ abstract class NotificationStoreBase with Store, Logging, Actor {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<NotificationOps>(getOps(act));
+  onRegister() {
+    DI.register<NotificationOps>(getOps());
     DI.register<NotificationJson>(NotificationJson());
     DI.register<NotificationStore>(this as NotificationStore);
   }
@@ -127,7 +126,7 @@ abstract class NotificationStoreBase with Store, Logging, Actor {
   @action
   Future<void> sendAppleToken(Marker m) async {
     if (appleToken == null) return;
-    if (act.isFamily) return;
+    if (DI.act.isFamily) return;
     return await log(m).trace("sendAppleToken", (m) async {
       await _json.postToken(appleToken!, m);
       appleToken = null;

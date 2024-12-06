@@ -7,8 +7,8 @@ import 'channel.pg.dart';
 
 class MockStageOps extends Mock implements StageOps {}
 
-StageOps getOps(Act act) {
-  if (act.isProd) {
+StageOps getOps() {
+  if (DI.act.isProd) {
     return StageOps();
   }
 

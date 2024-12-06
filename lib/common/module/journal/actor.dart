@@ -17,12 +17,12 @@ class JournalActor with Logging, Actor {
 
   fetch(Marker m, {DeviceTag? tag}) async {
     await log(m).trace("fetch", (m) async {
-      if (act.isFamily && tag == null) {
+      if (DI.act.isFamily && tag == null) {
         throw Exception("Family must provide a tag");
       }
 
       List<JsonJournalEntry> entries;
-      if (act.isFamily) {
+      if (DI.act.isFamily) {
         entries = await _api.fetch(m, tag!);
       } else {
         entries = await _api.fetchForV6(m);

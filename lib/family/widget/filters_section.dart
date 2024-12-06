@@ -132,10 +132,10 @@ class FiltersSectionState extends State<FiltersSection> with Logging {
   ];
 
   final List<Color?> _cardColorsV6 = [
-    const Color(0xFFFEC7A9),
+    const Color(0xFFFFCD8C),
     null,
-    const Color(0xFFF4B1E1),
     const Color(0xFFB1CCF4),
+    const Color(0xFFFFA0EC),
     null,
     const Color(0xFFB1F4C8),
     null,

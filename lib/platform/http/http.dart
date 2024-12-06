@@ -103,9 +103,8 @@ class RepeatingHttpService with Actor, Logging implements HttpService {
   });
 
   @override
-  void onRegister(Act act) {
-    this.act = act;
-    DI.register<HttpOps>(getOps(act));
+  void onRegister() {
+    DI.register<HttpOps>(getOps());
     DI.register<HttpService>(this);
   }
 
@@ -171,7 +170,7 @@ class DebugHttpService implements HttpService {
   }
 
   bool _shouldFail(String url) {
-    for (var match in cfg.debugFailingRequests) {
+    for (var match in DI.config.debugFailingRequests) {
       if (url.contains(match)) return true;
     }
     return false;

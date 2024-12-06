@@ -36,9 +36,8 @@ abstract class EnvStoreBase with Store, Logging, Actor {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<EnvOps>(getOps(act));
+  onRegister() {
+    DI.register<EnvOps>(getOps());
     DI.register<EnvStore>(this as EnvStore);
   }
 
@@ -72,6 +71,6 @@ abstract class EnvStoreBase with Store, Logging, Actor {
   }
 
   _getUserAgent(EnvPayload p) {
-    return "blokada/${p.appVersion} (${act.platform.name}-${p.osVersion} ${p.buildFlavor} ${p.buildType} ${p.cpu}) ${p.deviceBrand} ${p.deviceModel})";
+    return "blokada/${p.appVersion} (${DI.act.platform.name}-${p.osVersion} ${p.buildFlavor} ${p.buildType} ${p.cpu}) ${p.deviceBrand} ${p.deviceModel})";
   }
 }

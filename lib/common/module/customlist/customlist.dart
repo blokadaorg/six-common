@@ -10,7 +10,7 @@ part 'value.dart';
 
 class CustomlistModule with Module {
   @override
-  onCreateModule(Act act) async {
+  onCreateModule() async {
     await register(CustomlistPayloadValue());
     await register(CustomlistApi());
     await register(CustomlistActor());

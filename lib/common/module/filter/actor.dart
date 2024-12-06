@@ -291,7 +291,7 @@ class FilterActor with Logging, Actor {
     // Or if already applied during this runtime
     if (_defaultsApplied) return;
 
-    if (!act.isFamily) {
+    if (!DI.act.isFamily) {
       log(m).i("Applying defaults");
       final defaults = _defaultFilters.get();
       _selectedFilters.change(m, defaults);

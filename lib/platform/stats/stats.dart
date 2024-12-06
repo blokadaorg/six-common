@@ -35,9 +35,8 @@ abstract class StatsStoreBase with Store, Logging, Actor {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<StatsOps>(getOps(act));
+  onRegister() {
+    DI.register<StatsOps>(getOps());
     DI.register<json.StatsJson>(json.StatsJson());
     DI.register<StatsSheet>(StatsSheet());
     DI.register<StatsStore>(this as StatsStore);

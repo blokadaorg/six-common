@@ -102,9 +102,8 @@ abstract class AccountStoreBase with Store, Logging, Actor, Emitter {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<AccountOps>(getOps(act));
+  onRegister() {
+    DI.register<AccountOps>(getOps());
     DI.register<AccountJson>(AccountJson());
     DI.register<AccountStore>(this as AccountStore);
   }
@@ -246,11 +245,11 @@ abstract class AccountStoreBase with Store, Logging, Actor, Emitter {
 
   void _ensureValidAccountType(JsonAccount acc) {
     final type = accountTypeFromName(acc.type);
-    if (type == AccountType.family && !act.isFamily) {
+    if (type == AccountType.family && !DI.act.isFamily) {
       throw InvalidAccountId();
-    } else if (type == AccountType.cloud && act.isFamily) {
+    } else if (type == AccountType.cloud && DI.act.isFamily) {
       throw InvalidAccountId();
-    } else if (type == AccountType.plus && act.isFamily) {
+    } else if (type == AccountType.plus && DI.act.isFamily) {
       throw InvalidAccountId();
     }
   }

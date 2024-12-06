@@ -72,12 +72,11 @@ abstract class LinkStoreBase with Store, Logging, Actor {
   Map<LinkId, String> links = {};
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<LinkOps>(getOps(act));
+  onRegister() {
+    DI.register<LinkOps>(getOps());
     DI.register<LinkStore>(this as LinkStore);
     _account.addOn(accountChanged, updateLinksFromAccount);
-    if (act.isFamily) {
+    if (DI.act.isFamily) {
       _linkedMode.onChange.listen(updateFromLinkedMode);
     }
 
@@ -110,7 +109,7 @@ abstract class LinkStoreBase with Store, Logging, Actor {
   updateFromLinkedMode(ValueUpdate<bool> linked) => _updateLinks();
 
   _updateLinks() async {
-    final linked = act.isFamily && _linkedMode.now;
+    final linked = DI.act.isFamily && _linkedMode.now;
     for (var id in LinkId.values) {
       links[id] = _getLink(id, _isLocked.now || linked);
     }
@@ -122,8 +121,8 @@ abstract class LinkStoreBase with Store, Logging, Actor {
   }
 
   _prepareTemplates() async {
-    final p = act.platform;
-    final f = act.flavor;
+    final p = DI.act.platform;
+    final f = DI.act.flavor;
 
     for (var id in LinkId.values) {
       try {

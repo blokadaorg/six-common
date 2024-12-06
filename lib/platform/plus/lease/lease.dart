@@ -55,9 +55,8 @@ abstract class PlusLeaseStoreBase with Store, Logging, Actor, Cooldown {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<PlusLeaseOps>(getOps(act));
+  onRegister() {
+    DI.register<PlusLeaseOps>(getOps());
     DI.register<PlusLeaseJson>(PlusLeaseJson());
     DI.register<PlusLeaseStore>(this as PlusLeaseStore);
   }
@@ -168,7 +167,7 @@ abstract class PlusLeaseStoreBase with Store, Logging, Actor, Cooldown {
 
     // Case one: refresh when entering the Settings tab (to see devices)
     if (route.isBecameTab(StageTab.settings) &&
-        isCooledDown(cfg.plusLeaseRefreshCooldown)) {
+        isCooledDown(DI.config.plusLeaseRefreshCooldown)) {
       return await log(m).trace("fetchLeasesSettings", (m) async {
         await fetch(m);
       });
@@ -176,7 +175,7 @@ abstract class PlusLeaseStoreBase with Store, Logging, Actor, Cooldown {
 
     // Case two: refresh when entering foreground but not too often
     if (!route.isBecameForeground()) return;
-    if (!isCooledDown(cfg.plusLeaseRefreshCooldown)) return;
+    if (!isCooledDown(DI.config.plusLeaseRefreshCooldown)) return;
 
     return await log(m).trace("fetchLeases", (m) async {
       await fetch(m);

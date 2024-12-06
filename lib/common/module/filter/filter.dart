@@ -15,12 +15,12 @@ part 'value.dart';
 
 class FilterModule with Module {
   @override
-  onCreateModule(Act act) async {
+  onCreateModule() async {
     await register(KnownFilters(
-      isFamily: act.isFamily,
-      isIos: act.platform == PlatformType.iOS,
+      isFamily: DI.act.isFamily,
+      isIos: DI.act.platform == PlatformType.iOS,
     ));
-    await register(DefaultFilters(act.isFamily));
+    await register(DefaultFilters(DI.act.isFamily));
 
     await register(CurrentConfig());
     await register(SelectedFilters());

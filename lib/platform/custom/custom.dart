@@ -30,9 +30,8 @@ abstract class CustomStoreBase with Store, Logging, Actor, Cooldown {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<CustomOps>(getOps(act));
+  onRegister() {
+    DI.register<CustomOps>(getOps());
     DI.register<CustomJson>(CustomJson());
     DI.register<CustomStore>(this as CustomStore);
   }
@@ -126,7 +125,7 @@ abstract class CustomStoreBase with Store, Logging, Actor, Cooldown {
   Future<void> onRouteChanged(StageRouteState route, Marker m) async {
     if (!route.isForeground()) return;
     if (!route.isBecameTab(StageTab.activity)) return;
-    if (!isCooledDown(cfg.customRefreshCooldown)) return;
+    if (!isCooledDown(DI.config.customRefreshCooldown)) return;
 
     return await log(m).trace("fetchCustom", (m) async {
       await fetch(m);

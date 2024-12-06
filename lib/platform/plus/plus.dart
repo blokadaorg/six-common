@@ -46,9 +46,8 @@ abstract class PlusStoreBase with Store, Logging, Actor {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<PlusOps>(getOps(act));
+  onRegister() {
+    DI.register<PlusOps>(getOps());
     DI.register<PlusStore>(this as PlusStore);
   }
 
@@ -60,7 +59,7 @@ abstract class PlusStoreBase with Store, Logging, Actor {
     return await log(m).trace("start", (m) async {
       // Assuming keypair already loaded
       await load(m);
-      if (act.isFamily) return;
+      if (DI.act.isFamily) return;
 
       await _gateway.fetch(m);
       await _gateway.load(m);

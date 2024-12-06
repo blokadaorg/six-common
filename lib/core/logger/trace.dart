@@ -94,7 +94,7 @@ class LogTracerActor with Actor {
   }
 
   _startTimeout() {
-    if (act.isTest) return;
+    if (DI.act.isTest) return;
     if (kReleaseMode) return;
     _debounce.run(_hangTraceCheck);
   }

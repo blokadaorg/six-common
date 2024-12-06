@@ -25,8 +25,7 @@ abstract class StatsRefreshStoreBase with Store, Logging, Actor {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
+  onRegister() {
     DI.register<StatsRefreshStore>(this as StatsRefreshStore);
   }
 
@@ -43,16 +42,16 @@ abstract class StatsRefreshStoreBase with Store, Logging, Actor {
       log(m).i("stats: skip refresh: acc: $_accountIsActive");
       return null;
     } else if (_isStatsScreenFor != null) {
-      return _lastRefresh.add(cfg.refreshVeryFrequent);
+      return _lastRefresh.add(DI.config.refreshVeryFrequent);
     } else if (_isHomeScreen) {
-      return _lastRefresh.add(cfg.refreshOnHome);
+      return _lastRefresh.add(DI.config.refreshOnHome);
     } else {
-      return _lastRefresh.add(cfg.statsRefreshWhenOnAnotherScreen);
+      return _lastRefresh.add(DI.config.statsRefreshWhenOnAnotherScreen);
     }
   }
 
   Future<bool> _refresh(Marker m) async {
-    if (act.isFamily) {
+    if (DI.act.isFamily) {
       if (_isStatsScreenFor != null) {
         // Stats screen opened for a device, we need to refresh only that device
         log(m).pair("devices", 1);

@@ -122,9 +122,8 @@ abstract class JournalStoreBase with Store, Logging, Actor, Cooldown {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<JournalOps>(getOps(act));
+  onRegister() {
+    DI.register<JournalOps>(getOps());
     DI.register<JournalJson>(JournalJson());
     DI.register<JournalStore>(this as JournalStore);
   }
@@ -157,7 +156,7 @@ abstract class JournalStoreBase with Store, Logging, Actor, Cooldown {
   @override
   Future<void> onStart(Marker m) async {
     return await log(m).trace("start", (m) async {
-      if (act.isFamily) return;
+      if (DI.act.isFamily) return;
 
       // Default to show journal only for the current device
       await updateFilter(deviceName: _device.deviceAlias, m);
@@ -189,20 +188,20 @@ abstract class JournalStoreBase with Store, Logging, Actor, Cooldown {
     final isHome = _stage.route.isTab(StageTab.home);
     final isLinkModal = route.modal == StageModal.accountLink;
 
-    if (!act.isFamily && !isActivity) {
+    if (!DI.act.isFamily && !isActivity) {
       _stopTimer(m);
       return false;
     }
 
-    if (act.isFamily && !isHome && !isActivity) {
+    if (DI.act.isFamily && !isHome && !isActivity) {
       _stopTimer(m);
       return false;
     }
 
     if (refreshEnabled) {
       final cooldown = (isActivity || isLinkModal || frequentRefresh)
-          ? cfg.refreshVeryFrequent
-          : cfg.refreshOnHome;
+          ? DI.config.refreshVeryFrequent
+          : DI.config.refreshOnHome;
       try {
         await fetch(m);
         _rescheduleTimer(m, cooldown);
@@ -223,8 +222,8 @@ abstract class JournalStoreBase with Store, Logging, Actor, Cooldown {
     final isActivity = route.isTab(StageTab.activity);
     final isHome = route.isTab(StageTab.home);
     final isLinkModal = route.modal == StageModal.accountLink;
-    if (!act.isFamily && !isActivity) return;
-    if (act.isFamily && !isActivity && !isHome && !isLinkModal) return;
+    if (!DI.act.isFamily && !isActivity) return;
+    if (DI.act.isFamily && !isActivity && !isHome && !isLinkModal) return;
     await updateJournalFreq(m);
   }
 
@@ -262,7 +261,7 @@ abstract class JournalStoreBase with Store, Logging, Actor, Cooldown {
       log(m).pair("retention", on);
       if (on && _stage.route.isTab(StageTab.activity)) {
         await enableRefresh(m);
-      } else if (on && act.isFamily && _stage.route.isTab(StageTab.home)) {
+      } else if (on && DI.act.isFamily && _stage.route.isTab(StageTab.home)) {
         await enableRefresh(m);
       } else if (!on) {
         await disableRefresh(m);

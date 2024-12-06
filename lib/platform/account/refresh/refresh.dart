@@ -51,7 +51,7 @@ class AccountExpiration {
     AccountStatus newStatus = AccountStatus.inactive;
     // Account wasn't active, and now is
     if (status == AccountStatus.inactive || status == AccountStatus.init) {
-      if (exp.isAfter(now.add(cfg.accountExpiringTimeSpan))) {
+      if (exp.isAfter(now.add(DI.config.accountExpiringTimeSpan))) {
         newStatus = AccountStatus.active;
       } else if (exp.isAfter(now)) {
         newStatus = AccountStatus.expiring;
@@ -62,7 +62,7 @@ class AccountExpiration {
       newStatus = AccountStatus.active;
       if (exp.isBefore(now)) {
         newStatus = AccountStatus.expired;
-      } else if (exp.isBefore(now.add(cfg.accountExpiringTimeSpan))) {
+      } else if (exp.isBefore(now.add(DI.config.accountExpiringTimeSpan))) {
         newStatus = AccountStatus.expiring;
       }
     }
@@ -77,7 +77,7 @@ class AccountExpiration {
 
   DateTime? getNextDate() {
     if (status == AccountStatus.active) {
-      return expiration.subtract(cfg.accountExpiringTimeSpan);
+      return expiration.subtract(DI.config.accountExpiringTimeSpan);
     } else if (status == AccountStatus.expiring) {
       return expiration;
     } else {
@@ -105,8 +105,7 @@ abstract class AccountRefreshStoreBase
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
+  onRegister() {
     DI.register<AccountRefreshStore>(this as AccountRefreshStore);
   }
 
@@ -134,7 +133,7 @@ abstract class AccountRefreshStoreBase
         } on Exception catch (e) {
           lastException = e;
           log(m).i("init failed, retrying");
-          await sleepAsync(cfg.appStartFailWait);
+          await sleepAsync(DI.config.appStartFailWait);
         }
       }
 
@@ -197,7 +196,7 @@ abstract class AccountRefreshStoreBase
           _metadata.seenExpiredDialog = true;
           await _saveMetadata(m);
           await _stage.showModal(StageModal.accountExpired, m);
-          if (!act.isFamily) await _plus.clearPlus(m);
+          if (!DI.act.isFamily) await _plus.clearPlus(m);
         }
       }
 
@@ -245,7 +244,7 @@ abstract class AccountRefreshStoreBase
     return await log(m).trace("refreshExpiration", (m) async {
       // Refresh when entering the Settings tab, or foreground after enough time
       if (route.isBecameTab(StageTab.settings) ||
-          isCooledDown(cfg.accountRefreshCooldown)) {
+          isCooledDown(DI.config.accountRefreshCooldown)) {
         await _account.fetch(m);
         await syncAccount(_account.account, m);
       } else {
@@ -267,11 +266,11 @@ abstract class AccountRefreshStoreBase
   }
 
   void _updateTimer(Marker m) async {
-    final id = act.isFamily
+    final id = DI.act.isFamily
         ? NotificationId.accountExpiredFamily
         : NotificationId.accountExpired;
 
-    final shouldSkipNotification = act.isFamily && _linkedMode.now;
+    final shouldSkipNotification = DI.act.isFamily && _linkedMode.now;
 
     DateTime? expDate = expiration.getNextDate();
 

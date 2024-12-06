@@ -36,9 +36,8 @@ abstract class PlusKeypairStoreBase with Store, Logging, Actor {
   }
 
   @override
-  onRegister(Act act) {
-    this.act = act;
-    DI.register<PlusKeypairOps>(getOps(act));
+  onRegister() {
+    DI.register<PlusKeypairOps>(getOps());
     DI.register<PlusKeypairStore>(this as PlusKeypairStore);
   }
 
