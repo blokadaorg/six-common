@@ -18,7 +18,7 @@ class V6HomeScreen extends StatefulWidget {
 const pathHomeStats = "home/stats";
 
 class _V6HomeScreenState extends State<V6HomeScreen> with Logging {
-  final _stage = DI.get<StageStore>();
+  final _stage = Core.get<StageStore>();
 
   final _pageCtrl = PageController(initialPage: 0);
   final _duration = const Duration(milliseconds: 800);

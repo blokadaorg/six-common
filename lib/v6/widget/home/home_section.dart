@@ -25,8 +25,8 @@ class V6HomeSection extends StatefulWidget {
 
 class V6HomeSectionState extends State<V6HomeSection>
     with TickerProviderStateMixin, Logging, Disposables {
-  final _app = DI.get<AppStore>();
-  final _stage = DI.get<StageStore>();
+  final _app = Core.get<AppStore>();
+  final _stage = Core.get<StageStore>();
 
   bool showDebug = false;
   bool working = false;

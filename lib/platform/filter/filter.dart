@@ -12,7 +12,7 @@ part 'command.dart';
 class PlatformFilterModule with Module {
   @override
   onCreateModule() async {
-    if (DI.act.isProd) {
+    if (Core.act.isProd) {
       await register<FilterChannel>(PlatformFilterChannel());
     } else {
       await register<FilterChannel>(NoOpFilterChannel());

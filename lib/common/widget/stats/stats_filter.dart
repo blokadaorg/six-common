@@ -156,7 +156,7 @@ class StatsFilterState extends State<StatsFilter> {
 }
 
 class StatsFilterController {
-  late final _filter = DI.get<JournalFilterValue>();
+  late final _filter = Core.get<JournalFilterValue>();
 
   late JournalFilter draft;
 

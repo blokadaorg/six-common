@@ -28,9 +28,9 @@ class StatsDetailSection extends StatefulWidget {
 }
 
 class StatsDetailSectionState extends State<StatsDetailSection> with Logging {
-  late final _profile = DI.get<ProfileActor>();
-  late final _filter = DI.get<FilterActor>();
-  late final _custom = DI.get<CustomlistActor>();
+  late final _profile = Core.get<ProfileActor>();
+  late final _filter = Core.get<FilterActor>();
+  late final _custom = Core.get<CustomlistActor>();
 
   JsonProfile? profile;
 

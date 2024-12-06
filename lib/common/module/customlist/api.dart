@@ -1,7 +1,7 @@
 part of 'customlist.dart';
 
 class CustomlistApi {
-  late final _api = DI.get<Api>();
+  late final _api = Core.get<Api>();
   late final _marshal = JsonCustomListMarshal();
 
   Future<List<JsonCustomList>> fetchForProfile(Marker m,

@@ -17,7 +17,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> with Logging {
-  late final _custom = DI.get<CustomStore>();
+  late final _custom = Core.get<CustomStore>();
 
   Paths _path = Paths.settingsExceptions;
   Object? _arguments;

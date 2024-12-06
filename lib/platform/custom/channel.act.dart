@@ -6,7 +6,7 @@ import 'channel.pg.dart';
 class MockCustomOps extends Mock implements CustomOps {}
 
 CustomOps getOps() {
-  if (DI.act.isProd) {
+  if (Core.act.isProd) {
     return CustomOps();
   }
 

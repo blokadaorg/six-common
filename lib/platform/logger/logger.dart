@@ -12,7 +12,7 @@ part 'output.dart';
 class PlatformLoggerModule with Logging, Module {
   @override
   onCreateModule() async {
-    if (DI.act.isProd) {
+    if (Core.act.isProd) {
       await register<LoggerChannel>(PlatformLoggerChannel());
     } else {
       await register<LoggerChannel>(NoOpLoggerChannel());

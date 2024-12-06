@@ -6,7 +6,7 @@ import 'channel.pg.dart';
 class MockPlusKeypairOps extends Mock implements PlusKeypairOps {}
 
 PlusKeypairOps getOps() {
-  if (DI.act.isProd) {
+  if (Core.act.isProd) {
     return PlusKeypairOps();
   }
 

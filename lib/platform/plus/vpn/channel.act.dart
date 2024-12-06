@@ -6,7 +6,7 @@ import 'channel.pg.dart';
 class MockPlusVpnOps extends Mock implements PlusVpnOps {}
 
 PlusVpnOps getOps() {
-  if (DI.act.isProd) {
+  if (Core.act.isProd) {
     return PlusVpnOps();
   }
 

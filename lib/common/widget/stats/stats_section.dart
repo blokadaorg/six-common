@@ -27,10 +27,10 @@ class StatsSection extends StatefulWidget {
 }
 
 class StatsSectionState extends State<StatsSection> with Disposables {
-  late final _journal = DI.get<JournalActor>();
-  late final _filter = DI.get<JournalFilterValue>();
-  late final _entries = DI.get<JournalEntriesValue>();
-  late final _customlist = DI.get<CustomlistPayloadValue>();
+  late final _journal = Core.get<JournalActor>();
+  late final _filter = Core.get<JournalFilterValue>();
+  late final _entries = Core.get<JournalEntriesValue>();
+  late final _customlist = Core.get<CustomlistPayloadValue>();
 
   bool _isReady = false;
 

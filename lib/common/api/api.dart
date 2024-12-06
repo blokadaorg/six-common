@@ -8,7 +8,7 @@ part 'http.dart';
 part 'value.dart';
 
 class Api {
-  late final _http = DI.get<Http>();
+  late final _http = Core.get<Http>();
 
   Future<JsonString> get(
     ApiEndpoint endpoint,

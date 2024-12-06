@@ -5,9 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:test_api/src/backend/invoker.dart';
 
 withTrace(Future Function(Marker m) fn) async {
-  await DI.di.reset();
-  DI.act = mockedAct;
-  DI.config = Config();
+  await Core.di.reset();
+  Core.act = mockedAct;
+  Core.config = Config();
 
   await PlatformLoggerModule().create();
 

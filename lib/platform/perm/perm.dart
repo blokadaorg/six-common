@@ -20,7 +20,7 @@ class PlatformPermModule with Module {
     await register(VpnEnabled());
     await register(PlatformPermActor());
 
-    if (DI.act.isProd) {
+    if (Core.act.isProd) {
       await register<PermChannel>(PlatformPermChannel());
     } else {
       await register<PermChannel>(NoOpPermChannel());

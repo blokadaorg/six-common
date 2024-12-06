@@ -1,7 +1,7 @@
 part of 'logger.dart';
 
 class FileLoggerOutput extends LogOutput {
-  late final _channel = DI.get<LoggerChannel>();
+  late final _channel = Core.get<LoggerChannel>();
 
   FileLoggerOutput() {
     const template = '''
@@ -15,8 +15,8 @@ class FileLoggerOutput extends LogOutput {
     final platform = type == PlatformType.iOS
         ? "i"
         : (type == PlatformType.android ? "a" : "z");
-    final flavor = DI.act.isFamily ? "F" : "6";
-    final build = DI.act.isRelease ? "R" : "D";
+    final flavor = Core.act.isFamily ? "F" : "6";
+    final build = Core.act.isRelease ? "R" : "D";
 
     return "blokada-$platform${flavor}x$build.log";
   }
@@ -36,7 +36,7 @@ class FileLoggerOutput extends LogOutput {
     // }
 
     // Save batch to file
-    if (event.level == Level.trace && DI.act.isRelease) return;
+    if (event.level == Level.trace && Core.act.isRelease) return;
     _channel.doSaveBatch("${event.lines.join("\n")}\n");
   }
 }

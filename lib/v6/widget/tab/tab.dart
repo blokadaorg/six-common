@@ -16,8 +16,8 @@ class TabWidget extends StatefulWidget {
 }
 
 class _TabState extends State<TabWidget> with Disposables {
-  final _stage = DI.get<StageStore>();
-  final _nav = DI.get<TopBarController>();
+  final _stage = Core.get<StageStore>();
+  final _nav = Core.get<TopBarController>();
 
   StageTab _active = StageTab.home;
 

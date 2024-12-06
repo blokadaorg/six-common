@@ -34,7 +34,7 @@ class FamilyModule with Module {
     await register(LinkActor());
     await register(FamilyCommand());
 
-    if (DI.act.platform == PlatformType.iOS) {
+    if (Core.act.platform == PlatformType.iOS) {
       await register<StatefulWidget>(const PrivateDnsSheetIos(),
           tag: "privateDnsSheet");
     } else {

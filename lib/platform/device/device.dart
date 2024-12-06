@@ -30,12 +30,12 @@ const String _keyTag = "device:tag";
 class DeviceStore = DeviceStoreBase with _$DeviceStore;
 
 abstract class DeviceStoreBase with Store, Logging, Actor, Cooldown, Emitter {
-  late final _ops = DI.get<DeviceOps>();
-  late final _api = DI.get<DeviceJson>();
-  late final _stage = DI.get<StageStore>();
-  late final _account = DI.get<AccountStore>();
-  late final _persistence = DI.get<Persistence>();
-  late final _env = DI.get<EnvStore>();
+  late final _ops = Core.get<DeviceOps>();
+  late final _api = Core.get<DeviceJson>();
+  late final _stage = Core.get<StageStore>();
+  late final _account = Core.get<AccountStore>();
+  late final _persistence = Core.get<Persistence>();
+  late final _env = Core.get<EnvStore>();
 
   late final _names = names.UniqueNamesGenerator(
     config: names.Config(
@@ -82,9 +82,9 @@ abstract class DeviceStoreBase with Store, Logging, Actor, Cooldown, Emitter {
 
   @override
   onRegister() {
-    DI.register<DeviceOps>(getOps());
-    DI.register<DeviceJson>(DeviceJson());
-    DI.register<DeviceStore>(this as DeviceStore);
+    Core.register<DeviceOps>(getOps());
+    Core.register<DeviceJson>(DeviceJson());
+    Core.register<DeviceStore>(this as DeviceStore);
   }
 
   @observable
@@ -131,7 +131,7 @@ abstract class DeviceStoreBase with Store, Logging, Actor, Cooldown, Emitter {
 
   @action
   Future<void> fetch(Marker m) async {
-    if (DI.act.isFamily) return;
+    if (Core.act.isFamily) return;
 
     return await log(m).trace("fetch", (m) async {
       log(m).pair("tag", deviceTag);
@@ -176,7 +176,7 @@ abstract class DeviceStoreBase with Store, Logging, Actor, Cooldown, Emitter {
   Future<void> setDeviceName(String? deviceName, Marker m) async {
     // Simple handling of OG flavor (no generated device names)
     // TODO: refactor
-    if (!DI.act.isFamily) {
+    if (!Core.act.isFamily) {
       deviceAlias = deviceName!;
       return;
     }
@@ -186,7 +186,7 @@ abstract class DeviceStoreBase with Store, Logging, Actor, Cooldown, Emitter {
   Future<void> onRouteChanged(StageRouteState route, Marker m) async {
     if (!route.isForeground()) return;
     if (!route.isMainRoute()) return;
-    if (!isCooledDown(DI.config.deviceRefreshCooldown)) return;
+    if (!isCooledDown(Core.config.deviceRefreshCooldown)) return;
 
     return await log(m).trace("fetchDevice", (m) async {
       await fetch(m);

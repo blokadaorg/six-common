@@ -19,9 +19,10 @@ class Config {
   Duration refreshVeryFrequent = const Duration(seconds: 10);
   Duration refreshOnHome = const Duration(seconds: 120);
 
-  DateTime? debugSendTracesUntil =
-      DI.act.isRelease ? null : DateTime.now().add(const Duration(minutes: 15));
-  Uri? debugSendTracesTo = DI.act.isRelease
+  DateTime? debugSendTracesUntil = Core.act.isRelease
+      ? null
+      : DateTime.now().add(const Duration(minutes: 15));
+  Uri? debugSendTracesTo = Core.act.isRelease
       ? null
       : Uri.parse("http://192.168.1.173:4318/v1/traces");
   List<String> debugFailingRequests = [];

@@ -1,11 +1,11 @@
 part of 'filter.dart';
 
 class FilterActor with Logging, Actor {
-  late final _apiLists = DI.get<ListApi>();
-  late final _knownFilters = DI.get<KnownFilters>();
-  late final _defaultFilters = DI.get<DefaultFilters>();
-  late final _selectedFilters = DI.get<SelectedFilters>();
-  late final _userConfig = DI.get<CurrentConfig>();
+  late final _apiLists = Core.get<ListApi>();
+  late final _knownFilters = Core.get<KnownFilters>();
+  late final _defaultFilters = Core.get<DefaultFilters>();
+  late final _selectedFilters = Core.get<SelectedFilters>();
+  late final _userConfig = Core.get<CurrentConfig>();
 
   var _listsToTags = <ListHashId, ListTag>{};
   DateTime lastListsFetch = DateTime(0);
@@ -291,7 +291,7 @@ class FilterActor with Logging, Actor {
     // Or if already applied during this runtime
     if (_defaultsApplied) return;
 
-    if (!DI.act.isFamily) {
+    if (!Core.act.isFamily) {
       log(m).i("Applying defaults");
       final defaults = _defaultFilters.get();
       _selectedFilters.change(m, defaults);

@@ -6,7 +6,7 @@ import 'channel.pg.dart';
 class MockPermOps extends Mock implements PermOps {}
 
 PermOps getOps() {
-  if (DI.act.isProd) {
+  if (Core.act.isProd) {
     return PermOps();
   }
 

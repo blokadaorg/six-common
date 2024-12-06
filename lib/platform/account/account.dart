@@ -86,10 +86,10 @@ class InvalidAccountId implements Exception {}
 class AccountStore = AccountStoreBase with _$AccountStore;
 
 abstract class AccountStoreBase with Store, Logging, Actor, Emitter {
-  late final _api = DI.get<AccountJson>();
-  late final _ops = DI.get<AccountOps>();
-  late final _persistence = DI.get<Persistence>(tag: Persistence.secure);
-  late final _stage = DI.get<StageStore>();
+  late final _api = Core.get<AccountJson>();
+  late final _ops = Core.get<AccountOps>();
+  late final _persistence = Core.get<Persistence>(tag: Persistence.secure);
+  late final _stage = Core.get<StageStore>();
 
   AccountStoreBase() {
     willAcceptOn([accountChanged, accountIdChanged]);
@@ -103,9 +103,9 @@ abstract class AccountStoreBase with Store, Logging, Actor, Emitter {
 
   @override
   onRegister() {
-    DI.register<AccountOps>(getOps());
-    DI.register<AccountJson>(AccountJson());
-    DI.register<AccountStore>(this as AccountStore);
+    Core.register<AccountOps>(getOps());
+    Core.register<AccountJson>(AccountJson());
+    Core.register<AccountStore>(this as AccountStore);
   }
 
   @observable
@@ -245,11 +245,11 @@ abstract class AccountStoreBase with Store, Logging, Actor, Emitter {
 
   void _ensureValidAccountType(JsonAccount acc) {
     final type = accountTypeFromName(acc.type);
-    if (type == AccountType.family && !DI.act.isFamily) {
+    if (type == AccountType.family && !Core.act.isFamily) {
       throw InvalidAccountId();
-    } else if (type == AccountType.cloud && DI.act.isFamily) {
+    } else if (type == AccountType.cloud && Core.act.isFamily) {
       throw InvalidAccountId();
-    } else if (type == AccountType.plus && DI.act.isFamily) {
+    } else if (type == AccountType.plus && Core.act.isFamily) {
       throw InvalidAccountId();
     }
   }

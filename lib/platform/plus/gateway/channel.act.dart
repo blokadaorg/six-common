@@ -6,7 +6,7 @@ import 'channel.pg.dart';
 class MockPlusGatewayOps extends Mock implements PlusGatewayOps {}
 
 PlusGatewayOps getOps() {
-  if (DI.act.isProd) {
+  if (Core.act.isProd) {
     return PlusGatewayOps();
   }
 

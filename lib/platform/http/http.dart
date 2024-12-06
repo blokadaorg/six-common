@@ -37,7 +37,7 @@ abstract class HttpService {
 ///
 /// It also adds the User-Agent header to every request.
 class PlatformHttpService with Logging implements HttpService {
-  late final _ops = DI.get<HttpOps>();
+  late final _ops = Core.get<HttpOps>();
 
   @override
   Future<String> get(String url, Marker m, {bool noRetry = false}) async {
@@ -104,8 +104,8 @@ class RepeatingHttpService with Actor, Logging implements HttpService {
 
   @override
   void onRegister() {
-    DI.register<HttpOps>(getOps());
-    DI.register<HttpService>(this);
+    Core.register<HttpOps>(getOps());
+    Core.register<HttpService>(this);
   }
 
   @override
@@ -170,7 +170,7 @@ class DebugHttpService implements HttpService {
   }
 
   bool _shouldFail(String url) {
-    for (var match in DI.config.debugFailingRequests) {
+    for (var match in Core.config.debugFailingRequests) {
       if (url.contains(match)) return true;
     }
     return false;

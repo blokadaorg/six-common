@@ -7,22 +7,22 @@ final _noFilter = JournalFilter(
 );
 
 class JournalActor with Logging, Actor {
-  late final _api = DI.get<JournalApi>();
-  late final _custom = DI.get<CustomStore>();
+  late final _api = Core.get<JournalApi>();
+  late final _custom = Core.get<CustomStore>();
 
-  late final filteredEntries = DI.get<JournalEntriesValue>();
-  late final filter = DI.get<JournalFilterValue>();
+  late final filteredEntries = Core.get<JournalEntriesValue>();
+  late final filter = Core.get<JournalFilterValue>();
 
   List<UiJournalEntry> allEntries = [];
 
   fetch(Marker m, {DeviceTag? tag}) async {
     await log(m).trace("fetch", (m) async {
-      if (DI.act.isFamily && tag == null) {
+      if (Core.act.isFamily && tag == null) {
         throw Exception("Family must provide a tag");
       }
 
       List<JsonJournalEntry> entries;
-      if (DI.act.isFamily) {
+      if (Core.act.isFamily) {
         entries = await _api.fetch(m, tag!);
       } else {
         entries = await _api.fetchForV6(m);

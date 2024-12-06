@@ -31,11 +31,11 @@ class DeviceSection extends StatefulWidget {
 
 class DeviceSectionState extends State<DeviceSection>
     with Logging, Disposables {
-  late final _family = DI.get<FamilyActor>();
-  late final _device = DI.get<DeviceActor>();
-  late final _selectedFilters = DI.get<SelectedFilters>();
-  late final _selectedDevice = DI.get<SelectedDeviceTag>();
-  late final _custom = DI.get<CustomlistActor>();
+  late final _family = Core.get<FamilyActor>();
+  late final _device = Core.get<DeviceActor>();
+  late final _selectedFilters = Core.get<SelectedFilters>();
+  late final _selectedDevice = Core.get<SelectedDeviceTag>();
+  late final _custom = Core.get<CustomlistActor>();
 
   late FamilyDevice device;
 

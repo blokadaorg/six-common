@@ -28,9 +28,9 @@ class FiltersSection extends StatefulWidget {
 }
 
 class FiltersSectionState extends State<FiltersSection> with Logging {
-  late final _knownFilters = DI.get<KnownFilters>();
-  late final _profiles = DI.get<ProfileActor>();
-  late final _selectedFilters = DI.get<SelectedFilters>();
+  late final _knownFilters = Core.get<KnownFilters>();
+  late final _profiles = Core.get<ProfileActor>();
+  late final _selectedFilters = Core.get<SelectedFilters>();
 
   late JsonProfile profile;
 

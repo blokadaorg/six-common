@@ -27,7 +27,7 @@ class V6StatsSection extends StatefulWidget {
 }
 
 class V6StatsSectionState extends State<V6StatsSection> {
-  final _store = DI.get<StatsStore>();
+  final _store = Core.get<StatsStore>();
 
   var stats = UiStats.empty();
 

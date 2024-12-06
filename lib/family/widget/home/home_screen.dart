@@ -22,10 +22,10 @@ class FamilyHomeScreenState extends State<FamilyHomeScreen>
         Logging,
         WidgetsBindingObserver,
         Disposables {
-  late final _app = DI.get<AppStore>();
-  late final _stage = DI.get<StageStore>();
-  late final _phase = DI.get<FamilyPhaseValue>();
-  late final _devices = DI.get<FamilyDevicesValue>();
+  late final _app = Core.get<AppStore>();
+  late final _stage = Core.get<StageStore>();
+  late final _phase = Core.get<FamilyPhaseValue>();
+  late final _devices = Core.get<FamilyDevicesValue>();
 
   @override
   void initState() {

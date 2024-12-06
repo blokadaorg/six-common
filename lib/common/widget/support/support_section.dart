@@ -16,7 +16,7 @@ class SupportSection extends StatefulWidget {
 }
 
 class SupportSectionState extends State<SupportSection> {
-  late final _controller = DI.get<SupportActor>();
+  late final _controller = Core.get<SupportActor>();
   late final _sessionInitDebounce =
       Debounce(const Duration(milliseconds: 1200));
 

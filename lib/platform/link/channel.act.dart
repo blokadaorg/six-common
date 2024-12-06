@@ -6,7 +6,7 @@ import 'channel.pg.dart';
 class MockLinkOps extends Mock implements LinkOps {}
 
 LinkOps getOps() {
-  if (DI.act.isProd) {
+  if (Core.act.isProd) {
     return LinkOps();
   }
 

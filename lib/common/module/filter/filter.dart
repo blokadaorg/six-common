@@ -17,10 +17,10 @@ class FilterModule with Module {
   @override
   onCreateModule() async {
     await register(KnownFilters(
-      isFamily: DI.act.isFamily,
-      isIos: DI.act.platform == PlatformType.iOS,
+      isFamily: Core.act.isFamily,
+      isIos: Core.act.platform == PlatformType.iOS,
     ));
-    await register(DefaultFilters(DI.act.isFamily));
+    await register(DefaultFilters(Core.act.isFamily));
 
     await register(CurrentConfig());
     await register(SelectedFilters());

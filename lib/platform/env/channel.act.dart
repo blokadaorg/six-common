@@ -6,7 +6,7 @@ import 'channel.pg.dart';
 class MockEnvOps extends Mock implements EnvOps {}
 
 EnvOps getOps() {
-  if (DI.act.isProd) {
+  if (Core.act.isProd) {
     return EnvOps();
   }
 

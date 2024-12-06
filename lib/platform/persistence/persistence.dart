@@ -6,7 +6,7 @@ part 'channel.dart';
 class PlatformPersistenceModule with Module {
   @override
   onCreateModule() async {
-    if (DI.act.isProd) {
+    if (Core.act.isProd) {
       await register<PersistenceChannel>(PlatformPersistenceChannel());
     } else {
       await register<PersistenceChannel>(RuntimePersistenceChannel());

@@ -26,9 +26,9 @@ class DeviceScreen extends StatefulWidget {
 }
 
 class DeviceScreenState extends State<DeviceScreen> {
-  late final _family = DI.get<FamilyDevicesValue>();
-  late final _filter = DI.get<JournalFilterValue>();
-  late final _selectedFilters = DI.get<SelectedFilters>();
+  late final _family = Core.get<FamilyDevicesValue>();
+  late final _filter = Core.get<JournalFilterValue>();
+  late final _selectedFilters = Core.get<SelectedFilters>();
 
   Paths _path = Paths.deviceStats;
   Object? _arguments;

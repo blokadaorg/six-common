@@ -44,7 +44,7 @@ void main() async {
   // depend(ws);
   // ws.handle();
 
-  final ctrl = DI.get<TopBarController>();
+  final ctrl = Core.get<TopBarController>();
   final nav = NavigationPopObserver();
 
   final home = (flavor == Flavor.family)

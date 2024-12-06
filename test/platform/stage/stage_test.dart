@@ -18,8 +18,8 @@ void main() {
     test("setBackground", () async {
       await withTrace((m) async {
         final ops = MockStageOps();
-        DI.register<StageOps>(ops);
-        DI.register<Scheduler>(MockScheduler());
+        Core.register<StageOps>(ops);
+        Core.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
         await subject.setReady(true, m);
@@ -38,8 +38,8 @@ void main() {
     test("setRoute", () async {
       await withTrace((m) async {
         final ops = MockStageOps();
-        DI.register<StageOps>(ops);
-        DI.register<Scheduler>(MockScheduler());
+        Core.register<StageOps>(ops);
+        Core.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
         await subject.setReady(true, m);
@@ -60,8 +60,8 @@ void main() {
     test("showModal", () async {
       await withTrace((m) async {
         final ops = MockStageOps();
-        DI.register<StageOps>(ops);
-        DI.register<Scheduler>(MockScheduler());
+        Core.register<StageOps>(ops);
+        Core.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
         await subject.setReady(true, m);
@@ -121,8 +121,8 @@ void main() {
     test("advancedModalManagement", () async {
       await withTrace((m) async {
         final ops = MockStageOps();
-        DI.register<StageOps>(ops);
-        DI.register<Scheduler>(MockScheduler());
+        Core.register<StageOps>(ops);
+        Core.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
         await subject.setReady(true, m);
@@ -164,8 +164,8 @@ void main() {
     test("delayedEvents", () async {
       await withTrace((m) async {
         final ops = MockStageOps();
-        DI.register<StageOps>(ops);
-        DI.register<Scheduler>(MockScheduler());
+        Core.register<StageOps>(ops);
+        Core.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
 
@@ -199,8 +199,8 @@ void main() {
     test("routeChanged", () async {
       await withTrace((m) async {
         final ops = MockStageOps();
-        DI.register<StageOps>(ops);
-        DI.register<Scheduler>(MockScheduler());
+        Core.register<StageOps>(ops);
+        Core.register<Scheduler>(MockScheduler());
 
         final subject = StageStore();
 

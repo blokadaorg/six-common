@@ -19,7 +19,7 @@ mixin Module {
   Future<void> onCreateModule();
 
   register<T extends Object>(T instance, {String? tag}) async {
-    DI.register(instance, tag: tag);
+    Core.register(instance, tag: tag);
     if (instance is Actor) {
       _actorStarter.add(instance);
       instance.onCreate(Markers.root);

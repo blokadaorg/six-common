@@ -1,6 +1,6 @@
 part of 'core.dart';
 
-class DI {
+class Core {
   static final di = GetIt.instance;
 
   static void register<T extends Object>(T instance, {String? tag}) {

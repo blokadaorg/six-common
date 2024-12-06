@@ -46,11 +46,11 @@ import 'platform/stats/refresh/refresh.dart';
 import 'platform/stats/stats.dart';
 
 class Modules with Logging {
-  late final _appStart = DI.get<AppStartStore>();
+  late final _appStart = Core.get<AppStartStore>();
 
   create(Act act) async {
-    DI.act = act;
-    DI.config = Config();
+    Core.act = act;
+    Core.config = Config();
 
     // TODO: All onRegister calls here have to be replaced with modules
 
@@ -65,7 +65,7 @@ class Modules with Logging {
     await _registerModule(SupportModule());
 
     // Then family-only deps (for now at least)
-    if (DI.act.isFamily) {
+    if (Core.act.isFamily) {
       await _registerModule(ProfileModule());
       await _registerModule(DeviceModule());
       await _registerModule(AuthModule());
@@ -75,17 +75,17 @@ class Modules with Logging {
 
     await _registerModule(PlatformPersistenceModule());
 
-    if (DI.act.hasToys) {
+    if (Core.act.hasToys) {
       RepeatingHttpService(
         DebugHttpService(PlatformHttpService()),
-        maxRetries: DI.config.httpMaxRetries,
-        waitTime: DI.config.httpRetryDelay,
+        maxRetries: Core.config.httpMaxRetries,
+        waitTime: Core.config.httpRetryDelay,
       ).onRegister();
     } else {
       RepeatingHttpService(
         PlatformHttpService(),
-        maxRetries: DI.config.httpMaxRetries,
-        waitTime: DI.config.httpRetryDelay,
+        maxRetries: Core.config.httpMaxRetries,
+        waitTime: Core.config.httpRetryDelay,
       ).onRegister();
     }
 
@@ -101,7 +101,7 @@ class Modules with Logging {
     await _registerModule(AccountModule());
 
     // Compatibility layer for v6 (temporary)
-    if (!DI.act.isFamily) {
+    if (!Core.act.isFamily) {
       await _registerModule(PlatformFilterModule());
     }
 
@@ -112,7 +112,7 @@ class Modules with Logging {
     await _registerModule(LockModule());
     CustomStore().onRegister();
 
-    if (!DI.act.isFamily) {
+    if (!Core.act.isFamily) {
       JournalStore().onRegister();
       PlusStore().onRegister();
       PlusKeypairStore().onRegister();
@@ -125,7 +125,7 @@ class Modules with Logging {
     StatsStore().onRegister();
     StatsRefreshStore().onRegister();
 
-    if (DI.act.isFamily) {
+    if (Core.act.isFamily) {
       await _registerModule(FamilyModule());
     }
 
@@ -134,7 +134,7 @@ class Modules with Logging {
     CommandStore().onRegister();
     LinkStore().onRegister();
 
-    DI.register<TopBarController>(TopBarController());
+    Core.register<TopBarController>(TopBarController());
   }
 
   start(Marker m) async {
@@ -148,9 +148,9 @@ class Modules with Logging {
       }
     });
 
-    if (DI.act.isFamily) {
-      await DI.get<SupportUnreadActor>().onStart(m);
-      await DI.get<PurchaseTimeoutActor>().onStart(m);
+    if (Core.act.isFamily) {
+      await Core.get<SupportUnreadActor>().onStart(m);
+      await Core.get<PurchaseTimeoutActor>().onStart(m);
     }
 
     log(m).t("All modules started");

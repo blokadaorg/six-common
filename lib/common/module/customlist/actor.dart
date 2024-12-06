@@ -8,8 +8,8 @@ class CustomlistPayload {
 }
 
 class CustomlistActor with Actor, Logging {
-  late final _customlist = DI.get<CustomlistApi>();
-  late final _payload = DI.get<CustomlistPayloadValue>();
+  late final _customlist = Core.get<CustomlistApi>();
+  late final _payload = Core.get<CustomlistPayloadValue>();
 
   String? profileId;
 

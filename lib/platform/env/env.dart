@@ -24,8 +24,8 @@ extension on EnvPayload {
 }
 
 abstract class EnvStoreBase with Store, Logging, Actor {
-  late final _ops = DI.get<EnvOps>();
-  late final _agent = DI.get<UserAgent>();
+  late final _ops = Core.get<EnvOps>();
+  late final _agent = Core.get<UserAgent>();
 
   EnvStoreBase() {
     reactionOnStore((_) => userAgent, (_) async {
@@ -37,8 +37,8 @@ abstract class EnvStoreBase with Store, Logging, Actor {
 
   @override
   onRegister() {
-    DI.register<EnvOps>(getOps());
-    DI.register<EnvStore>(this as EnvStore);
+    Core.register<EnvOps>(getOps());
+    Core.register<EnvStore>(this as EnvStore);
   }
 
   @observable
@@ -71,6 +71,6 @@ abstract class EnvStoreBase with Store, Logging, Actor {
   }
 
   _getUserAgent(EnvPayload p) {
-    return "blokada/${p.appVersion} (${DI.act.platform.name}-${p.osVersion} ${p.buildFlavor} ${p.buildType} ${p.cpu}) ${p.deviceBrand} ${p.deviceModel})";
+    return "blokada/${p.appVersion} (${Core.act.platform.name}-${p.osVersion} ${p.buildFlavor} ${p.buildType} ${p.cpu}) ${p.deviceBrand} ${p.deviceModel})";
   }
 }

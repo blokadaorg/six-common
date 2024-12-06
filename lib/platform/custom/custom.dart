@@ -13,9 +13,9 @@ part 'custom.g.dart';
 class CustomStore = CustomStoreBase with _$CustomStore;
 
 abstract class CustomStoreBase with Store, Logging, Actor, Cooldown {
-  late final _ops = DI.get<CustomOps>();
-  late final _json = DI.get<CustomJson>();
-  late final _stage = DI.get<StageStore>();
+  late final _ops = Core.get<CustomOps>();
+  late final _json = Core.get<CustomJson>();
+  late final _stage = Core.get<StageStore>();
 
   CustomStoreBase() {
     reactionOnStore((_) => allowed, (allowed) async {
@@ -31,9 +31,9 @@ abstract class CustomStoreBase with Store, Logging, Actor, Cooldown {
 
   @override
   onRegister() {
-    DI.register<CustomOps>(getOps());
-    DI.register<CustomJson>(CustomJson());
-    DI.register<CustomStore>(this as CustomStore);
+    Core.register<CustomOps>(getOps());
+    Core.register<CustomJson>(CustomJson());
+    Core.register<CustomStore>(this as CustomStore);
   }
 
   @observable
@@ -125,7 +125,7 @@ abstract class CustomStoreBase with Store, Logging, Actor, Cooldown {
   Future<void> onRouteChanged(StageRouteState route, Marker m) async {
     if (!route.isForeground()) return;
     if (!route.isBecameTab(StageTab.activity)) return;
-    if (!isCooledDown(DI.config.customRefreshCooldown)) return;
+    if (!isCooledDown(Core.config.customRefreshCooldown)) return;
 
     return await log(m).trace("fetchCustom", (m) async {
       await fetch(m);

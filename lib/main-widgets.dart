@@ -20,10 +20,10 @@ void main() async {
   modules.start(Markers.start);
 
   final ws = DevWebsocket();
-  DI.register(ws);
+  Core.register(ws);
   ws.handle();
 
-  final ctrl = DI.get<TopBarController>();
+  final ctrl = Core.get<TopBarController>();
   final nav = NavigationPopObserver();
 
   runApp(BlokadaApp(
@@ -34,7 +34,7 @@ class DevWebsocket {
   var ip = "192.168.1.177";
   //var ip = "192.168.234.104";
 
-  late final command = DI.get<CommandStore>();
+  late final command = Core.get<CommandStore>();
   WebSocketChannel? channel;
 
   handle() async {

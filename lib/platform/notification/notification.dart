@@ -48,10 +48,10 @@ enum NotificationEventType {
 class NotificationStore = NotificationStoreBase with _$NotificationStore;
 
 abstract class NotificationStoreBase with Store, Logging, Actor {
-  late final _ops = DI.get<NotificationOps>();
-  late final _stage = DI.get<StageStore>();
-  late final _account = DI.get<AccountStore>();
-  late final _json = DI.get<NotificationJson>();
+  late final _ops = Core.get<NotificationOps>();
+  late final _stage = Core.get<StageStore>();
+  late final _account = Core.get<AccountStore>();
+  late final _json = Core.get<NotificationJson>();
 
   String? appleToken;
 
@@ -72,9 +72,9 @@ abstract class NotificationStoreBase with Store, Logging, Actor {
 
   @override
   onRegister() {
-    DI.register<NotificationOps>(getOps());
-    DI.register<NotificationJson>(NotificationJson());
-    DI.register<NotificationStore>(this as NotificationStore);
+    Core.register<NotificationOps>(getOps());
+    Core.register<NotificationJson>(NotificationJson());
+    Core.register<NotificationStore>(this as NotificationStore);
   }
 
   @observable
@@ -126,7 +126,7 @@ abstract class NotificationStoreBase with Store, Logging, Actor {
   @action
   Future<void> sendAppleToken(Marker m) async {
     if (appleToken == null) return;
-    if (DI.act.isFamily) return;
+    if (Core.act.isFamily) return;
     return await log(m).trace("sendAppleToken", (m) async {
       await _json.postToken(appleToken!, m);
       appleToken = null;

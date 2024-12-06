@@ -1,7 +1,7 @@
 part of 'journal.dart';
 
 class JournalApi {
-  late final _api = DI.get<Api>();
+  late final _api = Core.get<Api>();
   late final _marshal = JsonJournalMarshal();
 
   Future<List<JsonJournalEntry>> fetch(Marker m, DeviceTag tag) async {

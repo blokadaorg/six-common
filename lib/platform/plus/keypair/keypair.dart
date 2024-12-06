@@ -21,10 +21,10 @@ extension PlusKeypairExt on PlusKeypair {
 class PlusKeypairStore = PlusKeypairStoreBase with _$PlusKeypairStore;
 
 abstract class PlusKeypairStoreBase with Store, Logging, Actor {
-  late final _ops = DI.get<PlusKeypairOps>();
-  late final _persistence = DI.get<Persistence>(tag: Persistence.secure);
-  late final _account = DI.get<AccountStore>();
-  late final _plus = DI.get<PlusStore>();
+  late final _ops = Core.get<PlusKeypairOps>();
+  late final _persistence = Core.get<Persistence>(tag: Persistence.secure);
+  late final _account = Core.get<AccountStore>();
+  late final _plus = Core.get<PlusStore>();
 
   PlusKeypairStoreBase() {
     _account.addOn(accountIdChanged, generate);
@@ -37,8 +37,8 @@ abstract class PlusKeypairStoreBase with Store, Logging, Actor {
 
   @override
   onRegister() {
-    DI.register<PlusKeypairOps>(getOps());
-    DI.register<PlusKeypairStore>(this as PlusKeypairStore);
+    Core.register<PlusKeypairOps>(getOps());
+    Core.register<PlusKeypairStore>(this as PlusKeypairStore);
   }
 
   @observable

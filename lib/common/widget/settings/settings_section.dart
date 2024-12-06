@@ -32,14 +32,14 @@ class SettingsSection extends StatefulWidget {
 }
 
 class SettingsState extends State<SettingsSection> with Logging, Disposables {
-  late final _stage = DI.get<StageStore>();
-  late final _env = DI.get<EnvStore>();
-  late final _account = DI.get<AccountStore>();
-  late final _command = DI.get<CommandStore>();
-  late final _unread = DI.get<SupportUnread>();
+  late final _stage = Core.get<StageStore>();
+  late final _env = Core.get<EnvStore>();
+  late final _account = Core.get<AccountStore>();
+  late final _command = Core.get<CommandStore>();
+  late final _unread = Core.get<SupportUnread>();
 
-  late final _lock = DI.get<LockActor>();
-  late final _hasPin = DI.get<HasPin>();
+  late final _lock = Core.get<LockActor>();
+  late final _hasPin = Core.get<HasPin>();
 
   @override
   void initState() {
