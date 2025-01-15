@@ -91,11 +91,11 @@ class JournalFilter {
       filtered = filtered.where((e) => e.domainName.contains(q)).toList();
     }
 
-    // // Apply device
-    // final d = deviceName;
-    // if (d.isNotEmpty) {
-    //   filtered = filtered.where((e) => e.deviceName == deviceName).toList();
-    // }
+    // Apply device
+    final d = deviceName;
+    if (!Core.act.isFamily && d.isNotEmpty) {
+      filtered = filtered.where((e) => e.deviceName == deviceName).toList();
+    }
 
     // Apply filtering
     if (showOnly == JournalFilterType.blocked) {
