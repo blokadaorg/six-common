@@ -2,6 +2,7 @@ import 'package:common/common/module/journal/journal.dart';
 import 'package:common/common/navigation.dart';
 import 'package:common/common/widget/common_clickable.dart';
 import 'package:common/common/widget/theme.dart';
+import 'package:common/common/widget/two_letter_icon.dart';
 import 'package:common/core/core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -76,11 +77,7 @@ class ActivityItemState extends State<ActivityItem> {
               ],
             ),
           ),
-          Icon(
-            Icons.chevron_right,
-            size: 24,
-            color: context.theme.divider,
-          )
+          TwoLetterIconWidget(name: widget.entry.deviceName),
         ],
       ),
     );

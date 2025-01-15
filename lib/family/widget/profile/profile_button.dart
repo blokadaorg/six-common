@@ -1,13 +1,15 @@
 import 'package:common/common/widget/theme.dart';
+import 'package:common/core/core.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../../common/widget/common_clickable.dart';
 
 class ProfileButton extends StatefulWidget {
   final VoidCallback onTap;
-  final IconData icon;
-  final Color iconColor;
   final String name;
+  final IconData? icon;
+  final Color? iconColor;
+  final Widget? leading;
   final Widget? trailing;
   final EdgeInsets padding;
   final Color? borderColor;
@@ -16,9 +18,10 @@ class ProfileButton extends StatefulWidget {
   const ProfileButton({
     Key? key,
     required this.onTap,
-    required this.icon,
-    required this.iconColor,
     required this.name,
+    this.icon,
+    this.iconColor,
+    this.leading,
     this.trailing,
     this.padding = const EdgeInsets.all(20),
     this.borderColor,
@@ -49,15 +52,26 @@ class ProfileButtonState extends State<ProfileButton> {
         ),
         child: Padding(
           padding: widget.padding,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              Icon(
-                widget.icon,
-                color: widget.iconColor,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  widget.leading ??
+                      Icon(
+                        widget.icon,
+                        color: widget.iconColor,
+                      ),
+                  widget.trailing ??
+                      Icon(
+                        CupertinoIcons.chevron_right,
+                        color: context.theme.textSecondary,
+                      ),
+                ],
               ),
               Text(
-                widget.name,
+                widget.name.upTo(16),
                 style: TextStyle(
                   color: context.theme.textPrimary,
                   fontSize: 16,
@@ -67,11 +81,6 @@ class ProfileButtonState extends State<ProfileButton> {
                 maxLines: 1,
                 textAlign: TextAlign.center,
               ),
-              widget.trailing ??
-                  Icon(
-                    CupertinoIcons.chevron_right,
-                    color: context.theme.textSecondary,
-                  ),
             ],
           ),
         ),

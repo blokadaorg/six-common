@@ -17,6 +17,7 @@ class JournalModule with Module {
   onCreateModule() async {
     await register(JournalEntriesValue());
     await register(JournalFilterValue());
+    await register(JournalDevicesValue());
     await register(JournalApi());
     await register(JournalActor());
   }

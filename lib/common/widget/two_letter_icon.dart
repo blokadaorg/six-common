@@ -25,13 +25,13 @@ class TwoLetterIconWidget extends StatelessWidget {
             ),
           ),
           child: SizedBox(
-            width: big ? 60 : 40,
-            height: big ? 60 : 40,
+            width: big ? 60 : 32,
+            height: big ? 60 : 32,
             child: Center(
               child: Text(
                 name.substring(0, 2).toUpperCase().trim(),
                 style: TextStyle(
-                  fontSize: big ? 24 : 17,
+                  fontSize: big ? 24 : 12,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
