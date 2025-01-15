@@ -1,5 +1,4 @@
 import 'package:common/common/widget/theme.dart';
-import 'package:common/core/core.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../../common/widget/common_clickable.dart';
@@ -71,7 +70,7 @@ class ProfileButtonState extends State<ProfileButton> {
                 ],
               ),
               Text(
-                widget.name.upTo(16),
+                widget.name,
                 style: TextStyle(
                   color: context.theme.textPrimary,
                   fontSize: 16,

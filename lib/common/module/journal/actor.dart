@@ -66,7 +66,10 @@ class JournalActor with Logging, Actor {
       Set<String> deviceNames = {};
       for (var entry in grouped) {
         entry.timestampText = timeago.format(entry.timestamp);
-        deviceNames.add(entry.deviceName);
+
+        if (entry.deviceName.isNotBlank) {
+          deviceNames.add(entry.deviceName);
+        }
       }
       devices.now = deviceNames;
 

@@ -27,7 +27,7 @@ class ActivityItemState extends State<ActivityItem> {
         Navigation.open(Paths.deviceStatsDetail, arguments: widget.entry);
       },
       tapBorderRadius: BorderRadius.zero,
-      padding: const EdgeInsets.only(top: 12, bottom: 12, left: 0, right: 4),
+      padding: const EdgeInsets.only(top: 12, bottom: 12, left: 0, right: 8),
       child: Row(
         children: [
           widget.entry.isBlocked()
