@@ -2,6 +2,7 @@ import 'package:common/common/module/journal/journal.dart';
 import 'package:common/common/navigation.dart';
 import 'package:common/common/widget/common_clickable.dart';
 import 'package:common/common/widget/settings/retention_section.dart';
+import 'package:common/common/widget/stats/stats_detail_section.dart';
 import 'package:common/common/widget/stats/stats_filter.dart';
 import 'package:common/common/widget/stats/stats_section.dart';
 import 'package:common/common/widget/theme.dart';
@@ -73,7 +74,7 @@ class ActivityScreenState extends State<ActivityScreen> with Logging {
   Widget _buildForTablet(BuildContext context) {
     return WithTopBar(
       title: "main tab activity".i18n,
-      maxWidth: maxContentWidth,
+      maxWidth: _showStats ? maxContentWidthTablet : maxContentWidth,
       topBarTrailing: _getStatsAction(context),
       child: _buildStatsScreen(context),
     );
@@ -82,6 +83,7 @@ class ActivityScreenState extends State<ActivityScreen> with Logging {
   Widget _buildStatsScreen(BuildContext context) {
     if (_showStats) {
       return Row(
+        mainAxisSize: MainAxisSize.max,
         children: [
           const Expanded(
             flex: 1,
@@ -107,6 +109,8 @@ class ActivityScreenState extends State<ActivityScreen> with Logging {
 
   Widget _buildForPath(Paths path, Object? arguments) {
     switch (path) {
+      case Paths.deviceStatsDetail:
+        return StatsDetailSection(entry: _arguments as UiJournalEntry);
       default:
         return Container();
     }
