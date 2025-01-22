@@ -244,7 +244,10 @@ class LinkDeviceSheetState extends State<LinkDeviceSheet> with Logging {
                                 Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: CommonClickable(
-                                    onTap: () {
+                                    onTap: () async {
+                                      // To prevent UI freeze when the share screen opens
+                                      await sleepAsync(
+                                          const Duration(milliseconds: 500));
                                       _channel.doShareUrl(_payload.qrUrl);
                                     },
                                     child: const Icon(CupertinoIcons.share,
