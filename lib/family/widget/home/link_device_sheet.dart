@@ -238,6 +238,7 @@ class LinkDeviceSheetState extends State<LinkDeviceSheet> with Logging {
                                     size: 200.0,
                                   ),
                                 ),
+                                Icon(CupertinoIcons.share, size: 24)
                               ],
                             ),
                           ],
