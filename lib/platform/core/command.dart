@@ -1,9 +1,11 @@
-part of 'logger.dart';
+part of 'core.dart';
 
 class LoggerCommand with Command, Logging {
   late final _channel = Core.get<LoggerChannel>();
-  late final _stage = Core.get<StageStore>();
-  late final _isLocked = Core.get<IsLocked>();
+  late final _stage =
+      Core.get<StageStore>(); // TODO: This should not be a dep of core
+  late final _isLocked =
+      Core.get<IsLocked>(); // TODO: This should not be a dep of core
 
   @override
   List<CommandSpec> onRegisterCommands() {

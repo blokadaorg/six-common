@@ -22,7 +22,6 @@ import 'package:common/platform/common/common.dart';
 import 'package:common/platform/core/core.dart';
 import 'package:common/platform/family/family.dart';
 import 'package:common/platform/filter/filter.dart';
-import 'package:common/platform/logger/logger.dart';
 import 'package:common/platform/perm/dnscheck.dart';
 import 'package:common/v6/module/perm/perm.dart';
 import 'package:common/v6/widget/home/home.dart';
@@ -54,8 +53,8 @@ class Modules with Logging {
 
     // TODO: All onRegister calls here have to be replaced with modules
 
-    await _registerModule(PlatformLoggerModule());
     await _registerModule(CoreModule());
+    await _registerModule(PlatformCoreModule());
     await _registerModule(EnvModule());
 
     await _registerModule(ApiModule());
@@ -74,7 +73,6 @@ class Modules with Logging {
       await _registerModule(PermModule());
     }
 
-    await _registerModule(PlatformCoreModule());
     await _registerModule(PlatformCommonModule());
 
     // The stores. Order is important
@@ -125,8 +123,6 @@ class Modules with Logging {
   }
 
   start(Marker m) async {
-    await _appStart.startApp(m);
-
     await log(m).trace("startModules", (m) async {
       for (var mod in _modules) {
         await log(m).trace("${mod.runtimeType}", (m) async {
@@ -134,6 +130,8 @@ class Modules with Logging {
         });
       }
     });
+
+    await _appStart.startApp(m);
 
     if (Core.act.isFamily) {
       await Core.get<SupportUnreadActor>().onStart(m);

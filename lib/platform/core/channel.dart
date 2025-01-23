@@ -1,6 +1,6 @@
 part of 'core.dart';
 
-abstract class CoreChannel with PersistenceChannel {}
+abstract class CoreChannel with PersistenceChannel, LoggerChannel {}
 
 class PlatformCoreChannel extends CoreChannel {
   late final _ops = CoreOps();
@@ -17,6 +17,15 @@ class PlatformCoreChannel extends CoreChannel {
   @override
   Future<void> doDelete(String key, bool isSecure, bool isBackup) =>
       _ops.doDelete(key, isSecure, isBackup);
+
+  @override
+  Future<void> doSaveBatch(String batch) => _ops.doSaveBatch(batch);
+
+  @override
+  Future<void> doShareFile() => _ops.doShareFile();
+
+  @override
+  Future<void> doUseFilename(String filename) => _ops.doUseFilename(filename);
 }
 
 // Used only in mocked builds that do not interact with platform
@@ -39,4 +48,13 @@ class RuntimeCoreChannel extends CoreChannel {
       String key, String value, bool isSecure, bool isBackup) async {
     _map[key] = value;
   }
+
+  @override
+  Future<void> doSaveBatch(String batch) async {}
+
+  @override
+  Future<void> doShareFile() async {}
+
+  @override
+  Future<void> doUseFilename(String filename) async {}
 }
