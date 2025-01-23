@@ -1,9 +1,8 @@
 import 'dart:async';
 
+import 'package:common/common/module/link/link.dart';
 import 'package:common/common/widget/top_bar.dart';
 import 'package:common/core/core.dart';
-import 'package:common/platform/link/channel.pg.dart';
-import 'package:common/platform/link/link.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../util/mobx.dart';
@@ -147,7 +146,7 @@ abstract class StageStoreBase
     with Store, Logging, Actor, ValueEmitter<StageRouteState>, Emitter {
   late final _ops = Core.get<StageOps>();
   late final _scheduler = Core.get<Scheduler>();
-  late final _links = Core.get<LinkStore>();
+  late final _links = Core.get<LinkActor>();
 
   @observable
   StageRouteState route = StageRouteState.init();

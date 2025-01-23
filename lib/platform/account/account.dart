@@ -4,9 +4,9 @@ import 'package:mobx/mobx.dart';
 
 import '../stage/channel.pg.dart';
 import '../stage/stage.dart';
+import 'api.dart';
 import 'channel.act.dart';
 import 'channel.pg.dart';
-import 'json.dart';
 
 part 'account.g.dart';
 
@@ -86,7 +86,7 @@ class InvalidAccountId implements Exception {}
 class AccountStore = AccountStoreBase with _$AccountStore;
 
 abstract class AccountStoreBase with Store, Logging, Actor, Emitter {
-  late final _api = Core.get<AccountJson>();
+  late final _api = Core.get<AccountApi>();
   late final _ops = Core.get<AccountOps>();
   late final _persistence = Core.get<Persistence>(tag: Persistence.secure);
   late final _stage = Core.get<StageStore>();
@@ -104,7 +104,7 @@ abstract class AccountStoreBase with Store, Logging, Actor, Emitter {
   @override
   onRegister() {
     Core.register<AccountOps>(getOps());
-    Core.register<AccountJson>(AccountJson());
+    Core.register<AccountApi>(AccountApi());
     Core.register<AccountStore>(this as AccountStore);
   }
 

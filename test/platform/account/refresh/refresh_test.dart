@@ -1,6 +1,6 @@
 import 'package:common/core/core.dart';
 import 'package:common/platform/account/account.dart';
-import 'package:common/platform/account/json.dart';
+import 'package:common/platform/account/api.dart';
 import 'package:common/platform/account/refresh/refresh.dart';
 import 'package:common/platform/notification/notification.dart';
 import 'package:common/platform/plus/plus.dart';

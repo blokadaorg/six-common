@@ -5,9 +5,9 @@ import 'package:mobx/mobx.dart';
 import '../../util/mobx.dart';
 import '../account/account.dart';
 import '../stage/stage.dart';
+import 'api.dart';
 import 'channel.act.dart';
 import 'channel.pg.dart';
-import 'json.dart';
 
 part 'notification.g.dart';
 
@@ -51,7 +51,7 @@ abstract class NotificationStoreBase with Store, Logging, Actor {
   late final _ops = Core.get<NotificationOps>();
   late final _stage = Core.get<StageStore>();
   late final _account = Core.get<AccountStore>();
-  late final _json = Core.get<NotificationJson>();
+  late final _json = Core.get<NotificationApi>();
 
   String? appleToken;
 
@@ -73,7 +73,7 @@ abstract class NotificationStoreBase with Store, Logging, Actor {
   @override
   onRegister() {
     Core.register<NotificationOps>(getOps());
-    Core.register<NotificationJson>(NotificationJson());
+    Core.register<NotificationApi>(NotificationApi());
     Core.register<NotificationStore>(this as NotificationStore);
   }
 
