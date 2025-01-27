@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:common/common/module/api/api.dart';
 import 'package:common/core/core.dart';
 
-import '../account/account.dart';
 import '../plus/keypair/keypair.dart';
 
 class JsonAppleNotificationPayload {
@@ -32,7 +31,6 @@ class NotificationMarshal {
 
 class NotificationApi {
   late final _api = Core.get<Api>();
-  late final _account = Core.get<AccountStore>();
   late final _keypair = Core.get<PlusKeypairStore>();
   late final _marshal = NotificationMarshal();
 
