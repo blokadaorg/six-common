@@ -85,7 +85,7 @@ enum ApiEndpoint {
   postCustomListV2("v2/customlist", type: "POST", params: [ApiParam.accountId]),
   deleteCustomListV2("v2/customlist",
       type: "DELETE", params: [ApiParam.accountId]),
-  postNotificationToken("v2/apple/token", type: "POST"),
+  postNotificationToken("v2/apple/device", type: "POST"),
   postCheckoutGplayV2("v2/gplay/checkout", type: "POST"),
   postCheckoutAppleV2("v2/apple/checkout", type: "POST");
 
