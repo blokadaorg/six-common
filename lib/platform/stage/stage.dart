@@ -169,10 +169,6 @@ abstract class StageStoreBase
   StageStoreBase() {
     willAcceptOnValue(routeChanged);
     willAcceptOn([willEnterBackground]);
-
-    reactionOnStore((_) => route, (route) async {
-      await _ops.doRouteChanged(route.route.path);
-    });
   }
 
   @override
@@ -422,7 +418,6 @@ abstract class StageStoreBase
     if (!_showNavbar) show = false;
     if (Core.act.isFamily) show = false;
     log(m).log(attr: {"show": show});
-    await _ops.doShowNavbar(show);
   }
 
   @action

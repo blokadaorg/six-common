@@ -1,7 +1,6 @@
 import 'package:common/core/core.dart';
 import 'package:common/platform/account/account.dart';
 import 'package:common/platform/device/api.dart';
-import 'package:common/platform/device/channel.pg.dart';
 import 'package:common/platform/device/device.dart';
 import 'package:common/platform/stage/stage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,7 +10,6 @@ import 'package:mockito/mockito.dart';
 import '../../tools.dart';
 @GenerateNiceMocks([
   MockSpec<DeviceApi>(),
-  MockSpec<DeviceOps>(),
   MockSpec<StageStore>(),
   MockSpec<AccountStore>(),
 ])
@@ -37,9 +35,6 @@ void main() {
             .thenAnswer((_) => Future.value(_fixtureJsonDevice));
         Core.register<DeviceApi>(api);
 
-        final ops = MockDeviceOps();
-        Core.register<DeviceOps>(ops);
-
         final subject = DeviceStore();
         mockAct(subject);
 
@@ -61,9 +56,6 @@ void main() {
         when(api.getDevice(any))
             .thenAnswer((_) => Future.value(_fixtureJsonDevice));
         Core.register<DeviceApi>(api);
-
-        final ops = MockDeviceOps();
-        Core.register<DeviceOps>(ops);
 
         final subject = DeviceStore();
         subject.deviceTag = "some-tag";
@@ -93,9 +85,6 @@ void main() {
         when(api.getDevice(any)).thenThrow(Exception("test"));
         Core.register<DeviceApi>(api);
 
-        final ops = MockDeviceOps();
-        Core.register<DeviceOps>(ops);
-
         final subject = DeviceStore();
 
         await expectLater(subject.fetch(m), throwsException);
@@ -115,9 +104,6 @@ void main() {
         final api = MockDeviceApi();
         when(api.getDevice(any)).thenThrow(Exception("test"));
         Core.register<DeviceApi>(api);
-
-        final ops = MockDeviceOps();
-        Core.register<DeviceOps>(ops);
 
         final subject = DeviceStore();
 
