@@ -32,6 +32,12 @@ class ExceptionsSectionState extends State<ExceptionsSection>
     _reload();
   }
 
+  @override
+  void dispose() {
+    disposeAll();
+    super.dispose();
+  }
+
   _reload() async {
     if (!mounted) return;
     log(Markers.ui).trace("fetchCustom", (m) async {

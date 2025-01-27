@@ -20,5 +20,7 @@ class PlatformCommonModule with Logging, Module {
 
     await register<RateChannel>(channel);
     await register<EnvChannel>(channel);
+    await register<LinkChannel>(channel);
+    await register<HttpChannel>(channel);
   }
 }
