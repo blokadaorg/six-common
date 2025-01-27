@@ -2,6 +2,7 @@ part of 'env.dart';
 
 class EnvActor with Logging, Actor {
   late final _channel = Core.get<EnvChannel>();
+  late final _userAgent = Core.get<UserAgent>();
 
   late final EnvInfo info;
   late final String deviceName;
@@ -13,6 +14,7 @@ class EnvActor with Logging, Actor {
     info = await _channel.doGetEnvInfo();
     deviceName = info.deviceName;
     userAgent = _getUserAgent(info);
+    _userAgent.change(m, userAgent);
     appVersion = info.appVersion;
   }
 
