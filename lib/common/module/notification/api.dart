@@ -1,9 +1,4 @@
-import 'dart:convert';
-
-import 'package:common/common/module/api/api.dart';
-import 'package:common/core/core.dart';
-
-import '../plus/keypair/keypair.dart';
+part of 'notification.dart';
 
 class JsonAppleNotificationPayload {
   late String publicKey;
@@ -31,12 +26,12 @@ class NotificationMarshal {
 
 class NotificationApi {
   late final _api = Core.get<Api>();
-  late final _keypair = Core.get<PlusKeypairStore>();
   late final _marshal = NotificationMarshal();
 
-  Future<void> postToken(String appleToken, Marker m) async {
+  Future<void> postToken(
+      String keypairPublicKey, String appleToken, Marker m) async {
     final payload = JsonAppleNotificationPayload(
-      publicKey: _keypair.currentKeypair!.publicKey,
+      publicKey: keypairPublicKey,
       appleToken: appleToken,
     );
 

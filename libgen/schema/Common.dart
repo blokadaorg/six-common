@@ -24,6 +24,13 @@ abstract class CommonOps {
   // -- Link
   @async
   void doLinksChanged(List<OpsLink> links);
+
+  // -- Notification
+  @async
+  void doShow(String notificationId, String atWhen, String? body);
+
+  @async
+  void doDismissAll();
 }
 
 class OpsEnvInfo {

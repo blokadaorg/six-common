@@ -1,6 +1,7 @@
 import 'package:common/common/module/api/api.dart';
 import 'package:common/common/module/env/env.dart';
 import 'package:common/common/module/link/link.dart';
+import 'package:common/common/module/notification/notification.dart';
 import 'package:common/common/module/rate/rate.dart';
 import 'package:common/core/core.dart';
 import 'package:common/platform/common/channel.pg.dart';

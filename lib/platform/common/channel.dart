@@ -1,13 +1,22 @@
 part of 'common.dart';
 
 abstract class CommonChannel
-    with RateChannel, EnvChannel, LinkChannel, HttpChannel {}
+    with
+        RateChannel,
+        EnvChannel,
+        LinkChannel,
+        HttpChannel,
+        NotificationChannel {}
 
 class PlatformCommonChannel extends CommonChannel {
   late final _ops = CommonOps();
 
+  // RateChannel
+
   @override
   Future<void> doShowRateDialog() => _ops.doShowRateDialog();
+
+  // EnvChannel
 
   @override
   Future<EnvInfo> doGetEnvInfo() async {
@@ -24,6 +33,8 @@ class PlatformCommonChannel extends CommonChannel {
     );
   }
 
+  // LinkChannel
+
   @override
   Future<void> doLinksChanged(Map<LinkId, String> links) async =>
       await _ops.doLinksChanged(
@@ -31,6 +42,8 @@ class PlatformCommonChannel extends CommonChannel {
             .map((e) => OpsLink(id: e.key.name, url: e.value))
             .toList(),
       );
+
+  // HttpChannel
 
   @override
   Future<String> doGet(String url) => _ops.doGet(url);
@@ -43,11 +56,24 @@ class PlatformCommonChannel extends CommonChannel {
   Future<String> doRequestWithHeaders(
           String url, String? payload, String type, Map<String?, String?> h) =>
       _ops.doRequestWithHeaders(url, payload, type, h);
+
+  // NotificationChannel
+
+  @override
+  Future<void> doDismissAll() => _ops.doDismissAll();
+
+  @override
+  Future<void> doShow(String notificationId, String atWhen, String? body) =>
+      _ops.doShow(notificationId, atWhen, body);
 }
 
 class NoOpCommonChannel extends CommonChannel {
+  // RateChannel
+
   @override
   Future<void> doShowRateDialog() => Future.value();
+
+  // EnvChannel
 
   @override
   Future<EnvInfo> doGetEnvInfo() async => EnvInfo(
@@ -61,8 +87,12 @@ class NoOpCommonChannel extends CommonChannel {
         "mockDevice",
       );
 
+  // LinkChannel
+
   @override
   Future<void> doLinksChanged(Map<LinkId, String> links) => Future.value();
+
+  // HttpChannel
 
   @override
   Future<String> doGet(String url) =>
@@ -76,4 +106,13 @@ class NoOpCommonChannel extends CommonChannel {
   Future<String> doRequestWithHeaders(
           String url, String? payload, String type, Map<String?, String?> h) =>
       throw Exception("Mock http not implemented");
+
+  // NotificationChannel
+
+  @override
+  Future<void> doDismissAll() => Future.value();
+
+  @override
+  Future<void> doShow(String notificationId, String atWhen, String? body) =>
+      Future.value();
 }

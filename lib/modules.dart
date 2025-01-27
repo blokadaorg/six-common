@@ -7,6 +7,7 @@ import 'package:common/common/module/journal/journal.dart';
 import 'package:common/common/module/link/link.dart';
 import 'package:common/common/module/list/list.dart';
 import 'package:common/common/module/lock/lock.dart';
+import 'package:common/common/module/notification/notification.dart';
 import 'package:common/common/module/perm/perm.dart';
 import 'package:common/common/module/rate/rate.dart';
 import 'package:common/common/module/support/support.dart';
@@ -33,7 +34,6 @@ import 'platform/app/app.dart';
 import 'platform/app/start/start.dart';
 import 'platform/command/command.dart';
 import 'platform/device/device.dart';
-import 'platform/notification/notification.dart';
 import 'platform/perm/perm.dart';
 import 'platform/plus/gateway/gateway.dart';
 import 'platform/plus/keypair/keypair.dart';
@@ -56,6 +56,7 @@ class Modules with Logging {
     await _registerModule(CoreModule());
     await _registerModule(PlatformCoreModule());
     await _registerModule(EnvModule());
+    await _registerModule(NotificationModule());
 
     await _registerModule(ApiModule());
     await _registerModule(ListModule());
@@ -78,7 +79,6 @@ class Modules with Logging {
     // The stores. Order is important
     StageStore().onRegister();
     AccountStore().onRegister();
-    NotificationStore().onRegister();
     AccountPaymentStore().onRegister();
     AccountRefreshStore().onRegister();
     DeviceStore().onRegister();
