@@ -23,5 +23,6 @@ class PlatformCommonModule with Logging, Module {
     await register<EnvChannel>(channel);
     await register<LinkChannel>(channel);
     await register<HttpChannel>(channel);
+    await register<NotificationChannel>(channel);
   }
 }
