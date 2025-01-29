@@ -162,7 +162,7 @@ abstract class AccountRefreshStoreBase
         _initSuccessful = true;
       } catch (e) {
         log(m).i("creating new account");
-        await _account.create(m);
+        await _account.createAccount(m);
         await syncAccount(_account.account, m);
         lastRefresh = DateTime.now();
         _initSuccessful = true;

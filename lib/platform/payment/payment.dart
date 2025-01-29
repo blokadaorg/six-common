@@ -39,7 +39,7 @@ abstract class AccountPaymentStoreBase with Store, Logging, Actor {
 
     // TODO: remove this, only for payments upgrade / downgrade in UI
     reactionOnStore((_) => _account.account, (account) async {
-      await _ops.doAccountTypeChanged(account?.type.name ?? "libre");
+      _ops.doAccountTypeChanged(account?.type.name ?? "libre");
     });
   }
 
