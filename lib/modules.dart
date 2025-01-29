@@ -73,14 +73,14 @@ class Modules with Logging {
 
     await _registerModule(PlatformCommonModule());
 
+    await _registerModule(AccountModule());
+
     // The stores. Order is important
     StageStore().onRegister();
     AccountStore().onRegister();
     AccountPaymentStore().onRegister();
     AccountRefreshStore().onRegister();
     DeviceStore().onRegister();
-
-    await _registerModule(AccountModule());
 
     // Compatibility layer for v6 (temporary)
     if (!Core.act.isFamily) {
