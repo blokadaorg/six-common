@@ -1,11 +1,11 @@
 import 'package:common/core/core.dart';
+import 'package:common/platform/payment/api.dart';
 import 'package:common/util/mobx.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../stage/channel.pg.dart';
-import '../../stage/stage.dart';
-import '../account.dart';
-import 'api.dart';
+import '../account/account.dart';
+import '../stage/channel.pg.dart';
+import '../stage/stage.dart';
 import 'channel.act.dart';
 import 'channel.pg.dart';
 
@@ -21,7 +21,7 @@ class AccountInactiveAfterPurchase implements Exception {}
 class PaymentsUnavailable implements Exception {}
 
 abstract class AccountPaymentStoreBase with Store, Logging, Actor {
-  late final _ops = Core.get<AccountPaymentOps>();
+  late final _ops = Core.get<PaymentOps>();
   late final _json = Core.get<AccountPaymentApi>();
   late final _account = Core.get<AccountStore>();
   late final _stage = Core.get<StageStore>();
@@ -40,7 +40,7 @@ abstract class AccountPaymentStoreBase with Store, Logging, Actor {
 
   @override
   onRegister() {
-    Core.register<AccountPaymentOps>(getOps());
+    Core.register<PaymentOps>(getOps());
     Core.register<AccountPaymentApi>(AccountPaymentApi());
     Core.register<AccountPaymentStore>(this as AccountPaymentStore);
   }

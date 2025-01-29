@@ -34,7 +34,7 @@ class Product {
 }
 
 @HostApi()
-abstract class AccountPaymentOps {
+abstract class PaymentOps {
   @async
   bool doArePaymentsAvailable();
 

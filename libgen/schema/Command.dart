@@ -21,12 +21,6 @@ enum CommandName {
 
   // Notification,
   remoteNotification,
-  appleNotificationToken,
-  notificationTapped,
-
-  // PlusVpn
-  newPlus,
-  vpnStatus,
 
   // Stage
   foreground,
