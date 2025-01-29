@@ -51,6 +51,10 @@ enum CommandName {
   // Plus
   newPlus,
   vpnStatus,
+
+  // Notification
+  notificationTapped,
+  appleNotificationToken,
 }
 
 @HostApi()
