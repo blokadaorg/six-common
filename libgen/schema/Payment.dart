@@ -58,4 +58,7 @@ abstract class PaymentOps {
 
   @async
   void doProductsChanged(List<Product> products);
+
+  @async
+  void doAccountTypeChanged(String accountType);
 }
