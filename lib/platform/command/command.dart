@@ -59,7 +59,7 @@ class CommandStore with Logging, Actor implements CommandEvents {
   @override
   Future<void> onCommandWithParam(String command, String p1, Marker m) async {
     for (var cmd in newCommands) {
-      if (command.startsWith(cmd)) {
+      if (command.toUpperCase().startsWith(cmd)) {
         return await commands.execute(m, command, [p1]);
       }
     }
@@ -74,7 +74,7 @@ class CommandStore with Logging, Actor implements CommandEvents {
   Future<void> onCommandWithParams(
       String command, String p1, String p2, Marker m) async {
     for (var cmd in newCommands) {
-      if (command.startsWith(cmd)) {
+      if (command.toUpperCase().startsWith(cmd)) {
         return await commands.execute(m, command, [p1, p2]);
       }
     }
