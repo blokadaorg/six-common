@@ -56,6 +56,8 @@ void main() {
         when(ops.doFetchProducts()).thenAnswer((_) async => _fixtureProducts);
         Core.register<PaymentOps>(ops);
 
+        Core.register<AccountStore>(MockAccountStore());
+
         final subject = AccountPaymentStore();
         expect(subject.status, PaymentStatus.unknown);
 
@@ -196,6 +198,8 @@ void main() {
       await withTrace((m) async {
         Core.register<StageStore>(MockStageStore());
 
+        Core.register<AccountStore>(MockAccountStore());
+
         final ops = MockPaymentOps();
         when(ops.doArePaymentsAvailable()).thenAnswer((_) async => false);
         Core.register<PaymentOps>(ops);
@@ -301,6 +305,8 @@ void main() {
         final ops = MockPaymentOps();
         when(ops.doArePaymentsAvailable()).thenAnswer((_) async => true);
         Core.register<PaymentOps>(ops);
+
+        Core.register<AccountStore>(MockAccountStore());
 
         final store = AccountPaymentStore();
         Core.register<AccountPaymentStore>(store);

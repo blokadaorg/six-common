@@ -113,7 +113,7 @@ void main() {
 
         verify(account.load(any)).called(1);
         verifyNever(account.fetch(any));
-        verify(account.create(any)).called(1);
+        verify(account.createAccount(any)).called(1);
       });
     });
 
