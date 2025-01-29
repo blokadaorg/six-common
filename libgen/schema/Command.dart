@@ -47,6 +47,10 @@ enum CommandName {
 
   // Scheduler
   schedulerPing,
+
+  // Plus
+  newPlus,
+  vpnStatus,
 }
 
 @HostApi()
