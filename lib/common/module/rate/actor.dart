@@ -42,15 +42,9 @@ class RateActor with Logging, Actor {
   }
 
   Future<bool> checkRateConditions(Marker m) async {
-    // When app got active ...
-    if (!_app.status.isActive()) {
-      log(m).t("Skipped because app is not active");
-      return false;
-    }
-
     final meta = await _rateMetadata.now();
 
-    // .. but not on first ever app start
+    // Not on first ever app start
     if (meta == null) {
       log(m).t("Skipped because first ever app start");
       return false;
@@ -69,6 +63,9 @@ class RateActor with Logging, Actor {
     }
 
     if (!Core.act.isFamily) {
+      // Only when app got active ...
+      if (!_app.status.isActive()) return false;
+
       // Skip if not warmed up
       if (_stats.stats.totalBlocked < 100) return false;
     } else {
