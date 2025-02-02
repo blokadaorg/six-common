@@ -42,18 +42,25 @@ class RateActor with Logging, Actor {
   }
 
   Future<bool> checkRateConditions(Marker m) async {
-    log(m).t("Checking rate conditions");
-
     // When app got active ...
-    if (!_app.status.isActive()) return false;
+    if (!_app.status.isActive()) {
+      log(m).t("Skipped because app is not active");
+      return false;
+    }
 
     final meta = await _rateMetadata.now();
 
     // .. but not on first ever app start
-    if (meta == null) return false;
+    if (meta == null) {
+      log(m).t("Skipped because first ever app start");
+      return false;
+    }
 
     // ... and not if shown previously
-    if (meta.lastSeen != null) return false;
+    if (meta.lastSeen != null) {
+      log(m).t("Skipped because shown previously");
+      return false;
+    }
 
     // Skip if already showing stuff
     if (!_stage.route.isMainRoute()) {
