@@ -15,6 +15,7 @@ class RateActor with Logging, Actor {
   late final _stage = Core.get<StageStore>();
   late final _app = Core.get<AppStore>();
   late final _stats = Core.get<StatsStore>();
+  late final _familyStats = Core.get<StatsActor>();
   late final _familyPhase = Core.get<FamilyPhaseValue>();
   late final _scheduler = Core.get<Scheduler>();
 
@@ -45,22 +46,13 @@ class RateActor with Logging, Actor {
     final meta = await _rateMetadata.now();
 
     // Not on first ever app start
-    if (meta == null) {
-      log(m).t("Skipped because first ever app start");
-      return false;
-    }
+    if (meta == null) return false;
 
     // ... and not if shown previously
-    if (meta.lastSeen != null) {
-      log(m).t("Skipped because shown previously");
-      return false;
-    }
+    if (meta.lastSeen != null) return false;
 
     // Skip if already showing stuff
-    if (!_stage.route.isMainRoute()) {
-      log(m).t("Skipped because not on main route");
-      return false;
-    }
+    if (!_stage.route.isMainRoute()) return false;
 
     if (!Core.act.isFamily) {
       // Only when app got active ...
@@ -76,7 +68,7 @@ class RateActor with Logging, Actor {
       }
 
       // Skip if not warmed up
-      if (_stats.deviceStats.none((k, v) => v.totalBlocked >= 100)) {
+      if (_familyStats.stats.values.none((it) => it.totalBlocked >= 100)) {
         log(m).t("Skipped because no device has 100+ blocked");
         return false;
       }
