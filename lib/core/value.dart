@@ -64,7 +64,9 @@ abstract class AsyncValue<T> with Logging {
     final stream = onChange.listen(fn);
     if (_resolved) {
       // No await, call asynchronously
-      fn(ValueUpdate(Markers.valueChange, present, present!));
+      log(Markers.valueChange).trace("$runtimeType", (m) async {
+        await fn(ValueUpdate(m, present, present!));
+      });
     }
     return stream;
   }

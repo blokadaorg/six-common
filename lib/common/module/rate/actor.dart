@@ -61,10 +61,14 @@ class RateActor with Logging, Actor {
       if (_stats.stats.totalBlocked < 100) return false;
     } else {
       // Skip if no devices
-      if (_familyPhase.now != FamilyPhase.parentHasDevices) return false;
+      if (_familyPhase.now != FamilyPhase.parentHasDevices) {
+        log(m).t("Skipped because no devices");
+        return false;
+      }
 
       // Skip if not warmed up
       if (_stats.deviceStats.none((k, v) => v.totalBlocked >= 100)) {
+        log(m).t("Skipped because no device has 100+ blocked");
         return false;
       }
     }
