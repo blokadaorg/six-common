@@ -34,7 +34,7 @@ class RateActor with Logging, Actor {
       await _scheduler.addOrUpdate(Job(
         "rate:checkConditions",
         m,
-        before: DateTime.now().add(const Duration(seconds: 4)),
+        before: DateTime.now().add(const Duration(seconds: 5)),
         when: [Conditions.foreground],
         callback: checkRateConditions,
       ));
@@ -42,34 +42,39 @@ class RateActor with Logging, Actor {
   }
 
   Future<bool> checkRateConditions(Marker m) async {
+    log(m).t("Checking rate conditions");
+
     // When app got active ...
-    if (!_app.status.isActive()) return true;
+    if (!_app.status.isActive()) return false;
 
     final meta = await _rateMetadata.now();
 
     // .. but not on first ever app start
-    if (meta == null) return true;
+    if (meta == null) return false;
 
     // ... and not if shown previously
-    if (meta.lastSeen != null) return true;
+    if (meta.lastSeen != null) return false;
 
     // Skip if already showing stuff
-    if (!_stage.route.isMainRoute()) return true;
+    if (!_stage.route.isMainRoute()) {
+      log(m).t("Skipped because not on main route");
+      return false;
+    }
 
     if (!Core.act.isFamily) {
       // Skip if not warmed up
-      if (_stats.stats.totalBlocked < 100) return true;
+      if (_stats.stats.totalBlocked < 100) return false;
     } else {
       // Skip if no devices
       if (_familyPhase.now != FamilyPhase.parentHasDevices) {
         log(m).t("Skipped because no devices");
-        return true;
+        return false;
       }
 
       // Skip if not warmed up
       if (_stats.deviceStats.none((k, v) => v.totalBlocked >= 100)) {
         log(m).t("Skipped because no device has 100+ blocked");
-        return true;
+        return false;
       }
     }
 
